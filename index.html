@@ -1,5 +1,7 @@
 ‏
-<!DOCTYPE html><html lang="he" dir="rtl">
+<!DOCTYPE html>
+
+<html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,6 +31,7 @@
 html{scroll-behavior:smooth}
 body{font-family:'Assistant',sans-serif;background:var(--cream);color:var(--brown);overflow-x:hidden}
 
+```
 /* ─── NAV ─── */
 nav{position:fixed;top:0;width:100%;z-index:200;background:rgba(253,246,239,0.97);backdrop-filter:blur(12px);display:flex;flex-direction:row-reverse;align-items:center;justify-content:space-between;padding:0 5%;height:64px;border-bottom:1px solid var(--warm2);box-shadow:0 2px 20px rgba(200,112,74,0.1)}
 .logo{text-decoration:none;font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--brown)}
@@ -232,7 +235,7 @@ nav .nav-links{display:none}
 }
 
 /* ─── CUSTOM BUILDER MODAL ─── */
-
+```
 
 .builder-overlay{display:none;position:fixed;inset:0;background:rgba(20,10,5,0.7);z-index:600;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(4px)}
 .builder-overlay.open{display:flex}
@@ -276,8 +279,11 @@ nav .nav-links{display:none}
 .hero-inner>.hero-btns{animation-delay:.55s}
 .hero-inner>.hero-scroll{animation-delay:.7s}
 </style>
+
 </head>
-<body><nav>
+<body>
+
+<nav>
 <a href="https://wa.me/972523394838" target="_blank" class="nav-wa">💬 וואטסאפ</a>
 <div class="nav-links">
 <a href="#catalog" class="nav-link">קטלוג</a>
@@ -285,7 +291,9 @@ nav .nav-links{display:none}
 <a href="#info" class="nav-link">מידע</a>
 </div>
 <a class="logo" href="#">שרה <span>❤</span></a>
-</nav><section class="hero">
+</nav>
+
+<section class="hero">
 <div class="hero-floats">
 <div class="hf hf1"></div>
 <div class="hf hf2"></div>
@@ -301,13 +309,17 @@ nav .nav-links{display:none}
 </div>
 <div class="hero-scroll">↓ גלגלו למטה ↓</div>
 </div>
-</section><div class="trust">
+</section>
+
+<div class="trust">
 <div class="trust-item">🏠 עבודת יד בלבד</div>
 <div class="trust-item">✨ מרכיבים איכותיים</div>
 <div class="trust-item">🎨 התאמה אישית</div>
 <div class="trust-item">🛵 משלוח בחריש ₪10</div>
 <div class="trust-item">💳 ביט / מזומן</div>
-</div><section class="catalog" id="catalog">
+</div>
+
+<section class="catalog" id="catalog">
 <div class="section-header">
 <span class="sec-tag">🛒 הקטלוג</span>
 <h2>בחרו את המארז שלכם</h2>
@@ -322,6 +334,7 @@ nav .nav-links{display:none}
 </div>
 <div class="prod-grid" id="prodGrid">
 
+```
 <!-- MAARATZIM -->
 <div class="prod-card" data-cat="maarz" data-desc-full="לב מוס גדול עם כיתוב אישי + פחזניות קרמבל מסביב" onclick="openModal(this)">
 <div class="prod-img"><img src="mousse_box.jpg" alt="מארז מוס לב"><div class="prod-ribbon rb-best">⭐ פופולרי</div></div>
@@ -494,9 +507,13 @@ nav .nav-links{display:none}
 </div>
 
 </div>
+```
 
+</section>
 
-</section><!-- REVIEWS --><section class="reviews" id="reviews">
+<!-- REVIEWS -->
+
+<section class="reviews" id="reviews">
 <div class="section-header">
 <span class="sec-tag">⭐ ביקורות</span>
 <h2>מה אומרות הלקוחות</h2>
@@ -520,7 +537,11 @@ nav .nav-links{display:none}
 <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">ש</div><div><div class="rc-name">שירה מ.</div><div class="rc-loc">זכרון יעקב</div></div></div><div class="rc-stars">★★★★☆</div></div><div class="rc-text">"הזמנתי מגש לאירוע משפחתי. כל המשפחה שאלה מאיפה. שרה תמיד עונה מהר בוואטסאפ ומאוד נחמדה. בהחלט אזמין שוב!"</div></div>
 </div>
 </div>
-</section><!-- INFO --><section class="info-section" id="info">
+</section>
+
+<!-- INFO -->
+
+<section class="info-section" id="info">
 <div class="section-header">
 <span class="sec-tag">ℹ️ פרטים</span>
 <h2 style="color:#fff">כל מה שצריך לדעת</h2>
@@ -548,11 +569,15 @@ nav .nav-links{display:none}
 <div><span class="kosher-badge">✡️ כשר למהדרין</span></div>
 </div>
 </div>
-</section><section class="cta">
+</section>
+
+<section class="cta">
 <h2>רוצים <span>מארז מיוחד</span>? 🎁</h2>
 <p>שלחו הודעה בוואטסאפ ושרה תחזור אליכם עם כל הפרטים 💕</p>
 <a href="https://wa.me/972523394838" target="_blank" class="btn-wa-big">💬 שלחו הודעה לשרה</a>
-</section><footer>
+</section>
+
+<footer>
 <div class="footer-brand">🎂 שרה <span>חברוני</span></div>
 <div class="footer-links">
 <a href="tel:+972523394838">📞 052-3394838</a>
@@ -560,7 +585,11 @@ nav .nav-links{display:none}
 <a href="https://waze.com/ul?q=התמדה+4+חריש" target="_blank">📍 התמדה 4, חריש</a>
 </div>
 <div class="footer-bottom">©️ 2025 שרה חברוני · Home Made Bakery · נבנה עם ❤️</div>
-</footer><!-- MODAL --><div class="modal-overlay" id="modalOverlay" onclick="closeModalOut(event)">
+</footer>
+
+<!-- MODAL -->
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOut(event)">
 <div class="modal">
 <button class="modal-close" onclick="closeModal()">✕</button>
 <img id="mImg" src="" alt="" class="modal-img" onerror="this.style.display='none'">
@@ -571,6 +600,7 @@ nav .nav-links{display:none}
 <div id="modalForm">
 <div class="modal-info">📋 <strong>איך זה עובד:</strong> הכניסו שם וטלפון → יפתח וואטסאפ עם ההזמנה לשרה 💕</div>
 
+```
 <h4>💳 שיטת תשלום</h4>
 <div class="modal-pay">
 <div class="pay-opt" onclick="selectPay(this,'ביט 💙')"><span class="pay-icon">💙</span>ביט</div>
@@ -663,9 +693,11 @@ nav .nav-links{display:none}
 </div>
 </div>
 </div>
+```
 
+</div>
 
-</div><script>
+<script>
 var selProd={name:'',img:'',descFull:'',isCustom:false}, selPay='', selOcc='', wantsDelivery=false;
 
 function filterCat(cat,el){
@@ -853,7 +885,11 @@ document.getElementById('successWaLink').href = 'https://wa.me/972523394838?text
 
 document.getElementById('modalSuccess').style.display = 'block';
 }
-</script><!-- CUSTOM BUILDER MODAL --><div class="builder-overlay" id="builderOverlay" onclick="closeBuilderOut(event)">
+</script>
+
+<!-- CUSTOM BUILDER MODAL -->
+
+<div class="builder-overlay" id="builderOverlay" onclick="closeBuilderOut(event)">
 <div class="builder-modal">
 <div class="builder-header">
 <button class="builder-close" onclick="closeBuilder()">✕</button>
@@ -862,6 +898,7 @@ document.getElementById('modalSuccess').style.display = 'block';
 </div>
 <div class="builder-body">
 
+```
 <!-- בסיס מוס -->
 <div class="builder-section">
 <div class="builder-section-title">🍮 בסיס מוס <span style="color:var(--copper);font-size:12px">(חובה לבחור אחד)</span></div>
@@ -949,10 +986,12 @@ document.getElementById('modalSuccess').style.display = 'block';
 </div>
 <button class="builder-btn" id="builderOrderBtn" onclick="submitBuilderOrder()" disabled>✨ שלחו הזמנה לשרה</button>
 </div>
-
+```
 
 </div>
-</div><script>
+</div>
+
+<script>
 // ─── BUILDER LOGIC ───────────────────────────────
 var selMoss = null, selMossPrice = 0;
 var builderTotal = 0;
@@ -1065,6 +1104,7 @@ selPay=''; selOcc='';
 document.getElementById('modalOverlay').classList.add('open');
 document.body.style.overflow='hidden';
 }
-</script></body>
-</html>
+</script>
 
+</body>
+</html>
