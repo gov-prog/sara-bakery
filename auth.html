@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8">
@@ -336,6 +336,76 @@
       overflow: hidden;
       align-self: center;
       backdrop-filter: blur(1.5px);
+    }
+
+    .auth-shell {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .auth-floats {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .auth-float {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.85), rgba(200, 112, 74, 0.28));
+      opacity: 0.65;
+      filter: blur(0.4px);
+      animation: floatPulse 9s ease-in-out infinite;
+    }
+
+    .auth-float.f1 {
+      top: -40px;
+      right: -30px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(216, 177, 106, 0.38));
+      animation-duration: 12s;
+    }
+
+    .auth-float.f2 {
+      bottom: -50px;
+      left: -20px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.85), rgba(200, 112, 74, 0.32));
+      animation-duration: 10s;
+    }
+
+    .auth-float.f3 {
+      top: 45%;
+      left: -60px;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.8), rgba(212, 162, 78, 0.3));
+      animation-duration: 11s;
+    }
+
+    .auth-float.f4 {
+      bottom: 20%;
+      right: -50px;
+      width: 110px;
+      height: 110px;
+      background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.85), rgba(200, 112, 74, 0.26));
+      animation-duration: 13s;
+    }
+
+    @keyframes floatPulse {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(0, 14px, 0) scale(1.04); }
+      100% { transform: translate3d(0, 0, 0) scale(1); }
     }
 
     .auth-head {
@@ -834,54 +904,18 @@
         </div>
       </div>
 
-      <div class="marquee-wrap" aria-hidden="true">
-        <div class="marquee-overlay">
-          <div class="marquee-badge">✨ קולקציה מרגשת השבוע</div>
-          <div class="marquee-badge alt">💖 עבודת יד טרייה</div>
-        </div>
-        <div class="marquee-row">
-          <div class="marquee-track">
-            <figure class="shot tall"><img src="box1.jpg" alt="מארז מתוקים 1" loading="lazy"></figure>
-            <figure class="shot"><img src="box2.jpg" alt="מארז מתוקים 2" loading="lazy"></figure>
-            <figure class="shot tall"><img src="box3.jpg" alt="מארז מתוקים 3" loading="lazy"></figure>
-            <figure class="shot"><img src="box4.jpg" alt="מארז מתוקים 4" loading="lazy"></figure>
-            <figure class="shot"><img src="box5.jpg" alt="מארז מתוקים 5" loading="lazy"></figure>
-            <figure class="shot tall"><img src="box6.jpg" alt="מארז מתוקים 6" loading="lazy"></figure>
-            <figure class="shot"><img src="box7.jpg" alt="מארז מתוקים 7" loading="lazy"></figure>
-            <figure class="shot"><img src="sweet_tray1.jpg" alt="מגש קינוחים 1" loading="lazy"></figure>
-            <figure class="shot"><img src="sweet_tray2.jpg" alt="מגש קינוחים 2" loading="lazy"></figure>
-            <figure class="shot tall"><img src="sweet_tray3.jpg" alt="מגש קינוחים 3" loading="lazy"></figure>
-            <figure class="shot"><img src="mousse_box.jpg" alt="מארז מוסים" loading="lazy"></figure>
-            <figure class="shot"><img src="mousse_big.jpg" alt="Mousse big" loading="lazy"></figure>
-            <figure class="shot"><img src="sweet_tray4.jpg" alt="Sweet tray 4" loading="lazy"></figure>
-            <figure class="shot tall"><img src="sweet_tray5.jpg" alt="Sweet tray 5" loading="lazy"></figure>
-            <figure class="shot"><img src="number1.jpg" alt="מארז מספר 1" loading="lazy"></figure>
-
-            <figure class="shot tall"><img src="box1.jpg" alt="מארז מתוקים 1" loading="lazy"></figure>
-            <figure class="shot"><img src="box2.jpg" alt="מארז מתוקים 2" loading="lazy"></figure>
-            <figure class="shot tall"><img src="box3.jpg" alt="מארז מתוקים 3" loading="lazy"></figure>
-            <figure class="shot"><img src="box4.jpg" alt="מארז מתוקים 4" loading="lazy"></figure>
-            <figure class="shot"><img src="box5.jpg" alt="מארז מתוקים 5" loading="lazy"></figure>
-            <figure class="shot tall"><img src="box6.jpg" alt="מארז מתוקים 6" loading="lazy"></figure>
-            <figure class="shot"><img src="box7.jpg" alt="מארז מתוקים 7" loading="lazy"></figure>
-            <figure class="shot"><img src="sweet_tray1.jpg" alt="מגש קינוחים 1" loading="lazy"></figure>
-            <figure class="shot"><img src="sweet_tray2.jpg" alt="מגש קינוחים 2" loading="lazy"></figure>
-            <figure class="shot tall"><img src="sweet_tray3.jpg" alt="מגש קינוחים 3" loading="lazy"></figure>
-            <figure class="shot"><img src="mousse_box.jpg" alt="מארז מוסים" loading="lazy"></figure>
-            <figure class="shot"><img src="mousse_big.jpg" alt="Mousse big" loading="lazy"></figure>
-            <figure class="shot"><img src="sweet_tray4.jpg" alt="Sweet tray 4" loading="lazy"></figure>
-            <figure class="shot tall"><img src="sweet_tray5.jpg" alt="Sweet tray 5" loading="lazy"></figure>
-            <figure class="shot"><img src="number1.jpg" alt="מארז מספר 1" loading="lazy"></figure>
-          </div>
-        </div>
-        <div class="marquee-note">כל תמונה היא השראה — נבנה יחד מארז חלומי.</div>
-
-      </div>
     </section>
 
     <section class="auth-shell" aria-label="טופס התחברות והרשמה">
+      <div class="auth-floats">
+        <span class="auth-float f1"></span>
+        <span class="auth-float f2"></span>
+        <span class="auth-float f3"></span>
+        <span class="auth-float f4"></span>
+      </div>
+      <div class="auth-content">
       <div class="auth-head">
-        <div class="brand">שרה <span>חברוני</span></div>
+        <div class="brand">התחברות</div>
         <div class="sub">התחברות והרשמה לפני הזמנה</div>
       </div>
 
@@ -927,12 +961,13 @@
         <button id="logoutBtn" type="button" class="btn wa" style="display:none" onclick="logoutCurrent()">התנתקות והחלפת חשבון</button>
         <div class="note">שומרים על חוויית הזמנה מסודרת: כניסה קצרה ואז ממשיכים לבחור מארז.</div>
       </div>
+      </div>
     </section>
   </main>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateProfile } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, updateProfile, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, getDocs, query, where, limit, serverTimestamp, collection } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -951,6 +986,7 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    setPersistence(auth, browserLocalPersistence).catch(function(){});
     const db = getFirestore(app);
 
     const msgEl = document.getElementById('authMsg');
@@ -1068,6 +1104,16 @@
       return { id: snap.docs[0].id, email: d.email || '' };
     }
 
+    async function findUserByEmail(email) {
+      const e = String(email || '').trim();
+      if (!e) return null;
+      const q = query(collection(db, 'users'), where('email', '==', e), limit(1));
+      const snap = await getDocs(q);
+      if (snap.empty) return null;
+      const d = snap.docs[0].data() || {};
+      return { id: snap.docs[0].id, email: d.email || e, fullName: d.fullName || '' };
+    }
+
     window.loginWithFullName = async function () {
       const fullName = (document.getElementById('loginFullName').value || '').trim();
       const pass = (document.getElementById('loginPass').value || '').trim();
@@ -1111,6 +1157,20 @@
               updatedAt: serverTimestamp()
             }, { merge: true }); } catch (err) {}
             rememberLocalUser(fullName, localEmail);
+          } else {
+            try {
+              const byEmail = await findUserByEmail(localEmail);
+              const savedName = byEmail && byEmail.fullName ? String(byEmail.fullName).trim() : '';
+              if (savedName) {
+                try { await updateProfile(auth.currentUser, { displayName: savedName }); } catch (err) {}
+                try { await setDoc(doc(db, 'users', auth.currentUser.uid), {
+                  fullName: savedName,
+                  fullNameLower: normalizeName(savedName),
+                  updatedAt: serverTimestamp()
+                }, { merge: true }); } catch (err) {}
+                rememberLocalUser(savedName, localEmail);
+              }
+            } catch (err) {}
           }
           showMsg('\u05d4\u05ea\u05d7\u05d1\u05e8\u05ea \u05d1\u05d4\u05e6\u05dc\u05d7\u05d4', true);
           setTimeout(goBackToSite, 500);
@@ -1379,6 +1439,10 @@
 </script>
 </body>
 </html>
+
+
+
+
 
 
 
