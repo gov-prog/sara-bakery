@@ -45,6 +45,14 @@
       gap: 20px;
       align-items: stretch;
     }
+    /* Show only the login/register panel */
+    .auth-layout {
+      grid-template-columns: 1fr !important;
+      max-width: 520px;
+    }
+    .visual-panel {
+      display: none !important;
+    }
 
     .visual-panel {
       border-radius: 28px;
@@ -703,7 +711,7 @@
       }
 
       .field input {
-        font-size: 14px;
+        font-size: 16px;
         padding: 10px 11px;
       }
     }
@@ -806,7 +814,7 @@
       .field input {
         border-radius: 9px;
         padding: 8px 9px;
-        font-size: 13px;
+        font-size: 16px;
       }
 
       .btn {
@@ -933,8 +941,13 @@
           <label for="loginPass">סיסמה</label>
           <input id="loginPass" type="password" autocomplete="current-password" placeholder="הקלידו סיסמה">
         </div>
+        <div class="field">
+          <label for="loginEmail">אימייל (לאיפוס סיסמה)</label>
+          <input id="loginEmail" type="email" autocomplete="email" placeholder="name@example.com">
+        </div>
         <button id="loginBtn" type="button" class="btn main" onclick="loginWithFullName()">התחברות</button>
         <button id="resetPassBtn" type="button" class="text-link" onclick="resetPasswordByFullName()">שכחתי סיסמה</button>
+        <div class="hint">לאיפוס סיסמה כתבו כאן את האימייל המלא ולחצו על "שכחתי סיסמה".</div>
       </div>
 
       <div id="panelRegister" class="panel">
@@ -1031,6 +1044,25 @@
       const map = loadLocalUsers();
       return map[n] || '';
     }
+    const SOFT_AUTH_KEY = 'sara_soft_auth';
+    function persistSoftAuth(user, fullName) {
+      if (!user || !user.uid) return;
+      const payload = {
+        uid: user.uid,
+        email: user.email || '',
+        name: fullName || user.displayName || '',
+        at: Date.now()
+      };
+      const raw = JSON.stringify(payload);
+      try { localStorage.setItem(SOFT_AUTH_KEY, raw); } catch (err) {}
+      try { sessionStorage.setItem(SOFT_AUTH_KEY, raw); } catch (err) {}
+      try { window.name = 'sara_auth:' + raw; } catch (err) {}
+    }
+    function clearSoftAuth() {
+      try { localStorage.removeItem(SOFT_AUTH_KEY); } catch (err) {}
+      try { sessionStorage.removeItem(SOFT_AUTH_KEY); } catch (err) {}
+      try { if (window.name && window.name.indexOf('sara_auth:') === 0) { window.name = ''; } } catch (err) {}
+    }
     function getReturnUrl() {
       const fallback = 'index.html';
       const q = new URLSearchParams(window.location.search).get('return');
@@ -1049,6 +1081,7 @@
     const RETURN_URL = getReturnUrl();
 
     window.goBackToSite = function () {
+      try { sessionStorage.setItem('sara_from_auth', '1'); } catch (err) {}
       window.location.href = RETURN_URL;
     };
 
@@ -1124,6 +1157,7 @@
 
       setPending('loginBtn', true, 'מתחבר...');
       try {
+        try { await setPersistence(auth, browserLocalPersistence); } catch (err) {}
         if (normalizeName(fullName) === normalizeName(ADMIN_ALIAS)) {
           if (pass !== ADMIN_PASS) {
             showMsg('סיסמת מנהלת שגויה');
@@ -1140,6 +1174,7 @@
             }
           }
           showMsg('כניסת מנהלת בוצעה', true);
+          persistSoftAuth(auth.currentUser, ADMIN_ALIAS);
           setTimeout(goBackToSite, 500);
           return;
         }
@@ -1157,6 +1192,7 @@
               updatedAt: serverTimestamp()
             }, { merge: true }); } catch (err) {}
             rememberLocalUser(fullName, localEmail);
+            persistSoftAuth(auth.currentUser, fullName);
           } else {
             try {
               const byEmail = await findUserByEmail(localEmail);
@@ -1169,10 +1205,12 @@
                   updatedAt: serverTimestamp()
                 }, { merge: true }); } catch (err) {}
                 rememberLocalUser(savedName, localEmail);
+                persistSoftAuth(auth.currentUser, savedName);
               }
             } catch (err) {}
           }
           showMsg('\u05d4\u05ea\u05d7\u05d1\u05e8\u05ea \u05d1\u05d4\u05e6\u05dc\u05d7\u05d4', true);
+          persistSoftAuth(auth.currentUser, fullName);
           setTimeout(goBackToSite, 500);
           return;
         }
@@ -1191,6 +1229,7 @@
         }, { merge: true }); } catch (err) {}
         rememberLocalUser(fullName, userRow.email);
         showMsg('התחברת בהצלחה', true);
+        persistSoftAuth(auth.currentUser, fullName);
         setTimeout(goBackToSite, 500);
       } catch (err) {
         showMsg('שגיאת התחברות: ' + (err && err.code ? err.code : 'error'));
@@ -1219,6 +1258,7 @@
 
       setPending('regBtn', true, 'נרשם...');
       try {
+        try { await setPersistence(auth, browserLocalPersistence); } catch (err) {}
         let existingByName = null;
         try {
           existingByName = await findUserByFullName(fullName);
@@ -1241,6 +1281,7 @@
             await updateProfile(cred.user, { displayName: fullName });
           } catch (err) {}
           rememberLocalUser(fullName, email);
+          persistSoftAuth(cred.user, fullName);
           try {
             await setDoc(doc(db, 'users', cred.user.uid), {
               email: email,
@@ -1268,16 +1309,17 @@
       }
     };
 
-        window.resetPasswordByFullName = async function () {
+    window.resetPasswordByFullName = async function () {
       const fullName = (document.getElementById('loginFullName').value || '').trim();
-      if (!fullName) {
-        showMsg('הקלידו קודם שם מלא, ואז לחצו שוב על איפוס סיסמה');
+      const emailInput = (document.getElementById('loginEmail').value || '').trim();
+      if (!fullName && !emailInput) {
+        showMsg('כדי לאפס סיסמה, כתבו אימייל מלא ואז לחצו שוב על איפוס סיסמה');
         return;
       }
 
       setResetPending(true);
       try {
-        const directEmail = fullName.indexOf('@') >= 0 ? fullName : '';
+        const directEmail = emailInput || (fullName.indexOf('@') >= 0 ? fullName : '');
         const localEmail = directEmail || lookupLocalUser(fullName);
         if (localEmail) {
           await sendPasswordResetEmail(auth, localEmail);
@@ -1313,6 +1355,7 @@
     window.logoutCurrent = async function () {
       try {
         await signOut(auth);
+        clearSoftAuth();
         showMsg('התנתקת. עכשיו אפשר להתחבר עם חשבון אחר.', true);
       } catch (err) {
         showMsg('שגיאה בהתנתקות');
