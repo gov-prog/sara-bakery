@@ -37,6 +37,12 @@
         .auth-fab{position:fixed;right:14px;top:76px;z-index:9999;background:#fff;border:2px solid #f2d9c0;border-radius:999px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:23px;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.16);transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;touch-action:manipulation;text-decoration:none;color:#2d1a0e}
         .cart-fab{position:fixed;right:14px;top:138px;z-index:9998;background:#c8704a;color:#fff;border:none;border-radius:999px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:21px;cursor:pointer;box-shadow:0 10px 24px rgba(200,112,74,.4);touch-action:manipulation;text-decoration:none}
         .cart-badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#27ae60;color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+
+    @keyframes ptsPulse{0%,100%{transform:scale(1)}40%{transform:scale(1.03)}70%{transform:scale(.99)}}
+    .pts-pulse{animation:ptsPulse .6s ease}
+    @keyframes cartBounce{0%,100%{transform:scale(1)}30%{transform:scale(1.25)}60%{transform:scale(.93)}}
+    .cart-bounce{animation:cartBounce .5s ease}
+
         @media(max-width:720px){.auth-fab{top:70px;right:10px}.cart-fab{top:130px;right:10px}}
         .warm-motion{position:fixed;inset:-10% -10%;pointer-events:none;z-index:30;opacity:.18;transition:opacity .6s ease}
         body.is-logged-in .warm-motion{opacity:.4}
@@ -137,6 +143,16 @@
     .hero-spark.s1{top:-6px;right:18%;animation-delay:.2s}
     .hero-spark.s2{bottom:-8px;left:12%;width:14px;height:14px;animation-delay:1.4s}
     .hero-spark.s3{top:50%;left:-6px;width:8px;height:8px;animation-delay:-1s}
+
+    .hero-points-bar{display:flex;align-items:center;gap:12px;margin:10px 0 2px;background:rgba(200,112,74,0.07);border-radius:12px;padding:10px 12px}
+    .hpb-left{flex-shrink:0;text-align:center;min-width:60px}
+    .hpb-label{font-size:10px;font-weight:800;color:var(--brown-mid);text-transform:uppercase;letter-spacing:1px}
+    .hpb-val{font-size:18px;font-weight:900;color:var(--copper);font-family:'Playfair Display',serif}
+    .hpb-meter{flex:1}
+    .hpb-track{height:8px;background:rgba(200,112,74,0.15);border-radius:999px;overflow:hidden;margin-bottom:5px}
+    .hpb-fill{height:100%;background:linear-gradient(90deg,var(--copper),var(--gold));border-radius:999px;transition:width 1s ease}
+    .hpb-next{font-size:11px;color:var(--brown-mid);font-weight:700}
+
     @keyframes heroGlow{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(6px) scale(1.05)}}
     @keyframes sparkleFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.15)}}
     @media (prefers-reduced-motion: reduce){
@@ -458,9 +474,26 @@
         <div class="hero-badge">🍰 Home Made Bakery · חריש</div>
         <div id="heroWelcome" class="hero-welcome" aria-live="polite" style="display:none">
             <div class="hero-welcome-card">
+                <div class="hero-spark s1"></div>
+                <div class="hero-spark s2"></div>
+                <div class="hero-spark s3"></div>
                 <div class="welcome-eyebrow" id="heroWelcomeEyebrow">ברוכה הבאה</div>
                 <div class="welcome-name" id="heroWelcomeName">לקוחה יקרה</div>
                 <div class="welcome-sub" id="heroWelcomeSub">תהני מהנקודות, המתנות וההפתעות באזור האישי.</div>
+                <div id="heroPointsBar" class="hero-points-bar" style="display:none">
+                  <div class="hpb-left">
+                    <div class="hpb-label">נקודות שלך</div>
+                    <div class="hpb-val" id="heroPointsVal">0 נק׳</div>
+                  </div>
+                  <div class="hpb-meter">
+                    <div class="hpb-track"><div class="hpb-fill" id="heroPointsFill" style="width:0%"></div></div>
+                    <div class="hpb-next" id="heroPointsNext">התחילי לצבור!</div>
+                  </div>
+                </div>
+                <div class="welcome-actions">
+                  <button class="welcome-btn" type="button" onclick="document.getElementById('catalog').scrollIntoView({behavior:'smooth'})">🧁 להזמנה</button>
+                  <button class="welcome-btn ghost" type="button" onclick="if(typeof toggleProfile==='function')toggleProfile(true)">👤 האזור האישי</button>
+                </div>
             </div>
         </div>
         <h1>מתוקים<span class="accent">מהלב ❤️</span></h1>
@@ -1282,6 +1315,16 @@
     }
 
     function openModal(card){
+        // אם לא מחובר ולא אורח - הצג auth gate
+        if(!currentUser && !authGateDismissed){
+          ensureUI();
+          var gate = document.getElementById('authGate');
+          if(gate){
+            gate.classList.add('open');
+            document.body.classList.add('auth-locked');
+          }
+          return;
+        }
         try {
             var overlay = document.getElementById('modalOverlay');
             if(overlay && overlay.classList.contains('open')){
@@ -2318,7 +2361,7 @@ function ensureUI(){
       '@keyframes authAttention{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}',
       '.auth-fab.attention{animation:authAttention .45s ease 3;border-color:#27ae60;box-shadow:0 0 0 6px rgba(39,174,96,.16),0 10px 24px rgba(0,0,0,.18)}',
       'body.auth-locked{overflow:hidden !important}',
-      '.auth-modal{display:none;position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,.45);align-items:center;justify-content:center;padding:14px;pointer-events:none}',
+      '.auth-modal{display:none;position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:14px;pointer-events:none}',
       '.auth-modal.open{display:flex;pointer-events:auto}',
       '.auth-gate{display:none;position:fixed;inset:0;z-index:1150;background:linear-gradient(160deg,rgba(255,250,244,.96),rgba(250,235,220,.96));align-items:center;justify-content:center;padding:16px;pointer-events:none}',
       '.auth-gate.open{display:flex;pointer-events:auto}',
@@ -2328,7 +2371,7 @@ function ensureUI(){
       '.auth-gate-actions{display:flex;flex-direction:column;gap:8px}',
       '.auth-gate-btn{width:100%;border:none;border-radius:12px;padding:12px;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;font-weight:800;cursor:pointer}',
       '.auth-gate-btn.secondary{background:#fff;color:#6b4433;border:1px solid #e5d0be}',
-      '.auth-card{width:100%;max-width:380px;background:#fff;border-radius:16px;padding:18px;box-shadow:0 20px 40px rgba(0,0,0,.2)}',
+      '.auth-card{width:min(400px,94vw);background:#fff;border-radius:22px;padding:26px 22px;box-shadow:0 24px 55px rgba(0,0,0,.28);direction:rtl;border:1px solid #f2d9c0}',
       '.auth-card h3{margin-bottom:10px;color:#2d1a0e}',
       '.auth-row{display:flex;gap:8px;margin-top:8px}',
       '.auth-btn{flex:1;padding:10px;border:none;border-radius:10px;cursor:pointer;font-weight:700}',
@@ -2425,26 +2468,27 @@ function ensureUI(){
       '.cart-empty-icon{width:64px;height:64px;border-radius:50%;border:1px solid #ead8c9;background:#fffaf6;display:flex;align-items:center;justify-content:center;font-size:30px;color:#bfa190}',
       '.cart-empty-title{font-weight:900;color:#2d1a0e;font-size:16px}',
       '.cart-empty-sub{font-size:12px;color:#9a7060;max-width:240px}',
-      '.points-wrap{position:relative;border:1.5px solid rgba(200,112,74,.3);border-radius:18px;background:linear-gradient(140deg,#fffaf6,#fff1e3);padding:12px 12px;margin-bottom:12px;box-shadow:0 14px 28px rgba(200,112,74,.12);overflow:hidden}',
-      '.points-wrap::before{content:"";position:absolute;inset:-20% 40% auto -30%;height:140px;background:radial-gradient(circle,rgba(212,162,78,.35),transparent 70%);opacity:.9;pointer-events:none}',
-      '.points-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;font-size:12px;position:relative;z-index:1}',
-      '.points-title{font-weight:900;color:#3b2012;letter-spacing:.3px}',
-      '.points-total{background:#fff;border:1px solid #f2d9c0;border-radius:999px;padding:3px 10px;font-weight:900;color:#7a5040;font-size:11px;white-space:nowrap;box-shadow:0 6px 12px rgba(200,112,74,.12)}',
-      '.points-meter{position:relative;direction:ltr;padding-top:16px;margin-bottom:10px;z-index:1}',
-      '.points-line{height:10px;background:#f0ddcf;border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}',
-      '.points-line-fill{height:100%;background:linear-gradient(90deg,#2ecc71,#f1c165);width:0;border-radius:999px;transition:width .35s ease}',
-      '.points-marks{position:absolute;top:0;left:0;right:0;height:34px;pointer-events:none}',
-      '.points-mark{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;color:#7a5040}',
+      '.points-wrap{position:relative;border:1.5px solid rgba(200,112,74,.22);border-radius:20px;background:linear-gradient(140deg,#fffaf6,#fff3e6);padding:14px 14px 12px;margin-bottom:12px;box-shadow:0 8px 24px rgba(200,112,74,.1);overflow:hidden}',
+      '.points-wrap::before{content:"";position:absolute;inset:-20% 40% auto -30%;height:140px;background:radial-gradient(circle,rgba(212,162,78,.25),transparent 70%);opacity:.8;pointer-events:none}',
+      '.points-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;position:relative;z-index:1}',
+      '.points-title{font-weight:900;font-size:14px;color:#2d1a0e;letter-spacing:.3px}',
+      '.points-total{background:#fff;border:1.5px solid #f2d9c0;border-radius:999px;padding:4px 12px;font-weight:900;color:#c8704a;font-size:13px;white-space:nowrap;box-shadow:0 4px 10px rgba(200,112,74,.15)}',
+      '.points-meter{position:relative;direction:ltr;margin-bottom:8px;z-index:1;padding-top:28px}',
+      '.points-line{height:10px;background:#f0ddcf;border-radius:999px;overflow:visible;box-shadow:inset 0 2px 4px rgba(0,0,0,.07);position:relative}',
+      '.points-line-fill{height:100%;background:linear-gradient(90deg,#27ae60,#c8704a,#f1c165);width:0;border-radius:999px;transition:width .8s cubic-bezier(.4,0,.2,1);position:relative;z-index:1}',
+      '.points-marks{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:2}',
+      '.points-mark{position:absolute;bottom:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px}',
       '.points-dot{width:10px;height:10px;border-radius:999px;background:#fff;border:2px solid #d9b89f;box-shadow:0 0 0 2px #fff9f4}',
-      '.points-mark.hit .points-dot{background:#2ecc71;border-color:#2ecc71}',
+      '.points-mark .points-emoji{font-size:15px;line-height:1;margin-bottom:3px;filter:grayscale(1) opacity(.35);transition:filter .3s;display:block}',
       '.points-emoji{font-size:13px;line-height:1}',
-      '.points-labels{display:flex;justify-content:space-between;gap:6px;font-size:10px;color:#7a5040;line-height:1.3;direction:ltr;position:relative;z-index:1}',
-      '.points-chip{flex:1;direction:rtl;background:#fff;border:1px solid #f2d9c0;border-radius:12px;padding:5px 6px;text-align:center;box-shadow:0 6px 12px rgba(200,112,74,.08)}',
-      '.points-chip.hit{background:#f0faf4;border-color:#2ecc71}',
-      '.points-chip strong{display:block;font-size:10px;color:#5a3424}',
-      '.points-chip .pc-sub{font-size:10px;color:#8a6858;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}',
-      '.points-chip.hit .pc-sub{color:#1c7d44}',
-      '.points-next{margin-top:8px;font-size:11px;color:#7a5040;text-align:center;font-weight:800;position:relative;z-index:1}',
+      '.points-mark.hit .points-emoji{filter:none}',
+      '.points-mark .points-dot{width:16px;height:16px;border-radius:50%;background:#fff;border:2.5px solid #dac5b0;box-shadow:0 2px 6px rgba(0,0,0,.15);transition:all .3s;flex-shrink:0;display:block}',
+      '.points-mark.hit .points-dot{background:#27ae60;border-color:#27ae60;box-shadow:0 2px 8px rgba(39,174,96,.35)}',
+      '.points-labels{display:flex;justify-content:space-between;gap:5px;direction:ltr;position:relative;z-index:1;margin-top:8px}',
+      '.points-chip{flex:1;direction:rtl;background:#fff;border:1.5px solid #f0d8c4;border-radius:14px;padding:7px 5px;text-align:center;box-shadow:0 3px 8px rgba(200,112,74,.07);transition:border-color .3s,box-shadow .3s}',
+      '.points-chip.hit{background:#f0faf4;border-color:#27ae60;box-shadow:0 4px 12px rgba(39,174,96,.15)}',
+      '.points-chip .pc-emoji{font-size:17px;display:block;margin-bottom:2px;line-height:1}',
+      '.points-chip .pc-num{font-size:11px;font-weight:900;color:#5a3424;display:block;margin-bottom:2px}',
       '.reward-chip{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #f2d9c0;border-radius:10px;padding:8px;margin-bottom:8px;background:#fff}',
       '.reward-chip button{border:none;background:#c8704a;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-weight:700}',
       '.checkout-box{margin-top:12px;border:1px solid #f0d8c4;border-radius:16px;padding:12px;background:linear-gradient(160deg,#fff,#fff7ef);box-shadow:0 6px 18px rgba(200,112,74,.09)}',
@@ -2480,14 +2524,18 @@ function ensureUI(){
 
       '<div id="authModal" class="auth-modal" onclick="closeAuthModal(event)">' +
         '<div class="auth-card">' +
-          '<h3>התחברות / הרשמה</h3>' +
-          '<div style="font-size:13px;color:#7a5040">צריך להתחבר כדי להזמין ולקבל מתנות 🎁</div>' +
-          '<input id="authEmail" type="email" placeholder="אימייל" style="width:100%;margin-top:10px;border:1px solid #ddd;border-radius:10px;padding:10px">' +
-          '<input id="authPass" type="password" placeholder="סיסמה" style="width:100%;margin-top:8px;border:1px solid #ddd;border-radius:10px;padding:10px">' +
-          '<div class="auth-row">' +
-            '<button id="authLoginBtn" type="button" class="auth-btn primary" onclick="loginUser()">התחברות</button>' +
-            '<button id="authRegisterBtn" type="button" class="auth-btn secondary" onclick="registerUser()">הרשמה</button>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">' +
+            '<div style="font-family:Playfair Display,serif;font-size:22px;font-weight:900;color:#2d1a0e">התחברות</div>' +
+            '<button type="button" onclick="var m=document.getElementById(\'authModal\');if(m)m.classList.remove(\'open\')" style="background:none;border:none;font-size:22px;cursor:pointer;color:#7a5040;line-height:1">✕</button>' +
           '</div>' +
+          '<div style="font-size:13px;color:#7a5040;margin-bottom:14px">התחברי כדי להזמין ולקבל נקודות ומתנות 🎁</div>' +
+          '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">אימייל</label>' +
+          '<input id="authEmail" type="email" autocomplete="email" placeholder="name@example.com" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:10px">' +
+          '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">סיסמה</label>' +
+          '<input id="authPass" type="password" autocomplete="current-password" placeholder="לפחות 6 תווים" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:14px">' +
+          '<button id="authLoginBtn" type="button" onclick="loginUser()" style="width:100%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;margin-bottom:8px">התחברות</button>' +
+          '<button id="authRegisterBtn" type="button" onclick="registerUser()" style="width:100%;background:#fff;color:#6b4433;border:1.5px solid #e5d0be;border-radius:12px;padding:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;margin-bottom:8px">הרשמה</button>' +
+          '<div style="text-align:center;font-size:12px;color:#9a7060;margin-top:4px">אין חשבון? לחצי על "הרשמה" עם אותו אימייל וסיסמה חדשה</div>' +
           '<button id="logoutBtn" type="button" class="auth-btn secondary" style="width:100%;margin-top:8px;display:none" onclick="logoutUser()">התנתקות</button>' +
         '</div>' +
       '</div>' +
@@ -2826,9 +2874,36 @@ function ensureUI(){
     if(currentUser){
       var displayName = getProfileDisplayName();
       var copy = getWelcomeCopy(displayName);
-      if(nameEl) nameEl.textContent = displayName || (copy.eyebrow === 'ברוכה הבאה' ? 'לקוחה יקרה' : 'לקוח יקר');
-      if(eyebrowEl) eyebrowEl.textContent = copy.eyebrow;
+      var firstName = String(displayName || '').trim().split(/\s+/)[0] || '';
+      if(nameEl) nameEl.textContent = firstName || (copy.eyebrow === 'ברוכה הבאה' ? 'לקוחה יקרה' : 'לקוח יקר');
+      if(eyebrowEl) eyebrowEl.textContent = copy.eyebrow + (firstName ? ' 👋' : '');
       if(subEl) subEl.textContent = copy.sub;
+
+      // update points bar
+      var ptsBar  = document.getElementById('heroPointsBar');
+      var ptsVal  = document.getElementById('heroPointsVal');
+      var ptsFill = document.getElementById('heroPointsFill');
+      var ptsNext = document.getElementById('heroPointsNext');
+      if(ptsBar){
+        var pts = Number(profile && profile.points ? profile.points : 0);
+        var milestones = getGiftLevels ? getGiftLevels() : [300,600,900,1200,1500];
+        if(!milestones || milestones.length === 0) milestones = [300,600,900,1200,1500];
+        var maxPts = milestones[milestones.length - 1];
+        var pct = maxPts > 0 ? Math.min(100, Math.round((pts / maxPts) * 100)) : 0;
+        var nextInfo = getNextGiftInfo ? getNextGiftInfo(pts) : { nextLevel: 300, missing: 300 };
+        if(ptsVal) ptsVal.textContent = pts + ' נק׳';
+        if(ptsFill) ptsFill.style.width = pct + '%';
+        if(ptsNext){
+          if(pts >= maxPts){
+            ptsNext.textContent = '🎉 פתחת את כל המתנות!';
+          } else {
+            var nextGift = getGiftForLevel ? getGiftForLevel(nextInfo.nextLevel) : null;
+            ptsNext.textContent = 'עוד ' + nextInfo.missing + ' נק׳ ל' + (nextGift ? nextGift.name : 'מתנה הבאה') + ' ' + (nextGift ? nextGift.emoji : '🎁');
+          }
+        }
+        ptsBar.style.display = 'flex';
+      }
+
       wrap.style.display = 'grid';
       requestAnimationFrame(function(){
         wrap.classList.add('show');
@@ -2881,6 +2956,7 @@ function ensureUI(){
       lastAuthRefreshUid = uid;
       loadProfile().then(function(){
         renderProfileSummary();
+        updateHeroWelcome();
       }).catch(function(){});
       loadUserReviews().catch(function(){});
     } else if(!uid){
@@ -2992,53 +3068,71 @@ function ensureUI(){
     var showLoginHint = false;
     var points = 0;
     if(currentUser){
-      points = Number(profile.points || 0);
+      points = Number(profile && profile.points ? profile.points : 0);
     } else {
       showLoginHint = true;
-      points = 0;
     }
-    var milestones = getGiftLevels();
-    if(milestones.length === 0){
-      milestones = [300, 600, 900];
-    }
+
+    var milestones = (typeof getGiftLevels === 'function') ? getGiftLevels() : [];
+    if(!milestones || milestones.length === 0) milestones = [300,600,900,1200,1500];
     var maxShown = milestones[milestones.length - 1];
     var meterPct = maxShown > 0 ? Math.max(0, Math.min(100, (points / maxShown) * 100)) : 0;
-    var nextInfo = getNextGiftInfo(points);
-    var nextLevel = nextInfo.nextLevel;
+
+    var nextInfo = (typeof getNextGiftInfo === 'function') ? getNextGiftInfo(points) : { nextLevel: 300, missing: 300 };
     var missing = nextInfo.missing;
 
+    // Build marks on the line (emoji above + dot on line)
     var marksHtml = milestones.map(function(level){
-      var gift = getGiftForLevel(level);
+      var gift = (typeof getGiftForLevel === 'function') ? getGiftForLevel(level) : { emoji: '🎁', name: '' };
       var hit = points >= level;
       var pos = (level / maxShown) * 100;
-      return '<div class=\"points-mark ' + (hit ? 'hit' : '') + '\" style=\"left:' + pos + '%\">' +
-        '<span class=\"points-emoji\">' + escapeHtml(gift.emoji) + '</span>' +
-        '<span class=\"points-dot\"></span>' +
+      return '<div class="points-mark ' + (hit ? 'hit' : '') + '" style="left:' + pos + '%">' +
+        '<span class="points-emoji">' + escapeHtml(gift.emoji) + '</span>' +
+        '<span class="points-dot"></span>' +
       '</div>';
     }).join('');
 
+    // Build chips under the bar
     var chipsHtml = milestones.map(function(level){
-      var gift = getGiftForLevel(level);
+      var gift = (typeof getGiftForLevel === 'function') ? getGiftForLevel(level) : { emoji: '🎁', name: 'מתנה' };
       var hit = points >= level;
-      return '<div class=\"points-chip ' + (hit ? 'hit' : '') + '\">' +
-        '<strong>' + escapeHtml(gift.emoji) + ' ' + level + '</strong>' +
-        '<div class=\"pc-sub\">' + escapeHtml(gift.name) + '</div>' +
+      return '<div class="points-chip ' + (hit ? 'hit' : '') + '">' +
+        '<span class="pc-emoji">' + escapeHtml(gift.emoji) + '</span>' +
+        '<span class="pc-num">' + level + '</span>' +
+        '<span class="pc-sub">' + escapeHtml(gift.name) + '</span>' +
       '</div>';
     }).join('');
 
-    var levelsText = milestones.join('/');
-    var nextText = points >= maxShown
-      ? 'פתחתם כבר את ' + levelsText + '. ממשיכים לצבור ל-' + nextLevel + ' נק׳'
-      : 'עד המתנה הבאה: ' + missing + ' נק׳';
+    var nextText = '';
     if(showLoginHint){
-      nextText = 'התחברו כדי לצבור נקודות. ' + nextText;
+      nextText = 'התחברי כדי לצבור נקודות עם כל הזמנה 🎁';
+    } else if(points >= maxShown){
+      nextText = '🎉 פתחת את כל המתנות! ממשיכים לצבור';
+    } else {
+      var nextGift = (typeof getGiftForLevel === 'function') ? getGiftForLevel(nextInfo.nextLevel) : null;
+      var giftName = nextGift ? nextGift.name : 'המתנה הבאה';
+      nextText = 'עד המתנה הבאה: ' + missing + ' נק׳ · סה"כ ' + points + ' נק׳ לפידיון';
     }
 
     el.innerHTML =
-      '<div class=\"points-head\"><div class=\"points-title\">מד מתנות</div><div class=\"points-total\">' + points + ' נק׳</div></div>' +
-      '<div class=\"points-meter\"><div class=\"points-line\"><div class=\"points-line-fill\" style=\"width:' + meterPct + '%\"></div></div><div class=\"points-marks\">' + marksHtml + '</div></div>' +
-      '<div class=\"points-labels\">' + chipsHtml + '</div>' +
-      '<div class=\"points-next\">' + nextText + '</div>';
+      '<div class="points-head">' +
+        '<div class="points-title">מד מתנות</div>' +
+        '<div class="points-total">' + points + ' נק׳</div>' +
+      '</div>' +
+      '<div class="points-meter">' +
+        '<div class="points-line">' +
+          '<div class="points-line-fill" style="width:' + meterPct + '%"></div>' +
+        '</div>' +
+        '<div class="points-marks">' + marksHtml + '</div>' +
+      '</div>' +
+      '<div class="points-labels">' + chipsHtml + '</div>' +
+      '<div class="points-next">' + nextText + '</div>';
+
+    // animate fill after render
+    setTimeout(function(){
+      var fill = el.querySelector('.points-line-fill');
+      if(fill){ fill.style.width = meterPct + '%'; }
+    }, 60);
   }
 
   function renderRewards(){
@@ -4414,20 +4508,113 @@ function ensureUI(){
   }
 
   window.openAuthModal = function(){
-    var target = 'auth.html?return=' + encodeURIComponent(window.location.href);
-    window.location.href = target;
+    ensureUI();
+    var modal = document.getElementById('authModal');
+    if(modal){
+      modal.classList.add('open');
+      // Pre-fill name if available
+      try {
+        var nameEl = document.getElementById('authEmail');
+        if(nameEl) nameEl.focus();
+      } catch(e){}
+    } else {
+      // fallback
+      var target = 'auth.html?return=' + encodeURIComponent(window.location.href);
+      window.location.href = target;
+    }
   };
 
-  window.closeAuthModal = function(){
+  // runProfileAction: כפתור 👤 - פותח פרופיל אם מחובר, אחרת פותח auth drawer
+  window.runProfileAction = function(){
+    ensureUI();
+    try { if(typeof window.dismissAuthGate === 'function') window.dismissAuthGate(); } catch(e){}
+    if(currentUser){
+      if(typeof window.toggleProfile === 'function') window.toggleProfile(true);
+    } else {
+      // פתח auth drawer inline במקום לנווט לדף אחר
+      if(typeof window.openInlineAuth === 'function'){
+        window.openInlineAuth();
+      } else {
+        window.openAuthModal();
+      }
+    }
+  };
+
+
+
+  window.closeAuthModal = function(event){
+    if(event && event.target !== document.getElementById('authModal')) return;
+    var modal = document.getElementById('authModal');
+    if(modal) modal.classList.remove('open');
     setAuthGate();
   };
 
-  window.loginUser = function(){
-    window.openAuthModal();
+  window.loginUser = async function(){
+    if(!fb){ window.openAuthModal(); return; }
+    var emailEl = document.getElementById('authEmail');
+    var passEl  = document.getElementById('authPass');
+    var email   = (emailEl && emailEl.value ? emailEl.value : '').trim();
+    var pass    = (passEl  && passEl.value  ? passEl.value  : '').trim();
+    if(!email || !pass){ toast('הכניסו אימייל וסיסמה'); return; }
+    var loginBtn = document.getElementById('authLoginBtn');
+    if(loginBtn){ loginBtn.disabled = true; loginBtn.textContent = 'מתחבר...'; }
+    try {
+      await fb.signInWithEmailAndPassword(fb.auth, email, pass);
+      var modal = document.getElementById('authModal');
+      if(modal) modal.classList.remove('open');
+      toast('התחברת בהצלחה! 🎉');
+      try { updateHeroWelcome(); } catch(e){}
+    } catch(err){
+      var msg = 'שגיאה בהתחברות';
+      if(err && err.code === 'auth/user-not-found')    msg = 'משתמש לא קיים';
+      if(err && err.code === 'auth/wrong-password')    msg = 'סיסמה שגויה';
+      if(err && err.code === 'auth/invalid-email')     msg = 'אימייל לא תקין';
+      if(err && err.code === 'auth/invalid-credential') msg = 'אימייל או סיסמה שגויים';
+      toast(msg);
+    } finally {
+      if(loginBtn){ loginBtn.disabled = false; loginBtn.textContent = 'התחברות'; }
+    }
   };
 
-  window.registerUser = function(){
-    window.openAuthModal();
+  window.registerUser = async function(){
+    if(!fb){ window.openAuthModal(); return; }
+    var emailEl = document.getElementById('authEmail');
+    var passEl  = document.getElementById('authPass');
+    var email   = (emailEl && emailEl.value ? emailEl.value : '').trim();
+    var pass    = (passEl  && passEl.value  ? passEl.value  : '').trim();
+    if(!email || !pass){ toast('הכניסו אימייל וסיסמה'); return; }
+    if(pass.length < 6){ toast('סיסמה חייבת להיות לפחות 6 תווים'); return; }
+    var regBtn = document.getElementById('authRegisterBtn');
+    if(regBtn){ regBtn.disabled = true; regBtn.textContent = 'נרשם...'; }
+    try {
+      var cred = await fb.createUserWithEmailAndPassword(fb.auth, email, pass);
+      if(cred && cred.user){
+        try {
+          await fb.setDoc(fb.doc(fb.db, 'users', cred.user.uid), {
+            email: email,
+            fullName: email.split('@')[0],
+            fullNameLower: email.split('@')[0].toLowerCase(),
+            role: 'user',
+            points: 0,
+            redeemedRewards: [],
+            createdAt: fb.serverTimestamp(),
+            updatedAt: fb.serverTimestamp()
+          }, { merge: true });
+        } catch(e){}
+      }
+      var modal = document.getElementById('authModal');
+      if(modal) modal.classList.remove('open');
+      toast('נרשמת בהצלחה! 🎉');
+      try { updateHeroWelcome(); } catch(e){}
+    } catch(err){
+      var msg = 'שגיאה בהרשמה';
+      if(err && err.code === 'auth/email-already-in-use') msg = 'אימייל כבר קיים, נסו להתחבר';
+      if(err && err.code === 'auth/invalid-email')        msg = 'אימייל לא תקין';
+      if(err && err.code === 'auth/weak-password')        msg = 'סיסמה חלשה מדי';
+      toast(msg);
+    } finally {
+      if(regBtn){ regBtn.disabled = false; regBtn.textContent = 'הרשמה'; }
+    }
   };
 
   window.logoutUser = async function(){
@@ -4502,6 +4689,25 @@ function ensureUI(){
       var profileDrawer = document.getElementById('profileDrawer');
       if(profileDrawer) profileDrawer.classList.remove('open');
       el.classList.add('open');
+      // pulse the points bar when cart opens
+      setTimeout(function(){
+        renderPoints();
+        var pointsWrap = document.getElementById('pointsWrap');
+        if(pointsWrap){
+          pointsWrap.classList.remove('pts-pulse');
+          void pointsWrap.offsetWidth;
+          pointsWrap.classList.add('pts-pulse');
+          setTimeout(function(){ pointsWrap.classList.remove('pts-pulse'); }, 1200);
+        }
+        // bounce the cart fab
+        var fab = document.getElementById('cartFab');
+        if(fab){
+          fab.classList.remove('cart-bounce');
+          void fab.offsetWidth;
+          fab.classList.add('cart-bounce');
+          setTimeout(function(){ fab.classList.remove('cart-bounce'); }, 600);
+        }
+      }, 80);
     }
     else { 
       el.classList.remove('open');
@@ -5253,7 +5459,7 @@ function ensureUI(){
       '.admin-head{padding:14px 16px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between}',
       '.admin-body{padding:12px 14px;overflow:auto;flex:1;background:linear-gradient(180deg,#fffaf5,#fff3e8)}',
       '.admin-note{font-size:12px;color:#7a5040;background:#fff;border:1px solid #f2d9c0;border-radius:10px;padding:8px;margin-bottom:10px}',
-      '.admin-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}',
+      '.admin-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px;grid-auto-flow:dense}',
       '.admin-kpi{background:#fff;border:1px solid #f2d9c0;border-radius:12px;padding:10px;box-shadow:0 6px 16px rgba(200,112,74,.08)}',
       '.admin-kpi.clickable{cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}',
       '.admin-kpi.clickable:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(200,112,74,.18)}',
@@ -5276,7 +5482,8 @@ function ensureUI(){
       '.admin-source.sheet{background:#eef5ff;color:#2d4f9f;border-color:#bfd0f4}',
       '.admin-progress{height:8px;background:#ecd8c9;border-radius:999px;overflow:hidden;margin-top:6px}',
       '.admin-progress > div{height:100%;background:linear-gradient(90deg,#27ae60,#d4a24e)}',
-      '.admin-btn{border:none;background:#c8704a;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;font-weight:700}',
+      '.admin-btn{border:none;background:#c8704a;color:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:4px}',
+      '.admin-btn.wa-btn{background:linear-gradient(135deg,#25d366,#128c7e)}', 
       '.admin-status{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid transparent}',
       '.st-new{background:#fff3e6;color:#a85535;border-color:#f2d9c0}',
       '.st-seen{background:#e9f3ff;color:#1f5f9f;border-color:#b7d3f2}',
@@ -6216,42 +6423,71 @@ function ensureUI(){
   function renderAdminKpis(){
     var wrap = document.getElementById('adminKpis');
     if(!wrap) return;
-    var total = (adminOrdersCache || []).length;
-    var newCount = countOrdersByStatus('new');
-    var prepCount = countOrdersByStatus('preparing');
+    var all = adminOrdersCache || [];
+    var total = all.length;
+    var newCount  = countOrdersByStatus('new');
+    var seenCount = countOrdersByStatus('seen');
+    var prepCount = countOrdersByStatus('preparing') + seenCount;
     var readyCount = countOrdersByStatus('ready');
-    var outCount = countOrdersByStatus('out_for_delivery');
-    var revenueOrders = (adminSheetOrdersCache && adminSheetOrdersCache.length) ? adminSheetOrdersCache : [];
+    var outCount  = countOrdersByStatus('out_for_delivery');
+    var doneCount = countOrdersByStatus('completed');
+
+    // Revenue - from all cached orders
     var revenueTotal = 0;
-    (revenueOrders || []).forEach(function(o){
-      revenueTotal += getOrderTotalValue(o);
-    });
-    var monthTotals = getRevenueByMonth(revenueOrders);
+    all.forEach(function(o){ revenueTotal += getOrderTotalValue(o); });
+    var monthTotals = getRevenueByMonth(all);
     var currentKey = getMonthKey(new Date());
     var currentMonthTotal = monthTotals[currentKey] || 0;
+
     var usersCount = (adminUsersCache || []).length;
-    if(usersCount === 0 && total > 0){
-      try {
-        var byKey = {};
-        (adminOrdersCache || []).forEach(function(o){
-          var d = o && o.data ? o.data : {};
-          var email = String(d.userEmail || d.email || (d.customer && d.customer.email) || '').trim().toLowerCase();
-          var name = String((d.customer && d.customer.name) || d.name || '').trim();
-          var phone = String((d.customer && d.customer.phone) || d.phone || '').trim();
-          var key = email || phone || (name ? normalizeAdminValue(name) : '');
-          if(key) byKey[key] = true;
-        });
-        usersCount = Object.keys(byKey).length;
-      } catch(e){}
-    }
+
+    // Month label in Hebrew
+    var now = new Date();
+    var monthName = now.toLocaleString('he-IL',{month:'long'});
+
     wrap.innerHTML =
-      '<div class="admin-kpi"><div class="admin-kpi-title">סה״כ הזמנות</div><div class="admin-kpi-value">' + total + '</div><div class="admin-kpi-sub">כולל גוגל שיטס</div></div>' +
-      '<div class="admin-kpi clickable" id="adminRevenueKpi" onclick="openRevenueModal()"><div class="admin-kpi-title">הכנסות</div><div class="admin-kpi-value">' + shekel(revenueTotal) + '</div><div class="admin-kpi-sub">החודש: ' + shekel(currentMonthTotal) + ' · לחצי לפירוט</div></div>' +
-      '<div class="admin-kpi"><div class="admin-kpi-title">ממתינה</div><div class="admin-kpi-value">' + newCount + '</div><div class="admin-kpi-sub">חדשות</div></div>' +
-      '<div class="admin-kpi"><div class="admin-kpi-title">בהכנה</div><div class="admin-kpi-value">' + prepCount + '</div><div class="admin-kpi-sub">בטיפול</div></div>' +
-      '<div class="admin-kpi"><div class="admin-kpi-title">מוכן</div><div class="admin-kpi-value">' + readyCount + '</div><div class="admin-kpi-sub">לאיסוף/משלוח</div></div>' +
-      '<div class="admin-kpi"><div class="admin-kpi-title">משלוח יצא</div><div class="admin-kpi-value">' + outCount + '</div><div class="admin-kpi-sub">בדרך</div></div>' +
-      '<div class="admin-kpi"><div class="admin-kpi-title">משתמשים</div><div class="admin-kpi-value">' + usersCount + '</div><div class="admin-kpi-sub">סה״כ רשומים</div></div>';
+      // Row 1: Revenue highlight
+      '<div class="admin-kpi clickable" id="adminRevenueKpi" onclick="openRevenueModal()" style="grid-column:1/-1;background:linear-gradient(135deg,#2d1a0e,#5a3020);color:#fff;border-color:transparent">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between">' +
+          '<div>' +
+            '<div class="admin-kpi-title" style="color:rgba(255,255,255,.7)">הכנסות החודש · ' + escapeHtml(monthName) + '</div>' +
+            '<div class="admin-kpi-value" style="font-size:26px;color:#f0c97a">' + shekel(currentMonthTotal) + '</div>' +
+            '<div class="admin-kpi-sub" style="color:rgba(255,255,255,.55)">סה״כ כל הזמנים: ' + shekel(revenueTotal) + ' · לחצי לפירוט</div>' +
+          '</div>' +
+          '<div style="font-size:32px;opacity:.5">💰</div>' +
+        '</div>' +
+      '</div>' +
+      // Status counts
+      '<div class="admin-kpi clickable" onclick="adminFilterOrdersByStatus('new')">' +
+        '<div class="admin-kpi-title">📬 ממתינות</div>' +
+        '<div class="admin-kpi-value" style="color:#c8704a">' + newCount + '</div>' +
+        '<div class="admin-kpi-sub">חדשות</div>' +
+      '</div>' +
+      '<div class="admin-kpi clickable" onclick="adminFilterOrdersByStatus('preparing')">' +
+        '<div class="admin-kpi-title">🔧 בהכנה</div>' +
+        '<div class="admin-kpi-value" style="color:#8a6a00">' + prepCount + '</div>' +
+        '<div class="admin-kpi-sub">בטיפול</div>' +
+      '</div>' +
+      '<div class="admin-kpi clickable" onclick="adminFilterOrdersByStatus('ready')">' +
+        '<div class="admin-kpi-title">✅ מוכנות</div>' +
+        '<div class="admin-kpi-value" style="color:#1a7a3c">' + readyCount + '</div>' +
+        '<div class="admin-kpi-sub">לאיסוף/משלוח</div>' +
+      '</div>' +
+      '<div class="admin-kpi clickable" onclick="adminFilterOrdersByStatus('out_for_delivery')">' +
+        '<div class="admin-kpi-title">🚚 בדרך</div>' +
+        '<div class="admin-kpi-value" style="color:#2d4f9f">' + outCount + '</div>' +
+        '<div class="admin-kpi-sub">משלוחים פעילים</div>' +
+      '</div>' +
+      '<div class="admin-kpi clickable" onclick="adminFilterOrdersByStatus('completed')">' +
+        '<div class="admin-kpi-title">🎉 הושלמו</div>' +
+        '<div class="admin-kpi-value" style="color:#555">' + doneCount + '</div>' +
+        '<div class="admin-kpi-sub">סגורות</div>' +
+      '</div>' +
+      '<div class="admin-kpi">' +
+        '<div class="admin-kpi-title">👥 משתמשים</div>' +
+        '<div class="admin-kpi-value">' + usersCount + '</div>' +
+        '<div class="admin-kpi-sub">סה״כ רשומים</div>' +
+      '</div>';
   }
   window.renderAdminKpis = renderAdminKpis;
 
@@ -6400,13 +6636,11 @@ function ensureUI(){
   function renderOrdersList(orders, options){
     var wrap = document.getElementById('adminOrdersList');
     if(!wrap) return;
-
     var opts = options || {};
-    var readOnly = !!opts.readOnly;
-    var sourceLabel = opts.sourceLabel || '';
     var note = '';
 
-    var filteredOrders = orders || [];
+    var filteredOrders = (orders || []).slice();
+
     if(adminOrderFilter){
       filteredOrders = filteredOrders.filter(function(o){ return orderMatchesAdminFilter(o, adminOrderFilter); });
       var filterLabel = getAdminFilterLabel(adminOrderFilter);
@@ -6420,164 +6654,106 @@ function ensureUI(){
         var d = (o && o.data) ? o.data : {};
         var status = normalizeOrderStatus(d.status);
         var norm = normalizeStatusFilter(status);
-        if(statusLabel === 'preparing'){
-          return norm === 'preparing' || norm === 'seen';
-        }
+        if(statusLabel === 'preparing') return norm === 'preparing' || norm === 'seen';
         return norm === statusLabel;
       });
-      var statusNames = {
-        new: 'ממתינה',
-        preparing: 'בהכנה',
-        ready: 'מוכן',
-        out_for_delivery: 'משלוח יצא'
-      };
-      var label = statusNames[statusLabel] || 'סינון';
-      note += '<div class="admin-note"><div class="admin-row"><strong>מציג: ' + label + '</strong><button type="button" class="admin-btn" onclick="adminClearStatusFilter()">נקה סינון</button></div></div>';
-    }
-
-    var hasReadOnly = (filteredOrders || []).some(function(o){ return !!(o && o.readOnly); }) || readOnly;
-    if(hasReadOnly){
-      var label = sourceLabel ? ('מקור: ' + sourceLabel + ' (קריאה בלבד).') : 'חלק מההזמנות מוצגות מקריאה בלבד (Google Sheets).';
-      note = (note || '') + '<div class="admin-note">' + label + '</div>';
+      var statusNames = { new:'ממתינה', preparing:'בהכנה', ready:'מוכן', out_for_delivery:'משלוח יצא', completed:'הושלם' };
+      note += '<div class="admin-note"><div class="admin-row"><strong>מציג: ' + (statusNames[statusLabel]||'סינון') + '</strong><button type="button" class="admin-btn" onclick="adminClearStatusFilter()">נקה</button></div></div>';
     }
 
     if(!filteredOrders || filteredOrders.length === 0){
-      var emptyText = adminOrderFilter ? 'אין הזמנות עבור הסינון הזה.' : 'אין הזמנות עדיין.';
-      wrap.innerHTML = note + '<div class="admin-empty">' + emptyText + '</div>';
+      wrap.innerHTML = note + '<div class="admin-empty">אין הזמנות עדיין.</div>';
       return;
     }
 
     var html = '';
-    filteredOrders.slice(0, 100).forEach(function(o){
+    filteredOrders.slice(0, 120).forEach(function(o){
       var d = o.data || {};
       var customer = d.customer || {};
       if(!customer.name && d.name) customer.name = d.name;
       if(!customer.phone && d.phone) customer.phone = d.phone;
-
       var checkout = d.checkout || {};
       if(!checkout.payment && d.payment) checkout.payment = d.payment;
       if(!checkout.address && d.address) checkout.address = d.address;
       if(!checkout.readyBy && d.readyBy) checkout.readyBy = d.readyBy;
       if(!checkout.deliveryCityLabel && d.deliveryCity) checkout.deliveryCityLabel = d.deliveryCity;
-      if(typeof checkout.deliveryFee === 'undefined' && typeof d.deliveryFee !== 'undefined'){
-        checkout.deliveryFee = Number(d.deliveryFee || 0);
-      }
+      if(typeof checkout.deliveryFee === 'undefined' && typeof d.deliveryFee !== 'undefined') checkout.deliveryFee = Number(d.deliveryFee||0);
       if(!checkout.deliveryMode){
-        if(d.deliveryMode){
-          checkout.deliveryMode = d.deliveryMode;
-        } else if(d.delivery && String(d.delivery).indexOf('כן') === 0){
-          checkout.deliveryMode = 'delivery';
-        } else if(checkout.address){
-          checkout.deliveryMode = 'delivery';
-        } else {
-          checkout.deliveryMode = 'pickup';
-        }
+        if(d.deliveryMode) checkout.deliveryMode = d.deliveryMode;
+        else if(d.delivery && String(d.delivery).indexOf('כן')===0) checkout.deliveryMode = 'delivery';
+        else if(checkout.address) checkout.deliveryMode = 'delivery';
+        else checkout.deliveryMode = 'pickup';
       }
-
       var totals = d.totals || {};
-      if(typeof totals.orderTotal === 'undefined' && typeof d.orderTotal !== 'undefined') totals.orderTotal = Number(d.orderTotal || 0);
-      if(typeof totals.autoOrderTotal === 'undefined' && typeof d.orderTotal !== 'undefined') totals.autoOrderTotal = Number(d.orderTotal || 0);
-      if(typeof totals.shippingFee === 'undefined' && typeof d.deliveryFee !== 'undefined') totals.shippingFee = Number(d.deliveryFee || 0);
-      if(typeof totals.pointsToAdd === 'undefined' && typeof d.pointsAdded !== 'undefined') totals.pointsToAdd = Number(d.pointsAdded || 0);
+      if(typeof totals.orderTotal==='undefined' && typeof d.orderTotal!=='undefined') totals.orderTotal = Number(d.orderTotal||0);
+      if(typeof totals.autoOrderTotal==='undefined' && typeof d.orderTotal!=='undefined') totals.autoOrderTotal = Number(d.orderTotal||0);
+      if(typeof totals.shippingFee==='undefined' && typeof d.deliveryFee!=='undefined') totals.shippingFee = Number(d.deliveryFee||0);
 
-      var orderNum = d.orderNum || o.id;
-      var reward = d.rewardRedeemed ? (d.rewardRedeemed.name + ' (level ' + d.rewardRedeemed.level + ')') : 'No reward redeemed';
+      var orderNum = d.orderNum || o.id || '';
       var itemsText = Array.isArray(d.items) ? d.items.map(function(i){ return i.name; }).join(' | ') : [d.product, d.description].filter(Boolean).join(' | ');
       var deliveryMode = checkout.deliveryMode || (checkout.address ? 'delivery' : 'pickup');
       var deliveryCityLabel = checkout.deliveryCityLabel || cityLabelByCode(checkout.deliveryCity || '');
       var deliveryFee = Number(checkout.deliveryFee || totals.shippingFee || 0);
-      var deliveryText = deliveryMode === 'delivery'
-        ? ('Delivery to ' + (deliveryCityLabel || 'no city selected') + ' | Delivery fee: ' + shekel(deliveryFee))
-        : 'Self pickup (free)';
-      var addressText = deliveryMode === 'delivery' ? (checkout.address || 'not provided') : (ADMIN_PICKUP_ADDRESS + ' (self pickup)');
-
+      var isDelivery = deliveryMode === 'delivery';
+      var deliveryBadge = isDelivery
+        ? '<span style="background:#e8f0ff;color:#2d4f9f;border:1px solid #bfd0f4;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:800">🚚 משלוח' + (deliveryCityLabel ? ' · ' + deliveryCityLabel : '') + '</span>'
+        : '<span style="background:#f0faf4;color:#1a7a3c;border:1px solid #b8e3c8;border-radius:999px;padding:2px 8px;font-size:10px;font-weight:800">🏠 איסוף עצמי</span>';
+      var totalVal = Number(totals.orderTotal || totals.autoOrderTotal || 0);
       var status = normalizeOrderStatus(d.status);
       var statusText = orderStatusLabel(status, deliveryMode);
       var statusCls = orderStatusClass(status);
       var next = nextOrderStatus(status, deliveryMode);
-      var nextBtn = nextOrderStatusBtnText(status, deliveryMode);
+      var nextBtnText = nextOrderStatusBtnText(status, deliveryMode);
+      var safeRefPath = String(o.refPath || ('orders|' + o.id)).replace(/'/g, "\'");
+      var orderReadOnly = !!(o.readOnly || opts.readOnly);
 
-      var waReady = status === 'ready' ? buildOrderWhatsApp(orderNum, customer, checkout, totals, 'ready') : '';
-      var waOut = status === 'out_for_delivery' ? buildOrderWhatsApp(orderNum, customer, checkout, totals, 'out_for_delivery') : '';
-      var waDone = status === 'completed' ? buildOrderWhatsApp(orderNum, customer, checkout, totals, 'completed') : '';
+      // WhatsApp buttons in Hebrew
+      var waLinks = '';
+      var waReady = (status==='ready') ? buildOrderWhatsApp(orderNum,customer,checkout,totals,'ready') : '';
+      var waOut   = (status==='out_for_delivery') ? buildOrderWhatsApp(orderNum,customer,checkout,totals,'out_for_delivery') : '';
+      var waDone  = (status==='completed') ? buildOrderWhatsApp(orderNum,customer,checkout,totals,'completed') : '';
+      if(waReady && isDelivery)  waLinks += '<a class="admin-btn wa-btn" href="' + waReady + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: נמצא לאיסוף</a>';
+      if(waReady && !isDelivery) waLinks += '<a class="admin-btn wa-btn" href="' + waReady + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: מוכן לאיסוף</a>';
+      if(waOut)   waLinks += '<a class="admin-btn wa-btn" href="' + waOut   + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: משלוח בדרך</a>';
+      if(waDone)  waLinks += '<a class="admin-btn wa-btn" href="' + waDone  + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: הושלם</a>';
 
-      var safeRefPath = String(o.refPath || ('orders|' + o.id)).replace(/'/g, "\\'");
-      var orderReadOnly = !!(o.readOnly || readOnly);
-      var actions = '<div class="admin-actions">';
-      actions += '<button class="admin-btn" type="button" onclick="event.stopPropagation();adminOpenOrder(\'' + safeRefPath + '\')">פרטי הזמנה</button>';
-      if(!orderReadOnly && next){
-        actions += '<button class="admin-btn" type="button" onclick="event.stopPropagation();adminSetOrderStatus(\'' + safeRefPath + '\',\'' + next + '\')">' + nextBtn + '</button>';
-      }
-      if(waReady){
-        actions += '<a class="admin-btn" href="' + waReady + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp: ready</a>';
-      }
-      if(waOut){
-        actions += '<a class="admin-btn" href="' + waOut + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp: out for delivery</a>';
-      }
-      if(waDone){
-        actions += '<a class="admin-btn" href="' + waDone + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">WhatsApp: completed</a>';
-      }
-      if(orderReadOnly && !next && !waReady && !waOut && !waDone){
-        actions += '<span class="admin-mini">קריאה בלבד</span>';
-      }
-      actions += '</div>';
+      // Coupon
+      var couponCode = (d.coupon&&d.coupon.code) ? d.coupon.code : (d.couponCode||'');
+      var couponDiscount = Number((totals&&totals.discount)||d.couponDiscount||0);
+      var couponLine = couponCode ? ('<div class="admin-mini">קופון: ' + escapeHtml(couponCode) + (couponDiscount>0?' · הנחה '+shekel(couponDiscount):'') + '</div>') : '';
 
-      var sourceRaw = String(d.source || '').toLowerCase();
-      var sourceText = '';
-      var sourceIsSheet = false;
-      if(sourceRaw){
-        if(sourceRaw === 'web' || sourceRaw === 'website' || sourceRaw === 'site'){
-          sourceText = 'אתר';
-        } else if(sourceRaw === 'web-modal'){
-          sourceText = 'טופס אתר';
-        } else if(sourceRaw === 'sheets'){
-          sourceText = 'Google Sheets';
-          sourceIsSheet = true;
-        } else {
-          sourceText = d.source;
-        }
-      } else if(o.sourceLabel){
-        sourceText = o.sourceLabel;
-        if(String(o.sourceLabel).toLowerCase().indexOf('sheet') >= 0){
-          sourceIsSheet = true;
-        }
-      } else if(orderReadOnly){
-        sourceText = 'Google Sheets';
-        sourceIsSheet = true;
-      }
+      // Date
+      var dateLabel = '<span class="admin-mini">' + formatDate(d.createdAt||d.date) + '</span>';
 
-      var sourceBadge = sourceText ? (' <span class="admin-source' + (sourceIsSheet ? ' sheet' : '') + '">' + escapeHtml(sourceText) + '</span>') : '';
-      var dateLabel = '<span class="admin-mini">' + formatDate(d.createdAt || d.date) + sourceBadge + '</span>';
-
-      var couponCode = (d.coupon && d.coupon.code) ? d.coupon.code : (d.couponCode || '');
-      var couponLabel = (d.coupon && d.coupon.label) ? d.coupon.label : (d.couponLabel || couponTypeLabel(d.coupon || {}));
-      var couponDiscount = Number((totals && totals.discount) || d.couponDiscount || 0);
-      var couponInfo = '';
-      if(couponCode){
-        var couponText = 'קופון: ' + escapeHtml(couponCode);
-        if(couponLabel){
-          couponText += ' (' + escapeHtml(couponLabel) + ')';
-        }
-        if(couponDiscount > 0){
-          couponText += ' · הנחה ' + shekel(couponDiscount);
-        }
-        couponInfo = '<div class="admin-mini">' + couponText + '</div>';
-      }
-
-      html += '<div class="admin-card admin-order-row" role="button" onclick="adminOpenOrder(\'' + safeRefPath + '\')">' +
-        '<div class="admin-row"><strong>' + (customer.name || 'No name') + '</strong>' + dateLabel + '</div>' +
-        '<div class="admin-mini">Order #: ' + orderNum + '</div>' +
-        '<div class="admin-mini">User email: ' + (d.userEmail || 'unknown') + '</div>' +
-        '<div class="admin-mini">Phone: ' + (customer.phone || 'unknown') + '</div>' +
-        '<div class="admin-mini">Address: ' + addressText + '</div>' +
-        '<div class="admin-mini">Delivery: ' + deliveryText + '</div>' +
-        '<div class="admin-mini">Payment: ' + (checkout.payment || 'not set') + ' | Total: ' + shekel(totals.orderTotal || totals.autoOrderTotal || 0) + ' | Points added: ' + (totals.pointsToAdd || 0) + '</div>' +
-        couponInfo +
-        '<div class="admin-mini">Reward: ' + reward + '</div>' +
-        '<div class="admin-mini">Items: ' + (itemsText || 'No items (reward only)') + '</div>' +
-        '<div class="admin-row" style="margin-top:6px"><div class="admin-mini">Order status</div><span class="admin-status ' + statusCls + '">' + statusText + '</span></div>' +
-        actions +
-      '</div>';
+      html +=
+        '<div class="admin-card admin-order-row" onclick="adminOpenOrder('' + safeRefPath + '')">' +
+          '<div class="admin-row">' +
+            '<div style="display:flex;align-items:center;gap:7px">' +
+              '<strong style="font-size:14px;color:#2d1a0e">' + escapeHtml(customer.name || 'ללא שם') + '</strong>' +
+              deliveryBadge +
+            '</div>' +
+            '<span class="admin-status ' + statusCls + '">' + statusText + '</span>' +
+          '</div>' +
+          '<div class="admin-row" style="margin-top:5px">' +
+            '<div>' +
+              '<div class="admin-mini">📦 הזמנה #' + escapeHtml(String(orderNum)) + ' · ' + dateLabel + '</div>' +
+              (customer.phone ? '<div class="admin-mini">📞 ' + escapeHtml(customer.phone) + '</div>' : '') +
+              (d.userEmail ? '<div class="admin-mini">✉️ ' + escapeHtml(d.userEmail) + '</div>' : '') +
+              (itemsText ? '<div class="admin-mini" style="margin-top:3px">🧁 ' + escapeHtml(itemsText.substring(0,80)) + (itemsText.length>80?'...':'') + '</div>' : '') +
+              (isDelivery && checkout.address ? '<div class="admin-mini">📍 ' + escapeHtml(checkout.address) + '</div>' : '') +
+              couponLine +
+            '</div>' +
+            '<div style="text-align:left;flex-shrink:0">' +
+              (totalVal>0 ? '<div style="font-size:16px;font-weight:900;color:#c8704a">' + shekel(totalVal) + '</div>' : '<div class="admin-mini">מחיר יעודכן</div>') +
+              (checkout.readyBy ? '<div class="admin-mini" style="margin-top:3px">⏰ ' + escapeHtml(checkout.readyBy) + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div class="admin-actions" style="margin-top:8px">' +
+            '<button class="admin-btn" type="button" onclick="event.stopPropagation();adminOpenOrder('' + safeRefPath + '')">✏️ פרטים</button>' +
+            (!orderReadOnly && next ? '<button class="admin-btn" type="button" onclick="event.stopPropagation();adminSetOrderStatus('' + safeRefPath + '','' + next + '')">' + nextBtnText + '</button>' : '') +
+            waLinks +
+          '</div>' +
+        '</div>';
     });
 
     wrap.innerHTML = note + html;
@@ -6919,20 +7095,35 @@ function ensureUI(){
         var emailLine = u.email ? ('<div class="admin-mini">אימייל: ' + u.email + '</div>') : '';
         var phoneLine = phoneValue ? ('<div class="admin-mini">טלפון: ' + phoneValue + '</div>') : '';
         var ordersLine = '<div class="admin-mini">הזמנות קודמות: ' + Number(ordersCountValue || 0) + '</div>';
-        html += '<div class="admin-card">' +
-          '<div class="admin-row"><strong>' + displayName + '</strong><span class="admin-mini">' + (u.role || 'user') + '</span></div>' +
-          emailLine +
-          phoneLine +
-          ordersLine +
-          '<div class="admin-mini">\u05e0\u05e7\u05d5\u05d3\u05d5\u05ea: ' + Number(u.points || 0) + ' | \u05d9\u05e2\u05d3 \u05d4\u05d1\u05d0: ' + pr.next + ' | \u05de\u05ea\u05e0\u05d5\u05ea \u05e4\u05ea\u05d5\u05d7\u05d5\u05ea: ' + rewardCount + '</div>' +
-          '<div class="admin-mini">\u05e1\u05d4"\u05db \u05e8\u05db\u05d9\u05e9\u05d5\u05ea: ' + shekel(spentValue) + '</div>' +
-        '<div class="admin-progress"><div style="width:' + pr.pct + '%"></div></div>' +
-        pointsControl +
-        '<div style="margin-top:8px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">' +
-          '<button class="admin-btn" type="button" onclick="adminFilterOrdersByUser(\'' + safeUserId + '\',\'' + safeEmail + '\',\'' + safeNameAttr + '\')">הזמנות משתמש</button>' +
-          (u.email ? ('<button class="admin-btn" type="button" onclick="adminSendQuickPromo(\'' + safeEmail + '\')">\u05de\u05d9\u05d9\u05dc \u05de\u05d1\u05e6\u05e2</button><button class="admin-btn" type="button" onclick="adminResetPassword(\'' + safeEmail + '\')">\u05d0\u05d9\u05e4\u05d5\u05e1 \u05e1\u05d9\u05e1\u05de\u05d4</button>') : '') +
-        '</div>' +
-      '</div>';
+        var waUserLink = phoneValue ? ('https://wa.me/' + normalizeWaNumber(phoneValue)) : '';
+        html += '<div class="admin-card" style="cursor:pointer" onclick="adminFilterOrdersByUser(\'' + safeUserId + '\',\'' + safeEmail + '\',\'' + safeNameAttr + '\')">' +
+          '<div class="admin-row">' +
+            '<div style="display:flex;align-items:center;gap:8px">' +
+              '<div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:15px;flex-shrink:0">' + escapeHtml(String(displayName||'?').charAt(0).toUpperCase()) + '</div>' +
+              '<div>' +
+                '<div style="font-weight:900;font-size:14px;color:#2d1a0e">' + escapeHtml(displayName) + '</div>' +
+                (u.email ? '<div class="admin-mini">✉️ ' + escapeHtml(u.email) + '</div>' : '') +
+              '</div>' +
+            '</div>' +
+            '<div style="text-align:left">' +
+              '<div style="font-size:13px;font-weight:900;color:#c8704a">' + shekel(spentValue) + '</div>' +
+              '<div class="admin-mini">' + ordersCountValue + ' הזמנות</div>' +
+            '</div>' +
+          '</div>' +
+          (phoneValue ? '<div class="admin-mini" style="margin-top:4px">📞 ' + escapeHtml(phoneValue) + '</div>' : '') +
+          '<div style="margin-top:8px;display:flex;align-items:center;gap:6px">' +
+            '<div style="flex:1;background:#f0ddcf;border-radius:999px;height:6px;overflow:hidden">' +
+              '<div style="width:' + pr.pct + '%;height:100%;background:linear-gradient(90deg,#27ae60,#c8704a);border-radius:999px"></div>' +
+            '</div>' +
+            '<span class="admin-mini">' + Number(u.points||0) + ' נק׳</span>' +
+          '</div>' +
+          '<div style="margin-top:8px;display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap" onclick="event.stopPropagation()">' +
+            '<button class="admin-btn" type="button" onclick="adminFilterOrdersByUser(\'' + safeUserId + '\',\'' + safeEmail + '\',\'' + safeNameAttr + '\')">📋 הזמנות</button>' +
+            (waUserLink ? '<a class="admin-btn wa-btn" href="' + waUserLink + '" target="_blank" rel="noopener">💬 WhatsApp</a>' : '') +
+            (u.email ? '<button class="admin-btn" type="button" onclick="adminResetPassword(\'' + safeEmail + '\')">🔑 איפוס סיסמה</button>' : '') +
+          '</div>' +
+          pointsControl +
+        '</div>';
     });
 
     wrap.innerHTML = html;
