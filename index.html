@@ -1315,16 +1315,6 @@
     }
 
     function openModal(card){
-        // אם לא מחובר ולא אורח - הצג auth gate
-        if(!currentUser && !authGateDismissed){
-          ensureUI();
-          var gate = document.getElementById('authGate');
-          if(gate){
-            gate.classList.add('open');
-            document.body.classList.add('auth-locked');
-          }
-          return;
-        }
         try {
             var overlay = document.getElementById('modalOverlay');
             if(overlay && overlay.classList.contains('open')){
@@ -2388,6 +2378,43 @@ function ensureUI(){
       '.profile-email{font-size:12px;color:#7a5040;margin-top:2px}',
       '.profile-points{margin-top:10px;font-size:13px;font-weight:800;color:#5a3424}',
       '.profile-next{margin-top:8px;font-size:12px;color:#7a5040;line-height:1.7;background:#fff8ef;border:1px solid #f2d9c0;border-radius:10px;padding:8px}',
+      '.profile-guest{text-align:center;padding:8px 4px}',
+      '.profile-guest-icon{font-size:44px;margin-bottom:8px}',
+      '.profile-guest-title{font-family:Playfair Display,serif;font-size:22px;font-weight:900;color:#2d1a0e;margin-bottom:6px}',
+      '.profile-guest-sub{font-size:13px;color:#7a5040;line-height:1.6;margin-bottom:16px}',
+      '.pauth-tabs{display:flex;gap:6px;margin-bottom:14px;background:#f5ede3;border-radius:12px;padding:4px}',
+      '.pauth-tab{flex:1;border:none;background:none;border-radius:9px;padding:8px;font-weight:800;font-size:13px;cursor:pointer;color:#7a5040;font-family:Assistant,sans-serif;transition:all .2s}',
+      '.pauth-tab.active{background:#fff;color:#2d1a0e;box-shadow:0 2px 8px rgba(0,0,0,.1)}',
+      '.pauth-label{display:block;font-size:11px;font-weight:800;color:#6b4433;margin-bottom:4px;text-align:right}',
+      '.pauth-input{width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:10px;direction:rtl;background:#fff}',
+      '.pauth-input:focus{border-color:#c8704a}',
+      '.pauth-btn{width:100%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border:none;border-radius:12px;padding:12px;font-size:15px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;margin-bottom:8px}',
+      '.pauth-btn:disabled{opacity:.6}',
+      '.pauth-link{background:none;border:none;color:#c8704a;font-size:12px;font-weight:700;cursor:pointer;font-family:Assistant,sans-serif;display:block;margin:0 auto}',
+      '.pauth-msg{font-size:13px;font-weight:700;margin-top:8px;min-height:18px;text-align:center}',
+      '.pauth-msg.ok{color:#1a7a3c}',
+      '.pauth-msg.err{color:#a83535}',
+      '.profile-user-card{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid #f2d9c0;border-radius:16px;padding:14px;margin-bottom:12px}',
+      '.puc-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;flex-shrink:0}',
+      '.puc-info{flex:1;min-width:0}',
+      '.puc-name{font-weight:900;font-size:17px;color:#2d1a0e}',
+      '.puc-email{font-size:11px;color:#7a5040;margin-top:2px}',
+      '.puc-logout{background:none;border:1px solid #e5d0be;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#7a5040;cursor:pointer;flex-shrink:0;font-family:Assistant,sans-serif}',
+      '.profile-pts-card{background:#fff;border:1.5px solid #f2d9c0;border-radius:16px;padding:14px;margin-bottom:12px}',
+      '.ppc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}',
+      '.ppc-title{font-weight:900;font-size:14px;color:#2d1a0e}',
+      '.ppc-total{background:#fff3e6;border:1px solid #f2d9c0;border-radius:999px;padding:3px 12px;font-weight:900;color:#c8704a;font-size:14px}',
+      '.ppc-bar{height:10px;background:#f0ddcf;border-radius:999px;overflow:hidden;margin-bottom:8px}',
+      '.ppc-fill{height:100%;background:linear-gradient(90deg,#27ae60,#c8704a,#f1c165);border-radius:999px;transition:width .8s ease}',
+      '.ppc-next{font-size:12px;color:#7a5040;font-weight:700;margin-bottom:10px}',
+      '.ppc-chips{display:flex;gap:4px;justify-content:space-between}',
+      '.ppc-chip{flex:1;text-align:center;background:#f9f1e8;border:1px solid #f2d9c0;border-radius:10px;padding:5px 2px}',
+      '.ppc-chip.hit{background:#f0faf4;border-color:#27ae60}',
+      '.ppc-chip-emoji{display:block;font-size:15px;line-height:1;margin-bottom:2px}',
+      '.ppc-chip-num{display:block;font-size:10px;font-weight:900;color:#5a3424}',
+      '.ppc-chip.hit .ppc-chip-num{color:#1a7a3c}',
+      '.profile-orders-title{font-weight:900;font-size:13px;color:#2d1a0e;margin:0 0 8px;padding:0 2px}',
+      '.profile-actions-row{display:flex;gap:8px;margin-bottom:12px}',
       '.profile-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}',
       '.profile-btn{border:none;border-radius:10px;padding:10px 12px;font-size:13px;font-weight:800;cursor:pointer}',
       '.profile-btn.main{background:linear-gradient(135deg,#c8704a,#a85535);color:#fff}',
@@ -2622,15 +2649,17 @@ function ensureUI(){
 
     document.body.insertAdjacentHTML('beforeend',
       '<div id="profileDrawer" class="profile-drawer">' +
-      '<div class="profile-head"><strong>האזור האישי</strong><a href="#" role="button" class="cart-remove" onclick="return safeCloseProfile(event)">סגירה</a></div>' +
+        '<div class="profile-head">' +
+          '<strong>האזור האישי</strong>' +
+          '<a href="#" role="button" class="cart-remove" onclick="return safeCloseProfile(event)">✕</a>' +
+        '</div>' +
         '<div class="profile-body">' +
-          '<div id="profileSummary" class="profile-card"></div>' +
-            '<div class="profile-actions">' +
-              '<button type="button" class="profile-btn main" onclick="toggleCart(true)">פתיחת סל קניות</button>' +
-              '<button type="button" class="profile-btn secondary" onclick="logoutUser()">התנתקות</button>' +
-            '</div>' +
-          '<div class="profile-orders-title">הזמנות קודמות</div>' +
-          '<div id="profileOrdersList"></div>' +
+          '<div id="profileSummary"></div>' +
+          '<div id="profilePointsSection"></div>' +
+          '<div id="profileOrdersSection" style="display:none">' +
+            '<div class="profile-orders-title">הזמנות קודמות</div>' +
+            '<div id="profileOrdersList"></div>' +
+          '</div>' +
         '</div>' +
       '</div>'
     );
@@ -2647,7 +2676,7 @@ function ensureUI(){
   var lastClickHandledAt = 0;
   function safeHandleClick(fn){
     var now = Date.now();
-    if(now - lastClickHandledAt < 250) return;
+    if(now - lastClickHandledAt < 120) return;
     lastClickHandledAt = now;
     try { fn(); } catch(e){}
   }
@@ -2743,8 +2772,6 @@ function ensureUI(){
       }
       };
     document.addEventListener('click', handler, true);
-    document.addEventListener('pointerdown', handler, true);
-    document.addEventListener('touchstart', handler, true);
   }
 
   function setAuthUI(){
@@ -3165,23 +3192,109 @@ function ensureUI(){
   function renderProfileSummary(){
     ensureUI();
     var wrap = document.getElementById('profileSummary');
+    var ptsSection = document.getElementById('profilePointsSection');
+    var ordersSection = document.getElementById('profileOrdersSection');
     if(!wrap) return;
 
     if(!currentUser){
-      wrap.innerHTML = '<div style="font-size:13px;color:#7a5040;line-height:1.7">לא מחוברים כרגע. התחברו כדי לראות נקודות, מתנה הבאה והזמנות קודמות.</div>' +
-        '<button type="button" class="profile-btn main" style="margin-top:10px" onclick="openAuthModal()">התחברות / הרשמה</button>';
+      // --- GUEST VIEW ---
+      if(ptsSection) ptsSection.innerHTML = '';
+      if(ordersSection) ordersSection.style.display = 'none';
+      wrap.innerHTML =
+        '<div class="profile-guest">' +
+          '<div class="profile-guest-icon">👤</div>' +
+          '<div class="profile-guest-title">ברוכים הבאים!</div>' +
+          '<div class="profile-guest-sub">התחברו כדי לצבור נקודות, לקבל מתנות ולראות הזמנות קודמות.</div>' +
+          '<div class="pauth-tabs">' +
+            '<button class="pauth-tab active" id="pauthTabLogin" onclick="switchProfileAuthTab('login')">התחברות</button>' +
+            '<button class="pauth-tab" id="pauthTabReg" onclick="switchProfileAuthTab('reg')">הרשמה חדשה</button>' +
+          '</div>' +
+          '<div id="pauthPanelLogin">' +
+            '<label class="pauth-label">אימייל</label>' +
+            '<input id="pauthEmail" class="pauth-input" type="email" autocomplete="email" placeholder="name@example.com">' +
+            '<label class="pauth-label">סיסמה</label>' +
+            '<input id="pauthPass" class="pauth-input" type="password" autocomplete="current-password" placeholder="לפחות 6 תווים">' +
+            '<button class="pauth-btn" id="pauthLoginBtn" type="button" onclick="pauthLogin()">התחברות</button>' +
+            '<button class="pauth-link" type="button" onclick="pauthForgot()">שכחתי סיסמה</button>' +
+          '</div>' +
+          '<div id="pauthPanelReg" style="display:none">' +
+            '<label class="pauth-label">שם מלא</label>' +
+            '<input id="pauthName" class="pauth-input" type="text" autocomplete="name" placeholder="שם מלא">' +
+            '<label class="pauth-label">אימייל</label>' +
+            '<input id="pauthEmailReg" class="pauth-input" type="email" autocomplete="email" placeholder="name@example.com">' +
+            '<label class="pauth-label">סיסמה</label>' +
+            '<input id="pauthPassReg" class="pauth-input" type="password" autocomplete="new-password" placeholder="לפחות 6 תווים">' +
+            '<button class="pauth-btn" id="pauthRegBtn" type="button" onclick="pauthRegister()">הרשמה</button>' +
+          '</div>' +
+          '<div id="pauthMsg" class="pauth-msg"></div>' +
+        '</div>';
       return;
     }
 
-    var points = Number(profile.points || 0);
-    var next = getNextGiftInfo(points);
+    // --- LOGGED IN VIEW ---
+    var points = Number(profile && profile.points ? profile.points : 0);
+    var nextInfo = getNextGiftInfo(points);
     var email = currentUser.email || '';
+    var displayName = getProfileDisplayName();
+    var firstName = String(displayName||'').trim().split(/\s+/)[0] || displayName;
+    var milestones = getGiftLevels ? getGiftLevels() : [300,600,900,1200,1500];
+    if(!milestones||!milestones.length) milestones=[300,600,900,1200,1500];
+    var maxPts = milestones[milestones.length-1];
+    var pct = maxPts>0 ? Math.min(100,Math.round((points/maxPts)*100)) : 0;
 
+    // User card
     wrap.innerHTML =
-      '<div class="profile-name">' + escapeHtml(getProfileDisplayName()) + '</div>' +
-      '<div class="profile-email">' + (email ? ('אימייל: ' + escapeHtml(email)) : 'אימייל לא זמין') + '</div>' +
-      '<div class="profile-points">סה״כ נקודות: ' + points + '</div>' +
-      '<div class="profile-next">המתנה הבאה: ' + escapeHtml(next.gift.emoji + ' ' + next.gift.name) + '<br>נפתחת ב-' + next.nextLevel + ' נק׳ (עוד ' + next.missing + ' נק׳)</div>';
+      '<div class="profile-user-card">' +
+        '<div class="puc-avatar">' + escapeHtml(String(displayName||'?').charAt(0).toUpperCase()) + '</div>' +
+        '<div class="puc-info">' +
+          '<div class="puc-name">' + escapeHtml(firstName) + '</div>' +
+          (email ? '<div class="puc-email">' + escapeHtml(email) + '</div>' : '') +
+        '</div>' +
+        '<button class="puc-logout" type="button" onclick="logoutUser()" title="התנתקות">יציאה</button>' +
+      '</div>';
+
+    // Points section
+    if(ptsSection){
+      var nextGift = getGiftForLevel ? getGiftForLevel(nextInfo.nextLevel) : { emoji:'🎁', name:'מתנה' };
+      ptsSection.innerHTML =
+        '<div class="profile-pts-card">' +
+          '<div class="ppc-head">' +
+            '<div class="ppc-title">מד מתנות</div>' +
+            '<div class="ppc-total">' + points + ' נק׳</div>' +
+          '</div>' +
+          '<div class="ppc-bar-wrap">' +
+            '<div class="ppc-bar"><div class="ppc-fill" style="width:' + pct + '%"></div></div>' +
+          '</div>' +
+          '<div class="ppc-next">' +
+            (points >= maxPts
+              ? '🎉 פתחת את כל המתנות!'
+              : 'עוד <strong>' + nextInfo.missing + ' נק׳</strong> ל' + nextGift.emoji + ' ' + escapeHtml(nextGift.name)) +
+          '</div>' +
+          '<div class="ppc-chips">' +
+            milestones.map(function(lvl){
+              var g = getGiftForLevel ? getGiftForLevel(lvl) : {emoji:'🎁',name:''};
+              var hit = points >= lvl;
+              return '<div class="ppc-chip' + (hit?' hit':'') + '">' +
+                '<span class="ppc-chip-emoji">' + g.emoji + '</span>' +
+                '<span class="ppc-chip-num">' + lvl + '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+    }
+
+    // Show orders section
+    if(ordersSection) ordersSection.style.display = 'block';
+
+    // Action buttons
+    var actionsDiv = wrap.querySelector('.profile-actions-row');
+    if(!actionsDiv){
+      wrap.insertAdjacentHTML('beforeend',
+        '<div class="profile-actions-row">' +
+          '<button type="button" class="profile-btn main" onclick="toggleCart(true);safeCloseProfile()">🛒 סל קניות</button>' +
+        '</div>'
+      );
+    }
   }
 
   function renderProfileOrdersList(){
@@ -4524,6 +4637,100 @@ function ensureUI(){
     }
   };
 
+
+  // ======= Profile drawer inline auth =======
+  window.switchProfileAuthTab = function(tab){
+    var loginPanel = document.getElementById('pauthPanelLogin');
+    var regPanel   = document.getElementById('pauthPanelReg');
+    var tabLogin   = document.getElementById('pauthTabLogin');
+    var tabReg     = document.getElementById('pauthTabReg');
+    var msg        = document.getElementById('pauthMsg');
+    if(loginPanel) loginPanel.style.display = tab === 'login' ? 'block' : 'none';
+    if(regPanel)   regPanel.style.display   = tab === 'reg'   ? 'block' : 'none';
+    if(tabLogin)   tabLogin.classList.toggle('active', tab === 'login');
+    if(tabReg)     tabReg.classList.toggle('active', tab === 'reg');
+    if(msg){ msg.textContent = ''; msg.className = 'pauth-msg'; }
+  };
+
+  function setPauthMsg(txt, isOk){
+    var el = document.getElementById('pauthMsg');
+    if(!el) return;
+    el.textContent = txt;
+    el.className = 'pauth-msg ' + (isOk ? 'ok' : 'err');
+  }
+
+  window.pauthLogin = async function(){
+    if(!fb){ toast('Firebase לא מוכן'); return; }
+    var email = (document.getElementById('pauthEmail') && document.getElementById('pauthEmail').value || '').trim();
+    var pass  = (document.getElementById('pauthPass')  && document.getElementById('pauthPass').value  || '').trim();
+    if(!email || !pass){ setPauthMsg('יש למלא אימייל וסיסמה', false); return; }
+    var btn = document.getElementById('pauthLoginBtn');
+    if(btn){ btn.disabled = true; btn.textContent = 'מתחבר...'; }
+    try {
+      await fb.signInWithEmailAndPassword(fb.auth, email, pass);
+      setPauthMsg('התחברת בהצלחה!', true);
+      setTimeout(function(){ renderProfileSummary(); }, 400);
+    } catch(err){
+      var msg = 'שגיאה בהתחברות';
+      if(err && err.code === 'auth/user-not-found') msg = 'משתמש לא קיים';
+      if(err && err.code === 'auth/wrong-password') msg = 'סיסמה שגויה';
+      if(err && err.code === 'auth/invalid-credential') msg = 'אימייל או סיסמה שגויים';
+      if(err && err.code === 'auth/invalid-email') msg = 'אימייל לא תקין';
+      setPauthMsg(msg, false);
+    } finally {
+      if(btn){ btn.disabled = false; btn.textContent = 'התחברות'; }
+    }
+  };
+
+  window.pauthRegister = async function(){
+    if(!fb){ toast('Firebase לא מוכן'); return; }
+    var name  = (document.getElementById('pauthName')    && document.getElementById('pauthName').value    || '').trim();
+    var email = (document.getElementById('pauthEmailReg')&& document.getElementById('pauthEmailReg').value|| '').trim();
+    var pass  = (document.getElementById('pauthPassReg') && document.getElementById('pauthPassReg').value || '').trim();
+    if(!email || !pass){ setPauthMsg('יש למלא אימייל וסיסמה', false); return; }
+    if(pass.length < 6){ setPauthMsg('סיסמה חייבת להיות לפחות 6 תווים', false); return; }
+    var btn = document.getElementById('pauthRegBtn');
+    if(btn){ btn.disabled = true; btn.textContent = 'נרשם...'; }
+    try {
+      var displayName = name || email.split('@')[0];
+      var cred = await fb.createUserWithEmailAndPassword(fb.auth, email, pass);
+      if(cred && cred.user){
+        try { await fb.updateProfile ? fb.updateProfile(cred.user, { displayName: displayName }) : null; } catch(e){}
+        try {
+          await fb.setDoc(fb.doc(fb.db, 'users', cred.user.uid), {
+            email: email, fullName: displayName,
+            fullNameLower: displayName.toLowerCase(),
+            role: 'user', points: 0, redeemedRewards: [],
+            createdAt: fb.serverTimestamp(), updatedAt: fb.serverTimestamp()
+          }, { merge: true });
+        } catch(e){}
+      }
+      setPauthMsg('נרשמת בהצלחה! 🎉', true);
+      setTimeout(function(){ renderProfileSummary(); updateHeroWelcome(); }, 400);
+    } catch(err){
+      var msg = 'שגיאה בהרשמה';
+      if(err && err.code === 'auth/email-already-in-use') msg = 'אימייל כבר קיים — נסה להתחבר';
+      if(err && err.code === 'auth/invalid-email') msg = 'אימייל לא תקין';
+      if(err && err.code === 'auth/weak-password') msg = 'סיסמה חלשה מדי';
+      setPauthMsg(msg, false);
+    } finally {
+      if(btn){ btn.disabled = false; btn.textContent = 'הרשמה'; }
+    }
+  };
+
+  window.pauthForgot = async function(){
+    if(!fb){ return; }
+    var email = (document.getElementById('pauthEmail') && document.getElementById('pauthEmail').value || '').trim();
+    if(!email){ setPauthMsg('הכניסו אימייל ואז לחצו שוב', false); return; }
+    try {
+      await fb.sendPasswordResetEmail(fb.auth, email);
+      setPauthMsg('נשלח מייל לאיפוס סיסמה ✓', true);
+    } catch(e){
+      setPauthMsg('שגיאה — בדקו את האימייל', false);
+    }
+  };
+  // ==========================================
+
   // runProfileAction: כפתור 👤 - פותח פרופיל אם מחובר, אחרת פותח auth drawer
   window.runProfileAction = function(){
     ensureUI();
@@ -5282,12 +5489,23 @@ function ensureUI(){
   var originalOpenModal = window.openModal;
   if(typeof originalOpenModal === 'function'){
     window.openModal = function(card){
+      // sync currentUser from firebase
       if(!currentUser && fb && fb.auth && fb.auth.currentUser){
         currentUser = fb.auth.currentUser;
       }
-      if(!currentUser){
-        toast('כדי להוסיף לסל צריך להתחבר');
+      // if not logged in AND not dismissed as guest → show auth gate
+      if(!currentUser && !authGateDismissed){
+        ensureUI();
+        var gate = document.getElementById('authGate');
+        if(gate){
+          gate.classList.add('open');
+          document.body.classList.add('auth-locked');
+        } else {
+          openAuthModal();
+        }
+        return;
       }
+      // proceed to open modal
       originalOpenModal(card);
       if(window.selProd){
         window.selProd.price = Number((card && card.getAttribute('data-price')) || 0);
