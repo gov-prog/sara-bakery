@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>פאנל ניהול | שרה 🍰</title>
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{font-family:'Assistant',sans-serif;background:#0d0603;color:#f2d9c0;direction:rtl;min-height:100vh}
+
+    /* LOGIN */
+    #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#2a1005,#0d0603 65%)}
+    .lc{background:#1c0f07;border:1.5px solid #c8704a;border-radius:24px;padding:44px 36px 36px;width:100%;max-width:380px;box-shadow:0 40px 100px rgba(0,0,0,.7);text-align:center}
+    .lc-logo{font-size:52px;margin-bottom:10px}
+    .lc-title{font-size:26px;font-weight:800;color:#f2d9c0;margin-bottom:4px}
+    .lc-sub{font-size:14px;color:#9a7060;margin-bottom:28px}
+    .lc input{width:100%;background:#2a1507;border:1.5px solid #5a3020;border-radius:12px;padding:13px 15px;font-size:15px;font-family:inherit;color:#f2d9c0;outline:none;margin-bottom:13px;direction:ltr;text-align:left;transition:border-color .2s}
+    .lc input:focus{border-color:#c8704a}
+    .lc input::placeholder{direction:rtl;text-align:right;color:#7a5040}
+    .lc-btn{width:100%;background:linear-gradient(135deg,#c8704a,#e8905a);border:none;border-radius:13px;padding:15px;font-size:16px;font-weight:800;color:#fff;font-family:inherit;cursor:pointer;transition:opacity .2s}
+    .lc-btn:hover{opacity:.9}.lc-btn:disabled{opacity:.45;cursor:not-allowed}
+    .lc-msg{font-size:13px;font-weight:700;min-height:20px;margin-top:12px;color:#e07050}
+    .lc-back{margin-top:18px;font-size:12px;color:#7a5040}.lc-back a{color:#c8704a}
+
+    /* SHELL */
+    #dash{display:none;flex-direction:column;min-height:100vh}
+    #dash.on{display:flex}
+    .hdr{background:#150a04;border-bottom:1px solid #2a1507;height:56px;padding:0 16px;position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:10px}
+    .hdr-logo{font-size:17px;font-weight:800;flex:1;white-space:nowrap}.hdr-logo span{color:#c8704a}
+    .hdr-clock{font-size:13px;font-weight:700;color:#9a7060;white-space:nowrap}
+    .hdr-btn{border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+    .hdr-back{background:#2a1507;color:#c8704a;border:1px solid #5a3020}
+    .hdr-out{background:#3a1010;color:#e07050;border:1px solid #6a2020}
+    .hdr-btn:hover{opacity:.75}
+    .tabs-bar{background:#110805;border-bottom:1px solid #2a1507;display:flex;padding:0 12px;gap:2px;overflow-x:auto;scrollbar-width:none}
+    .tabs-bar::-webkit-scrollbar{display:none}
+    .tb{background:none;border:none;color:#9a7060;font-size:13px;font-weight:700;font-family:inherit;padding:12px 13px;cursor:pointer;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap}
+    .tb.on{color:#c8704a;border-bottom-color:#c8704a}.tb:hover:not(.on){color:#f2d9c0}
+    .nb{display:inline-flex;align-items:center;justify-content:center;background:#c8704a;color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:17px;height:17px;padding:0 4px;margin-right:4px;vertical-align:middle}
+    .alert-bar{background:#3a2000;border-bottom:2px solid #c8704a;padding:9px 16px;font-size:13px;font-weight:700;color:#f0c060;display:none;align-items:center;gap:8px}
+    .alert-bar.on{display:flex}
+    .pane{flex:1;padding:16px;max-width:980px;width:100%;margin:0 auto}
+
+    /* DATE NAV */
+    .date-nav{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+    .date-arrow{background:#1c0f07;border:1px solid #3a1e0c;color:#c8704a;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .2s;flex-shrink:0}
+    .date-arrow:hover{background:#3a1e0c;border-color:#c8704a}
+    .date-center{flex:1;text-align:center;background:#1c0f07;border:1px solid #3a1e0c;border-radius:12px;padding:9px 14px;cursor:pointer;min-width:0}
+    .date-center:hover{border-color:#c8704a}
+    .date-main{font-size:16px;font-weight:800;color:#f2d9c0}
+    .date-sub{font-size:11px;color:#9a7060;margin-top:2px}
+    .date-today-btn{background:#2a1507;border:1px solid #c8704a;color:#c8704a;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;flex-shrink:0}
+    .date-today-btn.active{background:#c8704a;color:#fff}
+    input[type="date"]#datePicker{background:#2a1507;border:1.5px solid #5a3020;color:#f2d9c0;border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;cursor:pointer;display:none}
+    input[type="date"]#datePicker.on{display:block}
+
+    /* DAY SUMMARY */
+    .day-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+    .ds{background:#1c0f07;border:1px solid #3a1e0c;border-radius:12px;padding:10px 14px;flex:1;min-width:100px;text-align:center}
+    .ds-v{font-size:22px;font-weight:800;color:#c8704a}.ds-l{font-size:11px;color:#9a7060;margin-top:2px;font-weight:700}
+
+    /* STATUS FILTERS */
+    .sf-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+    .sf{background:#1c0f07;border:1px solid #3a1e0c;color:#9a7060;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s}
+    .sf.on{background:#c8704a;border-color:#c8704a;color:#fff}
+    .sf:hover:not(.on){border-color:#c8704a;color:#c8704a}
+    .sf-cnt{margin-right:auto;font-size:12px;color:#7a5040}
+
+    /* ORDER CARD */
+    .oc{background:#1a0c05;border:1px solid #2e1a0a;border-radius:18px;margin-bottom:14px;overflow:hidden;transition:border-color .2s}
+    .oc:hover{border-color:#5a3020}
+
+    .oc-hdr{padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+    .oc-avatar{width:46px;height:46px;border-radius:50%;background:#2a1507;border:2px solid #5a3020;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;cursor:pointer;transition:border-color .2s}
+    .oc-avatar:hover{border-color:#c8704a}
+    .oc-id{flex:1;min-width:0}
+    .oc-name{font-size:16px;font-weight:800;color:#f2d9c0;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+    .oc-name:hover{color:#c8704a}
+    .oc-name-link{font-size:11px;color:#5a3020}
+    .oc-contacts{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+    .oc-contact{font-size:12px;color:#9a7060}
+    .oc-timing{font-size:11px;color:#5a3020;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap}
+    .oc-timing-highlight{color:#c8704a;font-weight:700}
+    .oc-badges{display:flex;gap:5px;flex-wrap:wrap;flex-shrink:0;align-items:flex-start}
+
+    .badge{padding:5px 11px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+    .b-pending{background:#3a2a05;color:#f0c060;border:1px solid #7a5010}
+    .b-confirmed{background:#053a15;color:#60d090;border:1px solid #107a30}
+    .b-inprogress{background:#1a1a3a;color:#8080e0;border:1px solid #303080}
+    .b-ready{background:#053540;color:#50d0c0;border:1px solid #0a7080}
+    .b-completed{background:#102a20;color:#80c0a0;border:1px solid #206040}
+    .b-cancelled{background:#3a0505;color:#e07070;border:1px solid #7a1010}
+    .b-delivery{background:#1a1a3a;color:#9090e0;border:1px solid #303080;font-size:10px}
+    .b-pickup{background:#1a3a1a;color:#70b070;border:1px solid #307030;font-size:10px}
+    .b-paid{background:#053a15;color:#60d090;border:1px solid #107a30;font-size:10px}
+    .b-unpaid{background:#3a1005;color:#e08050;border:1px solid #7a3010;font-size:10px}
+
+    /* ITEMS */
+    .oc-items-wrap{border-top:1px solid #2a1507;padding:12px 16px}
+    .oc-items-title{font-size:11px;font-weight:800;color:#7a5040;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+    .oc-item{background:#150a04;border-radius:10px;margin-bottom:6px;overflow:hidden}
+    .oc-item-row{display:flex;align-items:center;gap:10px;padding:8px 10px;cursor:pointer;user-select:none}
+    .oc-item-emoji{font-size:20px;flex-shrink:0}
+    .oc-item-name{flex:1;font-size:14px;font-weight:800;color:#f2d9c0}
+    .oc-item-qty{background:#2a1507;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;color:#c8704a;flex-shrink:0}
+    .oc-item-price{font-size:14px;font-weight:800;color:#c8704a;flex-shrink:0}
+    .oc-item-chevron{font-size:11px;color:#5a3020;flex-shrink:0;transition:transform .2s}
+    .oc-item.open .oc-item-chevron{transform:rotate(180deg)}
+    .oc-item-details{display:none;padding:0 10px 10px;border-top:1px solid #2a1507}
+    .oc-item.open .oc-item-details{display:block}
+    .oc-item-detail-row{font-size:12px;color:#9a7060;padding:3px 0;display:flex;gap:8px}
+    .oc-item-detail-row span:first-child{color:#7a5040;min-width:70px}
+
+    .oc-total-row{display:flex;justify-content:space-between;margin-top:10px;padding-top:8px;border-top:1px solid #2a1507}
+    .oc-total-lbl{font-size:13px;color:#9a7060;font-weight:700}
+    .oc-total-val{font-size:20px;font-weight:800;color:#f2d9c0}
+
+    /* INSCRIPTION / NOTE */
+    .oc-note-block{margin:0 16px 10px;background:#1e1005;border-right:3px solid #c8704a;padding:10px 13px;border-radius:0 8px 8px 0}
+    .oc-note-lbl{font-size:10px;font-weight:800;color:#7a5040;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+    .oc-note-txt{font-size:13px;color:#f0d8b8;line-height:1.5}
+
+    /* DELIVERY */
+    .oc-delivery{border-top:1px solid #2a1507;padding:10px 16px;display:flex;gap:12px;flex-wrap:wrap}
+    .oc-del-item{display:flex;flex-direction:column;gap:2px}
+    .oc-del-lbl{font-size:10px;font-weight:800;color:#7a5040;text-transform:uppercase;letter-spacing:.5px}
+    .oc-del-val{font-size:13px;font-weight:700;color:#f2d9c0}
+
+    /* PAYMENT */
+    .oc-payment{border-top:1px solid #2a1507;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#120806}
+    .oc-pay-lbl{font-size:12px;font-weight:700;color:#9a7060}
+    .pay-method-sel{background:#2a1507;border:1px solid #5a3020;color:#f2d9c0;border-radius:8px;padding:5px 10px;font-size:12px;font-family:inherit;outline:none;cursor:pointer}
+    .pay-method-sel:focus{border-color:#c8704a}
+    .pay-toggle{display:flex;align-items:center;gap:6px;margin-right:auto}
+    .pay-toggle-lbl{font-size:12px;font-weight:700;color:#9a7060}
+    .pay-btn{border:none;border-radius:8px;padding:6px 13px;font-size:12px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .2s}
+    .pay-btn.paid{background:#053a15;color:#60d090;border:1px solid #107a30}
+    .pay-btn.unpaid{background:#3a1005;color:#e08050;border:1px solid #7a3010}
+
+    /* ACTIONS */
+    .oc-actions{border-top:1px solid #2a1507;padding:11px 16px;background:#120806;display:flex;gap:6px;flex-wrap:wrap}
+    .act{border:none;border-radius:10px;padding:8px 13px;font-size:12px;font-weight:800;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+    .act:hover{opacity:.8}.act:active{transform:scale(.96)}
+    .act-confirm{background:#053a15;color:#60d090}
+    .act-progress{background:#1a1a3a;color:#8080e0}
+    .act-ready{background:#053540;color:#50d0c0}
+    .act-done{background:#102a20;color:#80c0a0}
+    .act-cancel{background:#4a0a0a;color:#e07070}
+    .act-wa{background:#0a3a14;color:#25d366}
+    .act-mail{background:#1a2a4a;color:#6090e0}
+
+    .empty{text-align:center;padding:60px 20px;color:#5a3020;font-size:15px}
+    .loading-txt{text-align:center;padding:60px 20px;color:#7a5040;font-size:14px}
+
+    /* CUSTOMER MODAL */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.on{display:flex}
+    .cust-modal{background:#1a0c05;border:1.5px solid #c8704a;border-radius:20px;width:100%;max-width:560px;max-height:85vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,.8)}
+    .cm-hdr{padding:20px 20px 16px;display:flex;align-items:flex-start;gap:14px;border-bottom:1px solid #2a1507;position:sticky;top:0;background:#1a0c05;z-index:5}
+    .cm-avatar{width:56px;height:56px;border-radius:50%;background:#2a1507;border:2px solid #c8704a;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+    .cm-info{flex:1}
+    .cm-name{font-size:20px;font-weight:800;color:#f2d9c0}
+    .cm-contacts{font-size:13px;color:#9a7060;margin-top:4px;line-height:1.7}
+    .cm-since{font-size:12px;color:#7a5040;margin-top:2px}
+    .cm-close{background:none;border:none;color:#9a7060;font-size:22px;cursor:pointer;padding:2px 8px;border-radius:8px;transition:color .2s;flex-shrink:0}
+    .cm-close:hover{color:#f2d9c0}
+    .cm-stats{display:flex;gap:10px;padding:14px 20px;border-bottom:1px solid #2a1507}
+    .cm-stat{flex:1;text-align:center}
+    .cm-stat-v{font-size:22px;font-weight:800;color:#c8704a}
+    .cm-stat-l{font-size:11px;color:#9a7060;margin-top:3px;font-weight:700}
+    .cm-orders-title{font-size:13px;font-weight:800;color:#9a7060;padding:14px 20px 8px}
+    .cm-order-row{padding:10px 20px;border-bottom:1px solid #1e1208;display:flex;align-items:center;gap:10px}
+    .cm-order-row:last-child{border-bottom:none}
+    .cm-or-date{font-size:12px;color:#7a5040;min-width:70px}
+    .cm-or-items{flex:1;font-size:13px;color:#f2d9c0;font-weight:700}
+    .cm-or-total{font-size:13px;font-weight:800;color:#c8704a;flex-shrink:0}
+    .cm-or-badge{flex-shrink:0}
+    .cm-note{padding:12px 20px;font-size:12px;color:#5a3020;text-align:center;border-top:1px solid #1e1208}
+
+    /* MESSAGES */
+    .msg-sec{background:#1c0f07;border:1px solid #3a1e0c;border-radius:16px;padding:20px;margin-bottom:14px}
+    .msg-sec-title{font-size:15px;font-weight:800;color:#f2d9c0;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+    .msg-lbl{font-size:13px;font-weight:700;color:#9a7060;margin-bottom:6px}
+    .msg-input,.msg-ta{width:100%;background:#2a1507;border:1.5px solid #5a3020;border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:#f2d9c0;outline:none;transition:border-color .2s;margin-bottom:12px}
+    .msg-input:focus,.msg-ta:focus{border-color:#c8704a}
+    .msg-ta{resize:vertical;min-height:90px;line-height:1.6}
+    .msg-tpls{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
+    .tpl{background:#1c0f07;border:1px solid #5a3020;color:#c8704a;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s}
+    .tpl:hover{background:#3a1e0c;border-color:#c8704a}
+    .msg-acts{display:flex;gap:8px;flex-wrap:wrap}
+    .mb{border:none;border-radius:11px;padding:11px 18px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;transition:opacity .2s;display:flex;align-items:center;gap:6px}
+    .mb:hover{opacity:.85}
+    .mb-wa{background:#0a3a14;color:#25d366}.mb-mail{background:#1a2a4a;color:#6090e0}.mb-copy{background:#2a1507;color:#c8704a;border:1px solid #5a3020}
+    .cust-wrap{position:relative}
+    .cust-drop{position:absolute;top:calc(100% + 4px);right:0;left:0;background:#2a1507;border:1.5px solid #c8704a;border-radius:10px;z-index:50;max-height:200px;overflow-y:auto;display:none}
+    .cust-drop.on{display:block}
+    .cust-row{padding:10px 13px;cursor:pointer;font-size:13px;border-bottom:1px solid #3a1e0c}
+    .cust-row:last-child{border-bottom:none}.cust-row:hover{background:#3a1e0c}
+    .cust-row-name{font-weight:800;color:#f2d9c0}.cust-row-sub{font-size:11px;color:#7a5040;margin-top:2px}
+    .sel-cust-card{display:none;background:#1c0f07;border:1px solid #c8704a;border-radius:12px;padding:12px 14px;margin-bottom:12px}
+
+    /* KPIS */
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+    .kpi{background:#1c0f07;border:1px solid #3a1e0c;border-radius:14px;padding:16px;text-align:center}
+    .kpi-v{font-size:28px;font-weight:800;color:#c8704a;line-height:1}.kpi-l{font-size:12px;color:#9a7060;margin-top:5px;font-weight:700}.kpi-s{font-size:11px;color:#5a3020;margin-top:2px}
+    .kpi.hi .kpi-v{color:#f0c060}
+
+    /* SETTINGS */
+    .set-sec{background:#1c0f07;border:1px solid #3a1e0c;border-radius:16px;padding:20px;margin-bottom:13px}
+    .set-title{font-size:15px;font-weight:800;color:#f2d9c0;margin-bottom:15px;display:flex;align-items:center;gap:8px}
+    .set-row{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}.set-row:last-child{margin-bottom:0}
+    .set-lbl{font-size:13px;font-weight:700;color:#9a7060}
+    .set-in,.set-ta{background:#2a1507;border:1.5px solid #5a3020;border-radius:10px;padding:11px 13px;font-size:14px;font-family:inherit;color:#f2d9c0;outline:none;width:100%;transition:border-color .2s}
+    .set-in:focus,.set-ta:focus{border-color:#c8704a}.set-ta{resize:vertical;min-height:76px;line-height:1.5}
+    .tog-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .tog-info .tog-lbl{font-size:14px;color:#f2d9c0;font-weight:700}.tog-info .tog-desc{font-size:12px;color:#7a5040;margin-top:3px}
+    .sw{position:relative;width:50px;height:26px;flex-shrink:0}
+    .sw input{opacity:0;width:0;height:0;position:absolute}
+    .sw-sl{position:absolute;inset:0;background:#3a1e0c;border-radius:999px;cursor:pointer;transition:background .3s}
+    .sw-sl::before{content:'';position:absolute;width:20px;height:20px;right:3px;top:3px;background:#9a7060;border-radius:50%;transition:transform .3s,background .3s}
+    .sw input:checked+.sw-sl{background:#c8704a}
+    .sw input:checked+.sw-sl::before{transform:translateX(-24px);background:#fff}
+    .set-save{background:linear-gradient(135deg,#c8704a,#e8905a);border:none;border-radius:12px;padding:13px 26px;font-size:15px;font-weight:800;color:#fff;font-family:inherit;cursor:pointer;margin-top:4px;transition:opacity .2s}
+    .set-save:hover{opacity:.9}.set-save:disabled{opacity:.45;cursor:not-allowed}
+    .set-msg{font-size:13px;font-weight:700;min-height:20px;margin-top:10px}
+    .set-msg.ok{color:#5dc87a}.set-msg.err{color:#e07050}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;pointer-events:none;background:#1a7a3c;color:#fff;padding:12px 22px;border-radius:999px;z-index:9999;font-size:14px;font-weight:700;font-family:inherit;transition:all .3s cubic-bezier(.34,1.2,.64,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,.4);max-width:90vw;text-align:center}
+    .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+    .toast.err{background:#7a1a1a}.toast.warn{background:#7a4000}
+
+    @media(max-width:580px){
+      .pane{padding:12px}.kpi-grid{grid-template-columns:1fr 1fr}
+      .oc-hdr{padding:12px}.oc-actions{gap:5px}.act{padding:7px 10px;font-size:11px}
+      .cm-stats{gap:6px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="lc">
+    <div class="lc-logo">🍰</div>
+    <div class="lc-title">פאנל ניהול</div>
+    <div class="lc-sub">שרה | Home Made Bakery · חריש</div>
+    <input id="lUser" type="text" placeholder="שם משתמש" autocomplete="off" autocorrect="off" spellcheck="false">
+    <input id="lPass" type="password" placeholder="סיסמה" autocomplete="off">
+    <button id="lBtn" class="lc-btn" type="button">כניסה לפאנל</button>
+    <div id="lMsg" class="lc-msg"></div>
+    <div class="lc-back"><a href="index.html">← חזרה לאתר</a></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash">
+  <header class="hdr">
+    <div class="hdr-logo">שרה <span>🍰</span> ניהול</div>
+    <div class="hdr-clock" id="hdrClock"></div>
+    <button class="hdr-btn hdr-back" onclick="location.href='index.html'">← האתר</button>
+    <button class="hdr-btn hdr-out" id="logoutBtn">יציאה</button>
+  </header>
+  <div class="alert-bar" id="alertBar">🔔 <span id="alertTxt"></span></div>
+  <div class="tabs-bar">
+    <button class="tb on" data-tab="orders">📦 הזמנות <span class="nb" id="pendingBadge" style="display:none">0</span></button>
+    <button class="tb" data-tab="messages">✉️ הודעות</button>
+    <button class="tb" data-tab="kpis">📊 סטטיסטיקות</button>
+    <button class="tb" data-tab="settings">⚙️ הגדרות</button>
+  </div>
+
+  <!-- ORDERS -->
+  <div id="paneOrders" class="pane">
+    <div class="date-nav">
+      <button class="date-arrow" id="datePrev">›</button>
+      <div class="date-center" id="dateCenterBtn">
+        <div class="date-main" id="dateMainTxt"></div>
+        <div class="date-sub" id="dateSubTxt"></div>
+      </div>
+      <button class="date-arrow" id="dateNext">‹</button>
+      <button class="date-today-btn" id="dateTodayBtn">היום</button>
+      <input type="date" id="datePicker">
+    </div>
+    <div class="day-sum">
+      <div class="ds"><div class="ds-v" id="dsTotal">0</div><div class="ds-l">הזמנות</div></div>
+      <div class="ds"><div class="ds-v" id="dsRev">₪0</div><div class="ds-l">הכנסה</div></div>
+      <div class="ds"><div class="ds-v" id="dsPending">0</div><div class="ds-l">ממתינות</div></div>
+      <div class="ds"><div class="ds-v" id="dsReady">0</div><div class="ds-l">מוכנות</div></div>
+    </div>
+    <div class="sf-bar">
+      <button class="sf on" data-sf="all">הכל</button>
+      <button class="sf" data-sf="pending">⏳ ממתינות</button>
+      <button class="sf" data-sf="confirmed">✅ התקבלה</button>
+      <button class="sf" data-sf="in_progress">🔧 בהכנה</button>
+      <button class="sf" data-sf="ready">🍰 מוכן</button>
+      <button class="sf" data-sf="completed">🏁 הושלם</button>
+      <button class="sf" data-sf="cancelled">❌ בוטל</button>
+      <span class="sf-cnt" id="sfCnt"></span>
+    </div>
+    <div id="ordersList"><div class="loading-txt">טוען הזמנות...</div></div>
+  </div>
+
+  <!-- MESSAGES -->
+  <div id="paneMessages" class="pane" style="display:none">
+    <div class="msg-sec">
+      <div class="msg-sec-title">📢 הודעה לכל הלקוחות</div>
+      <div class="msg-lbl">תבניות מהירות</div>
+      <div class="msg-tpls">
+        <button class="tpl" data-tpl="promo">🎉 מבצע</button>
+        <button class="tpl" data-tpl="holiday">🍰 חג שמח</button>
+        <button class="tpl" data-tpl="update">📢 עדכון</button>
+        <button class="tpl" data-tpl="closed">🔒 סגורות</button>
+        <button class="tpl" data-tpl="open">✅ פתיחת הזמנות</button>
+      </div>
+      <div class="msg-lbl">תוכן ההודעה</div>
+      <textarea id="bulkMsg" class="msg-ta" placeholder="כתבי את ההודעה לכולם..."></textarea>
+      <div class="msg-acts">
+        <button class="mb mb-mail" id="bulkMailBtn">📧 שלח מייל לכולם</button>
+        <button class="mb mb-copy" id="copyEmailsBtn">📋 העתק מיילים</button>
+      </div>
+      <div style="font-size:11px;color:#5a3020;margin-top:8px">* פותח תוכנת מייל עם כל הלקוחות ב-BCC</div>
+    </div>
+    <div class="msg-sec">
+      <div class="msg-sec-title">👤 הודעה ללקוח ספציפי</div>
+      <div class="msg-lbl">חפש לקוח</div>
+      <div class="cust-wrap">
+        <input id="custSearch" class="msg-input" type="text" placeholder="שם, טלפון או מייל...">
+        <div class="cust-drop" id="custDrop"></div>
+      </div>
+      <div class="sel-cust-card" id="selCustCard">
+        <div style="font-weight:800;color:#f2d9c0" id="scName"></div>
+        <div style="font-size:12px;color:#9a7060;margin-top:3px" id="scSub"></div>
+      </div>
+      <div class="msg-lbl">הודעה</div>
+      <textarea id="custMsg" class="msg-ta" placeholder="כתבי הודעה אישית..."></textarea>
+      <div class="msg-acts">
+        <button class="mb mb-wa" id="custWaBtn">💬 שלח בוואטסאפ</button>
+        <button class="mb mb-mail" id="custMailBtn">📧 שלח מייל</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIS -->
+  <div id="paneKpis" class="pane" style="display:none">
+    <div class="kpi-grid">
+      <div class="kpi hi"><div class="kpi-v" id="kToday">–</div><div class="kpi-l">הזמנות היום</div></div>
+      <div class="kpi hi"><div class="kpi-v" id="kTodayRev">–</div><div class="kpi-l">הכנסה היום</div><div class="kpi-s">₪</div></div>
+      <div class="kpi"><div class="kpi-v" id="kPending">–</div><div class="kpi-l">ממתינות לאישור</div></div>
+      <div class="kpi"><div class="kpi-v" id="kReady">–</div><div class="kpi-l">מוכנות</div></div>
+      <div class="kpi"><div class="kpi-v" id="kTotal">–</div><div class="kpi-l">סה"כ הזמנות</div></div>
+      <div class="kpi"><div class="kpi-v" id="kRev">–</div><div class="kpi-l">סה"כ הכנסות</div><div class="kpi-s">₪</div></div>
+      <div class="kpi"><div class="kpi-v" id="kCustomers">–</div><div class="kpi-l">לקוחות רשומים</div></div>
+      <div class="kpi"><div class="kpi-v" id="kWeek">–</div><div class="kpi-l">הזמנות השבוע</div></div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="paneSettings" class="pane" style="display:none">
+    <div class="set-sec">
+      <div class="set-title">📍 פרטי העסק</div>
+      <div class="set-row"><label class="set-lbl">כתובת לאיסוף</label><input id="sAddr" class="set-in" placeholder="אתרוג 3 דירה 16, חריש"></div>
+      <div class="set-row"><label class="set-lbl">מספר וואטסאפ (עם 972)</label><input id="sWa" class="set-in" dir="ltr" placeholder="972523394838"></div>
+      <div class="set-row"><label class="set-lbl">שעות פעילות</label><input id="sHours" class="set-in" placeholder="ראשון–חמישי 09:00–21:00"></div>
+    </div>
+    <div class="set-sec">
+      <div class="set-title">📢 באנר</div>
+      <div class="set-row"><label class="set-lbl">טקסט באנר (ריק = ללא)</label><textarea id="sBanner" class="set-ta" placeholder="🎉 מבצע..."></textarea></div>
+    </div>
+    <div class="set-sec">
+      <div class="set-title">🔒 קבלת הזמנות</div>
+      <div class="tog-row">
+        <div class="tog-info"><div class="tog-lbl">קבלת הזמנות</div><div class="tog-desc">כשכבוי — לקוחות לא יכולים להזמין</div></div>
+        <label class="sw"><input type="checkbox" id="sOrdersOpen" checked><span class="sw-sl"></span></label>
+      </div>
+    </div>
+    <button class="set-save" id="saveSettingsBtn">💾 שמור הגדרות</button>
+    <div class="set-msg" id="setMsg"></div>
+  </div>
+</div>
+
+<!-- CUSTOMER MODAL -->
+<div class="modal-overlay" id="custModal">
+  <div class="cust-modal" id="custModalBox">
+    <div class="cm-hdr">
+      <div class="cm-avatar">👤</div>
+      <div class="cm-info">
+        <div class="cm-name" id="cmName">–</div>
+        <div class="cm-contacts" id="cmContacts"></div>
+        <div class="cm-since" id="cmSince"></div>
+      </div>
+      <button class="cm-close" id="custModalClose">✕</button>
+    </div>
+    <div class="cm-stats">
+      <div class="cm-stat"><div class="cm-stat-v" id="cmOrders">0</div><div class="cm-stat-l">הזמנות</div></div>
+      <div class="cm-stat"><div class="cm-stat-v" id="cmSpent">₪0</div><div class="cm-stat-l">סה"כ הוציא</div></div>
+      <div class="cm-stat"><div class="cm-stat-v" id="cmPoints">0</div><div class="cm-stat-l">נקודות</div></div>
+    </div>
+    <div class="cm-orders-title">הזמנות קודמות</div>
+    <div id="cmOrdersList"></div>
+    <div class="cm-note">🔒 הסיסמה לא נגישה מטעמי אבטחה (Firebase)</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  signOut, onAuthStateChanged, setPersistence, browserLocalPersistence }
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc,
+  query, orderBy, where, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const FB_CFG={apiKey:"AIzaSyDUiu7JxAzdjmZS3Dp1A_TESM6fvxdPPaw",authDomain:"sarabakery.firebaseapp.com",projectId:"sarabakery",storageBucket:"sarabakery.firebasestorage.app",messagingSenderId:"595236323371",appId:"1:595236323371:web:e2004d0f0d9cdbab23ea6e"};
+const ADMIN_EMAIL='sara@sara.local', ADMIN_PASS='123456';
+const VALID=['sara','admin','שרה','שרהחברוני'];
+const app=initializeApp(FB_CFG), auth=getAuth(app), db=getFirestore(app);
+setPersistence(auth,browserLocalPersistence).catch(()=>{});
+
+const $=id=>document.getElementById(id);
+let allOrders=[], allCustomers=[], settings={}, curDate=new Date(), curFilter='all', selCust=null;
+
+/* ── helpers ── */
+function stripBidi(s){return s.replace(/[​-‏‪-‮⁦-⁩﻿]/g,'').replace(/\s+/g,' ').trim();}
+function toast(msg,type=''){var t=$('toast');t.textContent=msg;t.className='toast on'+(type?' '+type:'');clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',3200);}
+function normPhone(p){if(!p)return '';var n=p.replace(/\D/g,'');return n.startsWith('0')?'972'+n.slice(1):n;}
+function dateKey(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function isToday(d){var n=new Date();return d.getFullYear()===n.getFullYear()&&d.getMonth()===n.getMonth()&&d.getDate()===n.getDate();}
+function fmtDateShort(d){return d.toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'2-digit'});}
+function fmtDelivDate(str){if(!str)return '–';try{return new Date(str).toLocaleDateString('he-IL',{weekday:'short',day:'numeric',month:'long'});}catch(e){return str;}}
+function fmtCreatedDate(ts){if(!ts)return '–';var d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'2-digit'});}
+function fmtTime(ts){if(!ts)return '';var d=ts.toDate?ts.toDate():new Date(ts);return d.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});}
+
+/* sort key: deliveryDate + deliveryTime, fallback to createdAt */
+function sortKey(o){
+  var d=o.deliveryDate||'';
+  var t=o.deliveryTime||'';
+  if(d) return d+'T'+(t||'00:00');
+  var cd=o.createdAt?.toDate?o.createdAt.toDate():new Date(0);
+  return cd.toISOString();
+}
+
+/* filter by deliveryDate primarily, then createdAt */
+function matchesDate(o,d){
+  var dk=dateKey(d);
+  if(o.deliveryDate) return o.deliveryDate===dk;
+  if(!o.createdAt) return false;
+  var cd=o.createdAt.toDate?o.createdAt.toDate():new Date(o.createdAt);
+  return dateKey(cd)===dk;
+}
+
+function statusInfo(s){
+  return({
+    pending:    {text:'⏳ ממתינה',  cls:'b-pending'},
+    confirmed:  {text:'✅ התקבלה', cls:'b-confirmed'},
+    in_progress:{text:'🔧 בהכנה',  cls:'b-inprogress'},
+    ready:      {text:'🍰 מוכן',   cls:'b-ready'},
+    completed:  {text:'🏁 הושלם', cls:'b-completed'},
+    cancelled:  {text:'❌ בוטל',  cls:'b-cancelled'}
+  })[s]||{text:'⏳ ממתינה',cls:'b-pending'};
+}
+const ITEM_EMOJIS={'עוגה':'🎂','קאפ':'🧁','עוגי':'🍪','מארז':'🎁','לוטוס':'🍪','שוקו':'🍫','תות':'🍓','מוס':'🍮','ספינג':'🧁','ריבה':'🍓','קרם':'🍮'};
+function itemEmoji(name){var n=(name||'').toLowerCase();for(var k in ITEM_EMOJIS){if(n.includes(k))return ITEM_EMOJIS[k];}return '🍰';}
+
+/* ── clock ── */
+(function tick(){$('hdrClock').textContent=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit',second:'2-digit'});setTimeout(tick,1000);})();
+
+/* ── date nav ── */
+function updateDateUI(){
+  var today=isToday(curDate);
+  $('dateMainTxt').textContent=today?'היום — '+fmtDateShort(curDate):fmtDateShort(curDate);
+  $('dateSubTxt').textContent=curDate.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long'});
+  $('dateTodayBtn').classList.toggle('active',today);
+  $('datePicker').value=dateKey(curDate);
+}
+$('datePrev').addEventListener('click',()=>{curDate=new Date(curDate);curDate.setDate(curDate.getDate()-1);updateDateUI();renderOrders();});
+$('dateNext').addEventListener('click',()=>{curDate=new Date(curDate);curDate.setDate(curDate.getDate()+1);updateDateUI();renderOrders();});
+$('dateTodayBtn').addEventListener('click',()=>{curDate=new Date();updateDateUI();renderOrders();});
+$('dateCenterBtn').addEventListener('click',()=>{var p=$('datePicker');p.classList.toggle('on');if(p.classList.contains('on'))p.showPicker?.();});
+$('datePicker').addEventListener('change',function(){if(!this.value)return;var pts=this.value.split('-');curDate=new Date(+pts[0],+pts[1]-1,+pts[2]);this.classList.remove('on');updateDateUI();renderOrders();});
+
+/* ── status filter ── */
+document.querySelectorAll('.sf').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.sf').forEach(x=>x.classList.remove('on'));b.classList.add('on');curFilter=b.dataset.sf;renderOrders();}));
+
+/* ── auth ── */
+function setLMsg(m){$('lMsg').textContent=m||'';}
+function setLLoad(on){var b=$('lBtn');b.disabled=on;b.textContent=on?'⏳ מתחבר...':'כניסה לפאנל';}
+async function doLogin(){
+  var u=stripBidi($('lUser').value||'').toLowerCase().replace(/\s+/g,'');
+  var p=($('lPass').value||'').trim();
+  if(!VALID.some(v=>v.toLowerCase().replace(/\s+/g,'')===u)){setLMsg('שם משתמש שגוי');return;}
+  if(p!==ADMIN_PASS){setLMsg('סיסמה שגויה');return;}
+  setLLoad(true);setLMsg('');
+  try{
+    try{await signInWithEmailAndPassword(auth,ADMIN_EMAIL,ADMIN_PASS);}
+    catch(err){if(['auth/user-not-found','auth/invalid-credential','auth/invalid-email'].includes(err.code)){
+      var c=await createUserWithEmailAndPassword(auth,ADMIN_EMAIL,ADMIN_PASS);
+      if(c?.user) await setDoc(doc(db,'users',c.user.uid),{email:ADMIN_EMAIL,role:'admin',fullName:'שרה חברוני',points:0,redeemedRewards:[],createdAt:serverTimestamp(),updatedAt:serverTimestamp()},{merge:true});
+    }else throw err;}
+    try{localStorage.setItem('sara_admin_mode','1');}catch(e){}
+  }catch(err){setLLoad(false);setLMsg(err.code==='auth/wrong-password'?'סיסמה שגויה':err.code==='auth/too-many-requests'?'יותר מדי ניסיונות':'שגיאת חיבור');}
+}
+$('lBtn').addEventListener('click',doLogin);
+$('lPass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+$('lUser').addEventListener('keydown',e=>{if(e.key==='Enter')$('lPass').focus();});
+$('logoutBtn').addEventListener('click',async()=>{try{await signOut(auth);}catch(e){}try{localStorage.removeItem('sara_admin_mode');}catch(e){}showLogin();});
+async function isAdmin(user){if(!user)return false;if(user.email===ADMIN_EMAIL)return true;try{var s=await getDoc(doc(db,'users',user.uid));return s.exists()&&s.data().role==='admin';}catch(e){return false;}}
+onAuthStateChanged(auth,async user=>{if(user&&await isAdmin(user))showDash();else showLogin();});
+function showLogin(){$('loginScreen').style.display='flex';$('dash').classList.remove('on');$('lUser').value='';$('lPass').value='';setLMsg('');setLLoad(false);}
+function showDash(){$('loginScreen').style.display='none';$('dash').classList.add('on');curDate=new Date();updateDateUI();loadOrders();loadCustomers();loadSettings();}
+
+/* ── tabs ── */
+document.querySelectorAll('.tb').forEach(tb=>tb.addEventListener('click',()=>{
+  document.querySelectorAll('.tb').forEach(t=>t.classList.remove('on'));tb.classList.add('on');
+  var n=tb.dataset.tab;
+  $('paneOrders').style.display=n==='orders'?'':'none';
+  $('paneMessages').style.display=n==='messages'?'':'none';
+  $('paneKpis').style.display=n==='kpis'?'':'none';
+  $('paneSettings').style.display=n==='settings'?'':'none';
+  if(n==='kpis')renderKpis();
+}));
+
+/* ── load orders ── */
+async function loadOrders(){
+  try{
+    var q=query(collection(db,'orders'),orderBy('createdAt','desc'));
+    var snap=await getDocs(q);
+    allOrders=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderOrders();renderKpis();updateBadge();updateAlert();
+  }catch(err){$('ordersList').innerHTML='<div class="empty">שגיאה בטעינת הזמנות</div>';}
+}
+function updateBadge(){var n=allOrders.filter(o=>(o.status||'pending')==='pending').length;var b=$('pendingBadge');b.textContent=n;b.style.display=n?'inline-flex':'none';}
+function updateAlert(){var n=allOrders.filter(o=>(o.status||'pending')==='pending').length;if(n){$('alertBar').classList.add('on');$('alertTxt').textContent=n+' הזמנ'+(n===1?'ה':'ות')+' ממתינ'+(n===1?'ת':'ות')+' לאישורך';}else $('alertBar').classList.remove('on');}
+
+/* ── render orders ── */
+function renderOrders(){
+  var dayOrders=allOrders.filter(o=>matchesDate(o,curDate));
+  var filtered=curFilter==='all'?dayOrders:dayOrders.filter(o=>(o.status||'pending')===curFilter);
+
+  $('dsTotal').textContent=dayOrders.length;
+  $('dsRev').textContent='₪'+dayOrders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0).toFixed(0);
+  $('dsPending').textContent=dayOrders.filter(o=>(o.status||'pending')==='pending').length;
+  $('dsReady').textContent=dayOrders.filter(o=>o.status==='ready').length;
+  $('sfCnt').textContent=filtered.length+' הזמנות';
+
+  if(!filtered.length){$('ordersList').innerHTML='<div class="empty">'+(dayOrders.length?'אין הזמנות בסטטוס זה':'אין הזמנות ביום זה 📭')+'</div>';return;}
+
+  // sort by deliveryDate+deliveryTime
+  filtered=[...filtered].sort((a,b)=>sortKey(a).localeCompare(sortKey(b)));
+  $('ordersList').innerHTML=filtered.map(renderCard).join('');
+}
+
+function renderCard(o){
+  var st=statusInfo(o.status||'pending');
+  var items=Array.isArray(o.items)?o.items:[];
+  var total=o.total||items.reduce((s,i)=>s+(i.price||0)*(i.qty||1),0);
+  var isDelivery=(o.deliveryType||'pickup')==='delivery';
+  var addr=settings.address||'אתרוג 3 דירה 16, חריש';
+  var phone=normPhone(o.phone);
+  var s=o.status||'pending';
+  var isPaid=!!o.isPaid;
+
+  // actions
+  var acts='';
+  if(s==='pending') acts+=`<button class="act act-confirm" onclick="window._act('${o.id}','confirmed')">✅ התקבלה</button>`;
+  if(s==='confirmed') acts+=`<button class="act act-progress" onclick="window._act('${o.id}','in_progress')">🔧 בהכנה</button>`;
+  if(s==='in_progress') acts+=`<button class="act act-ready" onclick="window._act('${o.id}','ready')">🍰 מוכן</button>`;
+  if(s==='ready') acts+=`<button class="act act-done" onclick="window._act('${o.id}','completed')">🏁 הושלם</button>`;
+  if(s!=='cancelled'&&s!=='completed') acts+=`<button class="act act-cancel" onclick="window._act('${o.id}','cancelled')">✕ בטל</button>`;
+  if(phone) acts+=`<a class="act act-wa" href="https://wa.me/${phone}" target="_blank">💬 WA</a>`;
+  if(o.email) acts+=`<a class="act act-mail" href="mailto:${o.email}" target="_blank">📧 מייל</a>`;
+
+  // items html
+  var itemsHtml='';
+  if(items.length){
+    itemsHtml=`<div class="oc-items-wrap">
+      <div class="oc-items-title">פרטי ההזמנה</div>
+      ${items.map((item,idx)=>{
+        var details=[];
+        if(item.size) details.push(['גודל',item.size]);
+        if(item.flavor) details.push(['טעם',item.flavor]);
+        if(item.variant) details.push(['סוג',item.variant]);
+        if(item.color) details.push(['צבע',item.color]);
+        if(item.filling) details.push(['מילוי',item.filling]);
+        if(item.layers) details.push(['שכבות',item.layers]);
+        if(item.decoration) details.push(['קישוט',item.decoration]);
+        if(item.note) details.push(['הערה',item.note]);
+        var hasDetails=details.length>0;
+        return `<div class="oc-item" id="oci-${o.id}-${idx}">
+          <div class="oc-item-row" onclick="document.getElementById('oci-${o.id}-${idx}').classList.toggle('open')">
+            <div class="oc-item-emoji">${itemEmoji(item.name)}</div>
+            <div class="oc-item-name">${item.name||'פריט'}</div>
+            <div class="oc-item-qty">× ${item.qty||1}</div>
+            <div class="oc-item-price">₪${((item.price||0)*(item.qty||1)).toFixed(0)}</div>
+            ${hasDetails?`<div class="oc-item-chevron">▼</div>`:''}
+          </div>
+          ${hasDetails?`<div class="oc-item-details">${details.map(([l,v])=>`<div class="oc-item-detail-row"><span>${l}:</span><span>${v}</span></div>`).join('')}</div>`:''}
+        </div>`;
+      }).join('')}
+      <div class="oc-total-row">
+        <span class="oc-total-lbl">סה"כ לתשלום</span>
+        <span class="oc-total-val">₪${Number(total).toFixed(0)}</span>
+      </div>
+    </div>`;
+  }
+
+  // inscription + note
+  var extraHtml='';
+  if(o.inscription) extraHtml+=`<div class="oc-note-block"><div class="oc-note-lbl">✍️ כיתוב על העוגה</div><div class="oc-note-txt">${o.inscription}</div></div>`;
+  if(o.note) extraHtml+=`<div class="oc-note-block" style="border-right-color:#7a5040"><div class="oc-note-lbl">💬 הערת הלקוח</div><div class="oc-note-txt">${o.note}</div></div>`;
+
+  // delivery
+  var delivHtml=`<div class="oc-delivery">
+    <div class="oc-del-item"><div class="oc-del-lbl">סוג מסירה</div><div class="oc-del-val">${isDelivery?'🚗 משלוח':'🏠 איסוף עצמי'}</div></div>
+    ${o.deliveryDate?`<div class="oc-del-item"><div class="oc-del-lbl">תאריך מסירה</div><div class="oc-del-val">${fmtDelivDate(o.deliveryDate)}</div></div>`:''}
+    ${o.deliveryTime?`<div class="oc-del-item"><div class="oc-del-lbl">שעה</div><div class="oc-del-val" style="color:#c8704a;font-size:16px;font-weight:800">⏰ ${o.deliveryTime}</div></div>`:''}
+    ${isDelivery&&o.city?`<div class="oc-del-item"><div class="oc-del-lbl">עיר</div><div class="oc-del-val">📍 ${o.city}</div></div>`:''}
+    ${isDelivery&&o.street?`<div class="oc-del-item"><div class="oc-del-lbl">כתובת</div><div class="oc-del-val">${o.street}</div></div>`:''}
+    ${!isDelivery?`<div class="oc-del-item"><div class="oc-del-lbl">נקודת איסוף</div><div class="oc-del-val">📍 ${addr}</div></div>`:''}
+  </div>`;
+
+  // payment
+  var payHtml=`<div class="oc-payment">
+    <span class="oc-pay-lbl">💳 תשלום:</span>
+    <select class="pay-method-sel" onchange="window._updatePay('${o.id}','paymentMethod',this.value)">
+      <option value="" ${!o.paymentMethod?'selected':''}>בחרי שיטה</option>
+      <option value="מזומן" ${o.paymentMethod==='מזומן'?'selected':''}>💵 מזומן</option>
+      <option value="ביט" ${o.paymentMethod==='ביט'?'selected':''}>📱 ביט</option>
+      <option value="פייביט" ${o.paymentMethod==='פייביט'?'selected':''}>📱 פייביט</option>
+      <option value="העברה" ${o.paymentMethod==='העברה'?'selected':''}>🏦 העברה בנקאית</option>
+      <option value="כרטיס" ${o.paymentMethod==='כרטיס'?'selected':''}>💳 כרטיס</option>
+    </select>
+    <div class="pay-toggle">
+      <button class="pay-btn ${isPaid?'paid':'unpaid'}" id="paybtn-${o.id}" onclick="window._togglePaid('${o.id}')">${isPaid?'✓ שילם':'✗ לא שילם'}</button>
+    </div>
+  </div>`;
+
+  return `<div class="oc" id="oc-${o.id}">
+    <div class="oc-hdr">
+      <div class="oc-avatar" onclick="window._openCust('${o.id}')">👤</div>
+      <div class="oc-id">
+        <div class="oc-name" onclick="window._openCust('${o.id}')">
+          ${o.name||'לקוח'} <span class="oc-name-link">← פרופיל</span>
+        </div>
+        <div class="oc-contacts">
+          ${o.phone?`<span class="oc-contact">📱 ${o.phone}</span>`:''}
+          ${o.email?`<span class="oc-contact">📧 ${o.email}</span>`:''}
+        </div>
+        <div class="oc-timing">
+          ${fmtTime(o.createdAt)?`<span>🕐 הוזמן: ${fmtTime(o.createdAt)}</span>`:''}
+          ${o.deliveryTime?`<span class="oc-timing-highlight">⏰ מסירה: ${o.deliveryTime}</span>`:''}
+        </div>
+      </div>
+      <div class="oc-badges">
+        <span class="badge ${st.cls}">${st.text}</span>
+        <span class="badge ${isDelivery?'b-delivery':'b-pickup'}">${isDelivery?'🚗':'🏠'}</span>
+        ${isPaid?`<span class="badge b-paid">✓ שילם</span>`:`<span class="badge b-unpaid">✗ חייב</span>`}
+      </div>
+    </div>
+    ${itemsHtml}
+    ${extraHtml?`<div style="padding:0 0 4px">${extraHtml}</div>`:''}
+    ${delivHtml}
+    ${payHtml}
+    <div class="oc-actions">${acts}</div>
+  </div>`;
+}
+
+/* ── status actions ── */
+window._act=async function(orderId,newStatus){
+  var order=allOrders.find(o=>o.id===orderId);
+  if(!order) return;
+  try{
+    await updateDoc(doc(db,'orders',orderId),{status:newStatus,updatedAt:serverTimestamp()});
+    var idx=allOrders.findIndex(o=>o.id===orderId);
+    if(idx!==-1) allOrders[idx].status=newStatus;
+    renderOrders();renderKpis();updateBadge();updateAlert();
+
+    var name=order.name||'';
+    var now=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+    var addr=settings.address||'אתרוג 3 דירה 16, חריש';
+    var isDelivery=(order.deliveryType||'pickup')==='delivery';
+    var delTime=order.deliveryTime||'';
+    var waMsg='';
+
+    if(newStatus==='confirmed'){
+      waMsg=`שלום ${name}! 👋\nההזמנה שלך התקבלה בשעה ${now} 🎉\nנעדכן אותך כשתהיה מוכנה לאיסוף.\nתודה שהזמנת מ-שרה 🍰`;
+      toast('✅ הזמנה התקבלה');
+    } else if(newStatus==='in_progress'){
+      toast('🔧 בהכנה');
+    } else if(newStatus==='ready'&&!isDelivery){
+      waMsg=`שלום ${name}! 🍰\n\nההזמנה שלך מוכנה ומחכה לך! 🎉\n\n📍 כתובת לאיסוף:\n${addr}${delTime?'\n⏰ שעת איסוף: '+delTime:''}\n\nנשמח לראות אותך! 😊\nשרה 🍰`;
+      toast('🍰 מוכן לאיסוף');
+    } else if(newStatus==='ready'&&isDelivery){
+      waMsg=`שלום ${name}! 🚗\n\nההזמנה שלך יצאה למשלוח ובדרך אלייך!${delTime?'\n⏰ שעת הגעה משוערת: '+delTime:''}\n\nתודה שהזמנת מ-שרה 🍰\nנשמח לראות אותך בפעם הבאה ❤️`;
+      toast('🚗 משלוח יצא');
+    } else if(newStatus==='completed'){
+      toast('🏁 הושלם');
+    } else if(newStatus==='cancelled'){
+      toast('❌ בוטל','warn');
+    }
+
+    if(waMsg&&(newStatus==='confirmed'||newStatus==='ready')){
+      var ph=normPhone(order.phone);
+      if(ph) window.open(`https://wa.me/${ph}?text=${encodeURIComponent(waMsg)}`,'_blank');
+    }
+  }catch(err){toast('שגיאה','err');}
+};
+
+/* payment */
+window._updatePay=async function(orderId,field,value){
+  try{
+    await updateDoc(doc(db,'orders',orderId),{[field]:value,updatedAt:serverTimestamp()});
+    var idx=allOrders.findIndex(o=>o.id===orderId);
+    if(idx!==-1) allOrders[idx][field]=value;
+    toast('עודכן ✓');
+  }catch(e){toast('שגיאה','err');}
+};
+window._togglePaid=async function(orderId){
+  var order=allOrders.find(o=>o.id===orderId);
+  if(!order) return;
+  var newVal=!order.isPaid;
+  try{
+    await updateDoc(doc(db,'orders',orderId),{isPaid:newVal,updatedAt:serverTimestamp()});
+    var idx=allOrders.findIndex(o=>o.id===orderId);
+    if(idx!==-1) allOrders[idx].isPaid=newVal;
+    var btn=document.getElementById('paybtn-'+orderId);
+    if(btn){btn.className='pay-btn '+(newVal?'paid':'unpaid');btn.textContent=newVal?'✓ שילם':'✗ לא שילם';}
+    // re-render badge
+    var el=document.querySelector(`#oc-${orderId} .oc-badges`);
+    if(el){
+      var paidBadge=el.querySelector('.b-paid,.b-unpaid');
+      if(paidBadge) paidBadge.outerHTML=newVal?'<span class="badge b-paid">✓ שילם</span>':'<span class="badge b-unpaid">✗ חייב</span>';
+    }
+    toast(newVal?'✓ סומן כשילם':'✗ סומן כלא שילם');
+  }catch(e){toast('שגיאה','err');}
+};
+
+/* ── customer modal ── */
+window._openCust=async function(orderId){
+  var order=allOrders.find(o=>o.id===orderId);
+  if(!order) return;
+  $('custModal').classList.add('on');
+  $('cmName').textContent=order.name||'לקוח';
+  var contacts=[];
+  if(order.phone) contacts.push('📱 '+order.phone);
+  if(order.email) contacts.push('📧 '+order.email);
+  $('cmContacts').innerHTML=contacts.join('<br>');
+  $('cmSince').textContent='';
+  $('cmOrders').textContent='...';$('cmSpent').textContent='...';$('cmPoints').textContent='...';
+  $('cmOrdersList').innerHTML='<div style="padding:14px 20px;color:#7a5040;font-size:13px">טוען...</div>';
+
+  // find customer by phone or email
+  var phone=normPhone(order.phone);
+  var custOrders=allOrders.filter(o=>{
+    if(phone&&normPhone(o.phone)===phone) return true;
+    if(order.email&&o.email&&o.email.toLowerCase()===order.email.toLowerCase()) return true;
+    return false;
+  });
+  var totalSpent=custOrders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0);
+
+  $('cmOrders').textContent=custOrders.length;
+  $('cmSpent').textContent='₪'+totalSpent.toFixed(0);
+
+  // try to get points from users collection
+  try{
+    var usersSnap=await getDocs(collection(db,'users'));
+    var custUser=usersSnap.docs.map(d=>({id:d.id,...d.data()})).find(u=>{
+      if(phone&&normPhone(u.phone||'')===phone) return true;
+      if(order.email&&u.email&&u.email.toLowerCase()===order.email.toLowerCase()) return true;
+      return false;
+    });
+    if(custUser){
+      $('cmPoints').textContent=custUser.points||0;
+      if(custUser.createdAt){
+        var cd=custUser.createdAt.toDate?custUser.createdAt.toDate():new Date(custUser.createdAt);
+        $('cmSince').textContent='חבר מאז: '+cd.toLocaleDateString('he-IL',{day:'numeric',month:'long',year:'numeric'});
+      }
+    } else {
+      $('cmPoints').textContent='–';
+    }
+  }catch(e){$('cmPoints').textContent='–';}
+
+  // order history
+  var sorted=[...custOrders].sort((a,b)=>{
+    var da=a.createdAt?.toDate?a.createdAt.toDate():new Date(0);
+    var db2=b.createdAt?.toDate?b.createdAt.toDate():new Date(0);
+    return db2-da;
+  });
+  if(!sorted.length){$('cmOrdersList').innerHTML='<div style="padding:14px 20px;color:#5a3020;font-size:13px;text-align:center">אין הזמנות קודמות</div>';return;}
+  $('cmOrdersList').innerHTML=sorted.map(o=>{
+    var st=statusInfo(o.status||'pending');
+    var items=Array.isArray(o.items)?o.items:[];
+    var itemSummary=items.map(i=>(i.name||'פריט')+(i.qty>1?' ×'+i.qty:'')).join(', ')||'הזמנה';
+    return `<div class="cm-order-row" style="cursor:pointer" onclick="document.getElementById('oc-${o.id}')?.scrollIntoView({behavior:'smooth'});document.getElementById('custModal').classList.remove('on')">
+      <div class="cm-or-date">${fmtCreatedDate(o.createdAt)}</div>
+      <div class="cm-or-items">${itemSummary}</div>
+      <div class="cm-or-total">₪${Number(o.total||0).toFixed(0)}</div>
+      <div class="cm-or-badge"><span class="badge ${st.cls}" style="font-size:10px;padding:3px 8px">${st.text}</span></div>
+    </div>`;
+  }).join('');
+};
+$('custModalClose').addEventListener('click',()=>$('custModal').classList.remove('on'));
+$('custModal').addEventListener('click',e=>{if(e.target===$('custModal'))$('custModal').classList.remove('on');});
+
+/* ── kpis ── */
+async function loadCustomers(){
+  try{var snap=await getDocs(collection(db,'users'));allCustomers=snap.docs.map(d=>({id:d.id,...d.data()})).filter(c=>c.email&&!c.email.includes('@sara.local'));$('kCustomers').textContent=allCustomers.length;}catch(e){}
+}
+function renderKpis(){
+  var t0=new Date();t0.setHours(0,0,0,0);var w0=new Date(t0-6*86400000);
+  var tOrd=allOrders.filter(o=>{var d=o.createdAt?.toDate?o.createdAt.toDate():new Date();return d>=t0;});
+  var wOrd=allOrders.filter(o=>{var d=o.createdAt?.toDate?o.createdAt.toDate():new Date();return d>=w0;});
+  var set=(id,v)=>{var el=$(id);if(el)el.textContent=v;};
+  set('kToday',tOrd.length);set('kTodayRev',tOrd.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0).toFixed(0));
+  set('kPending',allOrders.filter(o=>(o.status||'pending')==='pending').length);
+  set('kReady',allOrders.filter(o=>o.status==='ready').length);
+  set('kTotal',allOrders.length);
+  set('kRev',allOrders.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0).toFixed(0));
+  set('kWeek',wOrd.length);
+}
+
+/* ── settings ── */
+async function loadSettings(){
+  try{var snap=await getDoc(doc(db,'settings','main'));settings=snap.exists()?snap.data():{};$('sAddr').value=settings.address||'אתרוג 3 דירה 16, חריש';$('sWa').value=settings.whatsapp||'972523394838';$('sHours').value=settings.hours||'';$('sBanner').value=settings.banner||'';$('sOrdersOpen').checked=settings.ordersClosed!==true;}catch(e){}
+}
+$('saveSettingsBtn').addEventListener('click',async()=>{
+  var btn=$('saveSettingsBtn'),msg=$('setMsg');btn.disabled=true;btn.textContent='⏳ שומר...';msg.textContent='';
+  try{var data={address:$('sAddr').value.trim(),whatsapp:$('sWa').value.trim(),hours:$('sHours').value.trim(),banner:$('sBanner').value.trim(),ordersClosed:!$('sOrdersOpen').checked,updatedAt:serverTimestamp()};await setDoc(doc(db,'settings','main'),data,{merge:true});settings={...settings,...data};msg.textContent='✅ נשמר';msg.className='set-msg ok';toast('הגדרות נשמרו ✅');}
+  catch(err){msg.textContent='שגיאה';msg.className='set-msg err';toast('שגיאה','err');}
+  btn.disabled=false;btn.textContent='💾 שמור הגדרות';setTimeout(()=>msg.textContent='',4000);
+});
+
+/* ── messages ── */
+const TMPLS={promo:'🎉 מבצע מיוחד!\n[תיאור המבצע]\nתקף עד [תאריך] 🍰',holiday:'🍰 חג שמח מכל הלב!\nשרה מאחלת לכם ולמשפחתכם חג שמח ומתוק ❤️',update:'📢 עדכון חשוב:\n[כתבי את העדכון]\n\nשרה 🍰',closed:'🔒 לידיעתכם,\nהזמנות סגורות זמנית.\nנחזור בקרוב! תודה 🙏',open:'✅ שמחה לבשר — אנחנו חזרנו!\nמקבלות הזמנות 🍰\nמוזמנות להזמין!'};
+document.querySelectorAll('.tpl').forEach(b=>b.addEventListener('click',()=>{if(TMPLS[b.dataset.tpl])$('bulkMsg').value=TMPLS[b.dataset.tpl];}));
+$('bulkMailBtn').addEventListener('click',()=>{var emails=allCustomers.map(c=>c.email).filter(Boolean).join(';');if(!emails){toast('לא נמצאו לקוחות עם מייל','warn');return;}var msg=($('bulkMsg').value||'').trim();location.href=`mailto:?bcc=${encodeURIComponent(emails)}&subject=${encodeURIComponent('הודעה מ-שרה 🍰')}&body=${encodeURIComponent(msg)}`;});
+$('copyEmailsBtn').addEventListener('click',()=>{var emails=allCustomers.map(c=>c.email).filter(Boolean).join(', ');if(!emails){toast('לא נמצאו כתובות','warn');return;}navigator.clipboard.writeText(emails).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתק:',emails));});
+$('custSearch').addEventListener('input',function(){var q=this.value.trim().toLowerCase();if(!q){$('custDrop').classList.remove('on');return;}var res=allCustomers.filter(c=>(c.fullName||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q));if(!res.length){$('custDrop').classList.remove('on');return;}$('custDrop').innerHTML=res.slice(0,6).map(c=>`<div class="cust-row" onclick="window._selCust('${c.id}')"><div class="cust-row-name">${c.fullName||c.email||'לקוח'}</div><div class="cust-row-sub">${[c.phone,c.email].filter(Boolean).join(' · ')}</div></div>`).join('');$('custDrop').classList.add('on');});
+document.addEventListener('click',e=>{if(!e.target.closest('.cust-wrap'))$('custDrop').classList.remove('on');});
+window._selCust=function(id){selCust=allCustomers.find(c=>c.id===id);if(!selCust)return;$('custSearch').value='';$('custDrop').classList.remove('on');$('selCustCard').style.display='block';$('scName').textContent=selCust.fullName||'לקוח';$('scSub').textContent=[selCust.phone,selCust.email].filter(Boolean).join(' · ');};
+$('custWaBtn').addEventListener('click',()=>{if(!selCust){toast('בחרי לקוח','warn');return;}var ph=normPhone(selCust.phone);if(!ph){toast('אין מספר','warn');return;}window.open(`https://wa.me/${ph}?text=${encodeURIComponent(($('custMsg').value||'').trim())}`,'_blank');});
+$('custMailBtn').addEventListener('click',()=>{if(!selCust){toast('בחרי לקוח','warn');return;}if(!selCust.email){toast('אין מייל','warn');return;}location.href=`mailto:${selCust.email}?subject=${encodeURIComponent('הודעה מ-שרה 🍰')}&body=${encodeURIComponent(($('custMsg').value||'').trim())}`;});
+</script>
+</body>
+</html>
