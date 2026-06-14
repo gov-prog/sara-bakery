@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>פאנל ניהול | שרה 🍰</title>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{font-family:'Assistant',sans-serif;background:#fff8f3;color:#2d1005;direction:rtl;min-height:100vh}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#fff8f0,#fdecd8 60%,#f5d4b8)}
+.lc{background:#fff;border:1.5px solid #e8c8a8;border-radius:24px;padding:44px 36px 36px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(200,112,74,.14);text-align:center}
+.lc-logo{font-size:52px;margin-bottom:10px}.lc-title{font-size:26px;font-weight:800;color:#2d1005;margin-bottom:4px}.lc-sub{font-size:14px;color:#9a7060;margin-bottom:28px}
+.lc input{width:100%;background:#fdf5ef;border:1.5px solid #e0c8b8;border-radius:12px;padding:13px 15px;font-size:15px;font-family:inherit;color:#2d1005;outline:none;margin-bottom:13px;direction:ltr;text-align:left;transition:border-color .2s}
+.lc input:focus{border-color:#c8704a}.lc input::placeholder{direction:rtl;text-align:right;color:#b09080}
+.lc-btn{width:100%;background:linear-gradient(135deg,#c8704a,#e8905a);border:none;border-radius:13px;padding:15px;font-size:16px;font-weight:800;color:#fff;font-family:inherit;cursor:pointer;transition:opacity .2s}
+.lc-btn:hover{opacity:.9}.lc-btn:disabled{opacity:.45;cursor:not-allowed}
+.lc-msg{font-size:13px;font-weight:700;min-height:20px;margin-top:12px;color:#c03030}
+.lc-back{margin-top:18px;font-size:12px;color:#9a7060}.lc-back a{color:#c8704a}
+#dash{display:none;flex-direction:column;min-height:100vh}
+#dash.on{display:flex}
+.hdr{background:rgba(255,255,255,.97);border-bottom:1.5px solid #ecd8c8;height:56px;padding:0 16px;position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:10px;backdrop-filter:blur(10px)}
+.hdr-logo{font-size:17px;font-weight:800;flex:1;white-space:nowrap;color:#2d1005}.hdr-logo span{color:#c8704a}
+.hdr-clock{font-size:13px;font-weight:700;color:#9a7060;white-space:nowrap}
+.hdr-btn{border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+.hdr-back{background:#fff3ec;color:#c8704a;border:1px solid #e8d0c0}.hdr-out{background:#fff0f0;color:#c03030;border:1px solid #f0c8c8}
+.hdr-btn:hover{opacity:.75}
+.tabs-bar{background:#fff;border-bottom:1.5px solid #ecd8c8;display:flex;padding:0 12px;gap:2px;overflow-x:auto;scrollbar-width:none;box-shadow:0 2px 8px rgba(200,112,74,.06)}
+.tabs-bar::-webkit-scrollbar{display:none}
+.tb{background:none;border:none;color:#9a7060;font-size:13px;font-weight:700;font-family:inherit;padding:12px 13px;cursor:pointer;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap}
+.tb.on{color:#c8704a;border-bottom-color:#c8704a}.tb:hover:not(.on){color:#2d1005}
+.nb{display:inline-flex;align-items:center;justify-content:center;background:#c8704a;color:#fff;font-size:10px;font-weight:800;border-radius:999px;min-width:17px;height:17px;padding:0 4px;margin-right:4px}
+.pane{flex:1;padding:16px;max-width:960px;width:100%;margin:0 auto}
+.date-nav{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.date-arrow{background:#fff;border:1.5px solid #e8d0c0;color:#c8704a;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .2s;flex-shrink:0}
+.date-arrow:hover{background:#fff3ec;border-color:#c8704a}
+.date-center{flex:1;text-align:center;background:#fff;border:1.5px solid #e8d0c0;border-radius:12px;padding:9px 14px;cursor:pointer;min-width:130px;transition:border-color .2s}
+.date-center:hover{border-color:#c8704a}
+.date-main{font-size:16px;font-weight:800;color:#2d1005}.date-sub{font-size:11px;color:#9a7060;margin-top:2px}
+.date-btn{background:#fff;border:1.5px solid #e8d0c0;color:#7a5040;border-radius:10px;padding:8px 13px;font-size:12px;font-weight:800;font-family:inherit;cursor:pointer;flex-shrink:0;white-space:nowrap;transition:all .2s}
+.date-btn.active{background:#c8704a;color:#fff;border-color:#c8704a}.date-btn:hover:not(.active){background:#fff3ec;border-color:#c8704a}
+input[type="date"]#datePicker{background:#fff;border:1.5px solid #e8d0c0;color:#2d1005;border-radius:10px;padding:8px 10px;font-size:13px;font-family:inherit;outline:none;cursor:pointer;display:none}
+input[type="date"]#datePicker.on{display:block}
+.day-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.ds{background:#fff;border:1.5px solid #ecd8c8;border-radius:14px;padding:10px 14px;flex:1;min-width:80px;text-align:center;box-shadow:0 2px 8px rgba(200,112,74,.06)}
+.ds-v{font-size:22px;font-weight:800;color:#c8704a}.ds-l{font-size:10px;color:#9a7060;margin-top:2px;font-weight:700}
+.sf-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.sf{background:#fff;border:1.5px solid #e8d0c0;color:#9a7060;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
+.sf.on{background:#c8704a;border-color:#c8704a;color:#fff}.sf:hover:not(.on){border-color:#c8704a;color:#c8704a}
+.oc{background:#fff;border:1.5px solid #ecd8c8;border-radius:18px;margin-bottom:14px;overflow:hidden;transition:border-color .2s,box-shadow .2s;box-shadow:0 2px 12px rgba(200,112,74,.07)}
+.oc:hover{border-color:#d0a888;box-shadow:0 6px 20px rgba(200,112,74,.12)}.oc.urgent{border-color:#c8704a;box-shadow:0 4px 16px rgba(200,112,74,.2)}
+.oc-hdr{padding:14px 16px;display:flex;gap:12px;align-items:flex-start}
+.oc-avatar{width:46px;height:46px;border-radius:50%;background:#fdf0e8;border:2px solid #e8d0c0;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;cursor:pointer;transition:border-color .2s;font-weight:800;color:#c8704a}
+.oc-avatar:hover{border-color:#c8704a}
+.oc-id{flex:1;min-width:0}
+.oc-name{font-size:17px;font-weight:800;color:#2d1005;cursor:pointer;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.oc-name:hover{color:#c8704a}
+.oc-name-hint{font-size:11px;color:#b09080;font-weight:600}
+.oc-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;align-items:center}
+.oc-contact{font-size:13px;color:#7a5040}
+.oc-num{font-size:11px;color:#9a7060;background:#f5ece5;border-radius:6px;padding:2px 7px}
+.oc-timing{background:#fff8f3;border:1.5px solid #e8c8a8;border-radius:10px;padding:6px 12px;text-align:center;flex-shrink:0}
+.oc-timing-time{font-size:18px;font-weight:800;color:#c8704a}
+.oc-timing-date{font-size:11px;color:#9a7060;margin-top:1px}
+.oc-timing-mode{font-size:11px;color:#8a6040;margin-top:1px;font-weight:700}
+.stepper-wrap{padding:12px 16px;border-top:1px solid #f0e0d0}
+.stepper{display:flex;align-items:center;margin-bottom:10px}
+.ss{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;cursor:default;user-select:none}
+.sd{width:36px;height:36px;border-radius:50%;border:2px solid #e0cfc5;background:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.ss.done .sd{background:#e8f8ee;border-color:#2e7d32;font-size:13px;color:#2e7d32}
+.ss.current .sd{background:#fff8f3;border-color:#c8704a;box-shadow:0 0 10px rgba(200,112,74,.3)}
+.ss.next .sd{border-color:#c8704a;background:#fff3ec}
+.ss.future .sd{opacity:.35}
+.slb{font-size:10px;font-weight:700;text-align:center;margin-top:2px;white-space:nowrap}
+.ss.done .slb{color:#2e7d32}.ss.current .slb{color:#c8704a}.ss.next .slb{color:#e8905a}.ss.future .slb{color:#c0a898}
+.sl{flex:1;height:2px;background:#ecddd5;min-width:6px;margin-bottom:18px}
+.sl.done{background:#4caf50}
+.adv-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;background:linear-gradient(135deg,#c8704a,#e8905a);border:none;border-radius:11px;padding:11px;font-size:14px;font-weight:800;color:#fff;font-family:inherit;cursor:pointer;transition:opacity .2s}
+.adv-btn:hover{opacity:.85}
+.status-cancelled{text-align:center;padding:12px;font-size:15px;font-weight:700;color:#c03030;background:#fff0f0;border-radius:10px;border:1px solid #f0c8c8}
+.status-done{text-align:center;padding:12px;font-size:15px;font-weight:700;color:#2e7d32}
+.action-row{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.act-sm{flex:1;border:none;border-radius:9px;padding:8px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s;min-width:80px}
+.act-sm:hover{opacity:.8}
+.act-cancel{background:#fff5e0;color:#a05010;border:1px solid #e8c878}
+.act-delete{background:#fff0f0;color:#c03030;border:1px solid #f0c8c8}
+.oc-items{border-top:1px solid #f0e0d0}
+.items-toggle{padding:10px 16px;cursor:pointer;font-size:13px;font-weight:700;color:#9a7060;display:flex;align-items:center;gap:8px;transition:color .2s}
+.items-toggle:hover{color:#2d1005}
+.items-list{display:none;padding:0 16px 14px}.items-list.on{display:block}
+.item-row{padding:8px 0;border-bottom:1px solid #f5ece5;display:flex;gap:8px;align-items:flex-start}
+.item-row:last-child{border-bottom:none}
+.item-qty{font-size:13px;font-weight:800;color:#c8704a;background:#fff3ec;border-radius:8px;padding:2px 8px;flex-shrink:0}
+.item-name{font-size:14px;font-weight:700;color:#2d1005;flex:1}
+.item-details{font-size:12px;color:#9a7060;margin-top:2px}
+.item-price{font-size:13px;font-weight:800;color:#c8704a;flex-shrink:0}
+.oc-pay{padding:12px 16px;border-top:1px solid #f0e0d0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pay-label{font-size:13px;font-weight:700;color:#7a5040;flex-shrink:0}
+.pay-select{background:#fff;border:1.5px solid #e8d0c0;color:#2d1005;border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;outline:none;cursor:pointer;flex:1;min-width:120px}
+.pay-select:focus{border-color:#c8704a}
+.pay-toggle{display:flex;align-items:center;gap:6px;margin-right:auto;flex-shrink:0}
+.pay-toggle label{font-size:13px;font-weight:700;color:#7a5040;cursor:pointer}
+.pay-toggle input[type=checkbox]{width:38px;height:20px;appearance:none;background:#e8d8d0;border:1.5px solid #d0b8a8;border-radius:12px;cursor:pointer;position:relative;transition:all .2s;flex-shrink:0}
+.pay-toggle input[type=checkbox]:checked{background:#2e7d32;border-color:#2e7d32}
+.pay-toggle input[type=checkbox]::after{content:'';position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:all .2s}
+.pay-toggle input[type=checkbox]:checked::after{right:auto;left:2px}
+.oc-acts{padding:10px 16px;border-top:1px solid #f0e0d0;display:flex;gap:8px;flex-wrap:wrap}
+.act{display:inline-flex;align-items:center;gap:5px;border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;text-decoration:none;white-space:nowrap}
+.act:hover{opacity:.8}
+.act-wa{background:#e8fde8;color:#1a7a28;border:1px solid #a8dca8}
+.act-mail{background:#e8eeff;color:#3050c0;border:1px solid #b0c0f0}
+.note-box{padding:10px 16px;background:#fffaf5;border-top:1px solid #f0e0d0;font-size:13px;color:#9a7060;font-style:italic}
+.note-box strong{color:#c8704a;font-style:normal}
+/* MODALS */
+#custModal,#prodModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:16px}
+#custModal.on,#prodModal.on{display:flex}
+.cm-box,.pm-box{background:#fff;border:1.5px solid #e8c8a8;border-radius:20px;padding:0;width:100%;max-width:480px;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.cm-hdr,.pm-hdr{padding:20px;border-bottom:1px solid #f0e0d0;display:flex;gap:12px;align-items:center;position:sticky;top:0;background:#fff;border-radius:20px 20px 0 0}
+.cm-avatar{width:54px;height:54px;border-radius:50%;background:#fdf0e8;border:2px solid #e8c8a8;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.cm-info,.pm-info{flex:1;min-width:0}
+.cm-name,.pm-title{font-size:18px;font-weight:800;color:#2d1005}
+.cm-sub{font-size:13px;color:#9a7060;margin-top:3px}
+.cm-close,.pm-close{background:none;border:1.5px solid #e8d0c0;color:#9a7060;border-radius:10px;padding:7px 12px;font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;flex-shrink:0}
+.cm-close:hover,.pm-close:hover{color:#c03030;border-color:#f0c8c8}
+.cm-section{padding:14px 20px;border-bottom:1px solid #f5ece5}
+.cm-section h4{font-size:12px;font-weight:800;color:#9a7060;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.cm-stat-row{display:flex;gap:10px;flex-wrap:wrap}
+.cm-stat{background:#fff8f3;border:1px solid #ecd8c8;border-radius:10px;padding:8px 14px;text-align:center;flex:1;min-width:80px}
+.cm-stat-v{font-size:20px;font-weight:800;color:#c8704a}.cm-stat-l{font-size:10px;color:#9a7060;margin-top:2px}
+.cm-orders{padding:14px 20px}
+.cm-orders h4{font-size:12px;font-weight:800;color:#9a7060;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.cm-order-row{padding:10px;background:#fff8f3;border:1px solid #ecd8c8;border-radius:10px;margin-bottom:8px}
+.cm-order-date{font-size:12px;color:#9a7060}.cm-order-sum{font-size:14px;font-weight:700;color:#2d1005}
+.cm-order-status{font-size:11px;font-weight:700;color:#c8704a}
+/* PRODUCTS PANE */
+.prod-mgmt-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.prod-mgmt-title{font-size:16px;font-weight:800;color:#c8704a}
+.prod-mgmt-btns{display:flex;gap:8px;flex-wrap:wrap}
+.prod-row{background:#fff;border:1.5px solid #ecd8c8;border-radius:14px;margin-bottom:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;transition:all .2s;box-shadow:0 1px 6px rgba(200,112,74,.05)}
+.prod-row:hover{border-color:#c8704a;box-shadow:0 4px 14px rgba(200,112,74,.12)}
+.prod-row-img{width:54px;height:54px;border-radius:10px;object-fit:cover;background:#fdf0e8;flex-shrink:0;border:1px solid #ecd8c8}
+.prod-row-img-placeholder{width:54px;height:54px;border-radius:10px;background:#fdf0e8;border:1px solid #ecd8c8;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.prod-row-info{flex:1;min-width:0}
+.prod-row-name{font-size:15px;font-weight:800;color:#2d1005}
+.prod-row-meta{font-size:12px;color:#9a7060;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.prod-row-price{font-size:16px;font-weight:800;color:#c8704a;flex-shrink:0}
+.prod-row-actions{display:flex;gap:6px;flex-shrink:0}
+.cat-badge{font-size:10px;font-weight:800;padding:2px 7px;border-radius:6px;background:#f5ece5;color:#9a7060}
+.active-toggle{width:36px;height:20px;appearance:none;background:#e8d8d0;border:1.5px solid #d0b8a8;border-radius:12px;cursor:pointer;position:relative;transition:all .2s;flex-shrink:0}
+.active-toggle:checked{background:#2e7d32;border-color:#2e7d32}
+.active-toggle::after{content:'';position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:all .2s}
+.active-toggle:checked::after{right:auto;left:2px}
+/* PRODUCT MODAL FORM */
+.pm-body{padding:20px}
+.pm-field{margin-bottom:14px}
+.pm-label{font-size:12px;font-weight:800;color:#9a7060;margin-bottom:6px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.pm-input,.pm-select,.pm-textarea{width:100%;background:#fdf5ef;border:1.5px solid #e8d0c0;color:#2d1005;border-radius:10px;padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
+.pm-input:focus,.pm-select:focus,.pm-textarea:focus{border-color:#c8704a}
+.pm-textarea{resize:vertical;min-height:70px}
+.pm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pm-img-preview{width:100%;height:120px;border-radius:10px;object-fit:cover;background:#fdf0e8;border:1px solid #ecd8c8;margin-bottom:8px;display:flex;align-items:center;justify-content:center;font-size:40px}
+.pm-footer{padding:14px 20px;border-top:1px solid #f0e0d0;display:flex;gap:8px}
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-label{font-size:13px;font-weight:700;color:#7a5040;margin-bottom:6px;display:block}
+.form-input{width:100%;background:#fdf5ef;border:1.5px solid #e8d0c0;color:#2d1005;border-radius:10px;padding:10px 13px;font-size:14px;font-family:inherit;outline:none;transition:border-color .2s}
+.form-input:focus{border-color:#c8704a}
+.form-textarea{resize:vertical;min-height:100px}
+.form-btn{background:linear-gradient(135deg,#c8704a,#e8905a);border:none;border-radius:11px;padding:11px 20px;font-size:14px;font-weight:800;color:#fff;font-family:inherit;cursor:pointer;transition:opacity .2s}
+.form-btn:hover{opacity:.85}.form-btn.sec{background:#fff;color:#c8704a;border:1.5px solid #e8d0c0}
+.form-btn.sec:hover{background:#fff8f3}
+.form-btn.danger{background:#fff0f0;color:#c03030;border:1px solid #f0c8c8}
+.tpl-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tpl{background:#fff8f3;border:1px solid #e8d0c0;color:#9a7060;border-radius:8px;padding:6px 10px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s}
+.tpl:hover{border-color:#c8704a;color:#c8704a;background:#fff3ec}
+.set-msg{font-size:13px;font-weight:700;min-height:18px;margin-top:8px}
+.set-msg.ok{color:#2e7d32}.set-msg.err{color:#c03030}
+.cust-wrap{position:relative}
+.cust-drop{position:absolute;top:100%;right:0;left:0;background:#fff;border:1.5px solid #e8d0c0;border-radius:12px;margin-top:4px;z-index:50;display:none;max-height:220px;overflow:auto;box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.cust-drop.on{display:block}
+.cust-row{padding:10px 14px;cursor:pointer;border-bottom:1px solid #f5ece5}
+.cust-row:last-child{border-bottom:none}.cust-row:hover{background:#fff8f3}
+.cust-row-name{font-size:14px;font-weight:700;color:#2d1005}.cust-row-sub{font-size:12px;color:#9a7060;margin-top:2px}
+.sel-cust-card{background:#fff8f3;border:1px solid #ecd8c8;border-radius:12px;padding:12px 16px;margin-top:10px;display:none}
+.empty-state{text-align:center;padding:60px 20px;color:#b09080}
+.empty-state .es-icon{font-size:48px;margin-bottom:12px}
+.empty-state .es-txt{font-size:16px;font-weight:700;color:#9a7060}.empty-state .es-sub{font-size:13px;color:#b09080;margin-top:6px}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#c8704a;color:#fff;font-size:14px;font-weight:700;border-radius:12px;padding:12px 22px;z-index:9999;transition:transform .35s;pointer-events:none;white-space:nowrap}
+#toast.on{transform:translateX(-50%) translateY(0)}
+#toast.err{background:#c83030}#toast.warn{background:#a06020}
+/* ── Reviews ── */
+.rv-card{background:#fff;border:1.5px solid #ecd8c8;border-radius:16px;padding:16px;margin-bottom:12px;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.rv-card:hover{border-color:#c8704a;box-shadow:0 6px 18px rgba(200,112,74,.1)}
+.rv-card.pending{border-color:#e8c870;background:#fffdf5}
+.rv-card.approved{border-color:#7ad098;background:#f5fff8}
+.rv-card.rejected{opacity:.55}
+.rv-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.rv-av{width:38px;height:38px;border-radius:50%;background:#fdf0e8;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#c8704a;flex-shrink:0;border:1.5px solid #ecd8c8}
+.rv-name{font-size:15px;font-weight:800;color:#2d1005}
+.rv-meta{font-size:12px;color:#9a7060;margin-top:2px}
+.rv-stars{color:#e8a020;font-size:16px;margin-right:auto;flex-shrink:0}
+.rv-text{font-size:14px;line-height:1.6;color:#4a2810;margin-bottom:10px;padding:10px 14px;background:#fff8f3;border-radius:10px;border:1px solid #f0e0d0}
+.rv-status{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px;margin-bottom:8px}
+.rv-status.pending{background:#fff5e0;color:#a07010}
+.rv-status.approved{background:#e8f8ee;color:#1a7a28}
+.rv-status.rejected{background:#fff0f0;color:#c03030}
+.rv-actions{display:flex;gap:6px;flex-wrap:wrap}
+.rv-btn{border:none;border-radius:9px;padding:7px 14px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;transition:opacity .2s}
+.rv-btn:hover{opacity:.8}
+.rv-approve{background:#e8f8ee;color:#1a7a28;border:1.5px solid #a8d8b8}
+.rv-reject{background:#fff5e0;color:#a05010;border:1.5px solid #e8c878}
+.rv-delete{background:#fff0f0;color:#c03030;border:1.5px solid #f0c8c8}
+/* ── Sale section ── */
+.sale-type-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.sale-type-btn{flex:1;min-width:80px;background:#fff;border:1.5px solid #e8d0c0;color:#9a7060;border-radius:10px;padding:9px 8px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center}
+.sale-type-btn.on{background:#fff3ec;border-color:#c8704a;color:#c8704a}
+.sale-toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+/* ── Cust message templates ── */
+.cust-tpl-btns{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.cust-tpl{background:#fff8f3;border:1px solid #e8d0c0;color:#9a7060;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s}
+.cust-tpl:hover{border-color:#c8704a;color:#c8704a}
+</style>
+</head>
+<body>
+<div id="loginScreen">
+  <div class="lc">
+    <div class="lc-logo">🍰</div>
+    <div class="lc-title">שרה — ניהול</div>
+    <div class="lc-sub">כניסה למנהלת בלבד</div>
+    <input type="text" id="uInput" placeholder="שם משתמש" autocomplete="username">
+    <input type="password" id="pInput" placeholder="סיסמא" autocomplete="current-password">
+    <button class="lc-btn" id="loginBtn" onclick="doLogin()">כניסה</button>
+    <div class="lc-msg" id="lMsg"></div>
+    <div class="lc-back"><a href="index.html">← חזרה לאתר</a></div>
+  </div>
+</div>
+<div id="dash">
+  <div class="hdr">
+    <div class="hdr-logo">שרה <span>ניהול</span></div>
+    <div class="hdr-clock" id="clock"></div>
+    <button class="hdr-btn hdr-back" onclick="window.location='index.html'">← אתר</button>
+    <button class="hdr-btn hdr-out" onclick="doLogout()">יציאה</button>
+  </div>
+  <div class="tabs-bar">
+    <button class="tb on" onclick="showTab('orders',this)">📋 הזמנות <span class="nb" id="pendingBadge">0</span></button>
+    <button class="tb" onclick="showTab('products',this)">🛍️ מוצרים <span class="nb" id="prodBadge">0</span></button>
+    <button class="tb" onclick="showTab('messages',this)">💬 הודעות</button>
+    <button class="tb" onclick="showTab('settings',this)">⚙️ הגדרות</button>
+    <button class="tb" onclick="showTab('reviews',this)">⭐ ביקורות <span class="nb" id="reviewsBadge" style="display:none">0</span></button>
+    <button class="tb" onclick="showTab('coupons',this)">🏷️ קופונים</button>
+  </div>
+
+  <!-- ORDERS PANE -->
+  <div class="pane" id="pOrders">
+    <div class="date-nav">
+      <div class="date-arrow" onclick="shiftDate(-1)">›</div>
+      <div class="date-center" onclick="toggleDatePicker()">
+        <div class="date-main" id="dateMain">היום</div>
+        <div class="date-sub" id="dateSub"></div>
+      </div>
+      <div class="date-arrow" onclick="shiftDate(1)">‹</div>
+      <button class="date-btn" id="todayBtn" onclick="goToday()">היום</button>
+      <button class="date-btn" id="allBtn" onclick="toggleAll()">הכל</button>
+      <input type="date" id="datePicker" onchange="pickDate(this.value)">
+    </div>
+    <div class="day-sum" id="kpis"></div>
+    <div class="sf-bar">
+      <button class="sf on" onclick="setFilter('all',this)">הכל</button>
+      <button class="sf" onclick="setFilter('pending',this)">⏳ ממתינות</button>
+      <button class="sf" onclick="setFilter('confirmed',this)">✅ התקבלה</button>
+      <button class="sf" onclick="setFilter('in_progress',this)">🔧 בהכנה</button>
+      <button class="sf" onclick="setFilter('ready',this)">🍰 מוכן</button>
+      <button class="sf" onclick="setFilter('completed',this)">🏁 הושלם</button>
+    </div>
+    <div id="ordersList"></div>
+  </div>
+
+  <!-- PRODUCTS PANE -->
+  <div class="pane" id="pProducts" style="display:none">
+    <div class="prod-mgmt-bar">
+      <div class="prod-mgmt-title">🛍️ ניהול מוצרים</div>
+      <div class="prod-mgmt-btns">
+        <button class="form-btn sec" onclick="seedDefaultProducts()" style="font-size:12px;padding:8px 14px">📦 ייבא ברירת מחדל</button>
+        <button class="form-btn" onclick="openProdModal()" style="font-size:12px;padding:8px 14px">+ מוצר חדש</button>
+      </div>
+    </div>
+    <div id="prodList"><div class="empty-state"><div class="es-icon">🛍️</div><div class="es-txt">אין מוצרים עדיין</div><div class="es-sub">לחצי "ייבא ברירת מחדל" להתחלה</div></div></div>
+  </div>
+
+  <!-- MESSAGES PANE -->
+  <div class="pane" id="pMessages" style="display:none">
+    <div class="form-group">
+      <div class="form-label">שליחה לכולם</div>
+      <div class="tpl-btns">
+        <button class="tpl" data-tpl="promo">🎉 מבצע</button>
+        <button class="tpl" data-tpl="holiday">🍰 חג</button>
+        <button class="tpl" data-tpl="update">📢 עדכון</button>
+        <button class="tpl" data-tpl="closed">🔒 סגור</button>
+        <button class="tpl" data-tpl="open">✅ פתוח</button>
+      </div>
+      <textarea class="form-input form-textarea" id="bulkMsg" placeholder="תוכן ההודעה..."></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="form-btn" onclick="sendBulkMail()">📧 מייל לכולם</button>
+        <button class="form-btn sec" onclick="copyEmails()">📋 העתק מיילים</button>
+      </div>
+    </div>
+    <hr style="border-color:#2a1507;margin:20px 0">
+    <div class="form-group">
+      <div class="form-label">שלח ללקוח ספציפי</div>
+      <div class="cust-wrap">
+        <input type="text" class="form-input" id="custSearch" placeholder="חפש לפי שם / טלפון / מייל...">
+        <div class="cust-drop" id="custDrop"></div>
+      </div>
+      <div class="sel-cust-card" id="selCustCard">
+        <div style="font-size:15px;font-weight:800" id="scName"></div>
+        <div style="font-size:13px;color:#9a7060;margin-top:3px" id="scSub"></div>
+      </div>
+      <div class="cust-tpl-btns" id="custTplBtns">
+        <button class="cust-tpl" onclick="insertCustTpl('greeting')">👋 ברכה</button>
+        <button class="cust-tpl" onclick="insertCustTpl('reminder')">⏰ תזכורת</button>
+        <button class="cust-tpl" onclick="insertCustTpl('thanks')">🙏 תודה</button>
+        <button class="cust-tpl" onclick="insertCustTpl('ready')">🍰 מוכן</button>
+        <button class="cust-tpl" onclick="insertCustTpl('promo')">🎉 מבצע</button>
+      </div>
+      <textarea class="form-input form-textarea" id="custMsg" placeholder="בחרי לקוח ולחצי על תבנית..." style="margin-top:4px"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="form-btn" onclick="sendCustWa()">💬 WhatsApp</button>
+        <button class="form-btn sec" onclick="sendCustMail()">📧 מייל</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS PANE -->
+  <div class="pane" id="pSettings" style="display:none">
+    <div class="form-group"><div class="form-label">כתובת עסק</div><input type="text" class="form-input" id="sAddr" placeholder="רחוב ועיר..."></div>
+    <div class="form-group"><div class="form-label">מספר WhatsApp</div><input type="text" class="form-input" id="sWa" placeholder="972523394838"></div>
+    <div class="form-group"><div class="form-label">שעות פעילות</div><input type="text" class="form-input" id="sHours"></div>
+    <div class="form-group"><div class="form-label">בנר הודעה</div><input type="text" class="form-input" id="sBanner" placeholder="הודעה שתופיע בראש האתר..."></div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="sOrdersOpen" style="width:20px;height:20px;accent-color:#c8704a">
+      <label for="sOrdersOpen" style="font-size:14px;font-weight:700;cursor:pointer">קבלת הזמנות פתוחה</label>
+    </div>
+
+    <!-- SALE / PROMOTION SECTION -->
+    <div style="border:1.5px solid #e8c8a8;border-radius:16px;padding:18px;margin-bottom:16px;background:#fff8f3">
+      <div style="font-size:15px;font-weight:800;color:#c8704a;margin-bottom:14px">🎉 מבצע / מצבע</div>
+      <div class="sale-toggle-row">
+        <input type="checkbox" id="sSaleActive" style="width:20px;height:20px;accent-color:#c8704a" onchange="toggleSaleFields()">
+        <label for="sSaleActive" style="font-size:14px;font-weight:700;cursor:pointer">מבצע פעיל (יופיע באתר)</label>
+      </div>
+      <div id="saleFields" style="display:none">
+        <div class="form-label" style="margin-bottom:6px">סוג מבצע</div>
+        <div class="sale-type-row" id="saleTypeRow">
+          <button class="sale-type-btn on" data-type="percent" onclick="setSaleType('percent',this)">% הנחה</button>
+          <button class="sale-type-btn" data-type="1plus1" onclick="setSaleType('1plus1',this)">1+1</button>
+          <button class="sale-type-btn" data-type="2plus1" onclick="setSaleType('2plus1',this)">2+1</button>
+          <button class="sale-type-btn" data-type="custom" onclick="setSaleType('custom',this)">טקסט חופשי</button>
+        </div>
+        <div id="salePercentRow" style="margin-top:10px">
+          <div class="form-label" style="margin-bottom:6px">אחוז הנחה</div>
+          <input type="number" class="form-input" id="sSaleValue" min="1" max="99" placeholder="לדוגמה: 20" style="max-width:150px">
+        </div>
+        <div style="margin-top:10px">
+          <div class="form-label" style="margin-bottom:6px">טקסט לפס המבצע באתר</div>
+          <input type="text" class="form-input" id="sSaleText" placeholder="לדוגמה: 🎉 מבצע מיוחד! 20% הנחה על הכל!">
+        </div>
+      </div>
+    </div>
+
+    <!-- COUPON POPUP SECTION -->
+    <div style="border:1.5px solid #b0d8b0;border-radius:16px;padding:18px;margin-bottom:16px;background:#f5fff5">
+      <div style="font-size:15px;font-weight:800;color:#2e7d32;margin-bottom:14px">🏷️ פופאפ קוד קופון</div>
+      <div class="sale-toggle-row">
+        <input type="checkbox" id="sCpPopupActive" style="width:20px;height:20px;accent-color:#5cb85c" onchange="toggleCpPopupFields()">
+        <label for="sCpPopupActive" style="font-size:14px;font-weight:700;cursor:pointer">הצג פופאפ קוד קופון בכניסה לאתר</label>
+      </div>
+      <div id="cpPopupFields" style="display:none;margin-top:12px">
+        <div class="form-group">
+          <div class="form-label" style="font-size:11px">כותרת (לדוגמה: חג שבועות! 🌸)</div>
+          <input type="text" class="form-input" id="sCpPopupTitle" placeholder="חג שבועות! 🌸">
+        </div>
+        <div class="form-group">
+          <div class="form-label" style="font-size:11px">קוד קופון (מה יוצג לגולשות)</div>
+          <input type="text" class="form-input" id="sCpPopupCode" placeholder="חגשמח" style="text-transform:uppercase;font-weight:900;letter-spacing:2px">
+        </div>
+        <div class="form-group">
+          <div class="form-label" style="font-size:11px">תיאור (לדוגמה: 10% הנחה על כל ההזמנה!)</div>
+          <input type="text" class="form-input" id="sCpPopupDesc" placeholder="10% הנחה על כל ההזמנה!">
+        </div>
+        <div class="form-group">
+          <div class="form-label" style="font-size:11px">בתוקף עד (הפופאפ לא יופיע אחרי תאריך זה)</div>
+          <input type="date" class="form-input" id="sCpPopupExpiry" style="max-width:200px">
+        </div>
+      </div>
+    </div>
+
+    <button class="form-btn" id="saveSettingsBtn" onclick="saveSettings()">💾 שמור הגדרות</button>
+    <div class="set-msg" id="setMsg"></div>
+  </div>
+
+  <!-- REVIEWS PANE -->
+  <div class="pane" id="pReviews" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="font-size:16px;font-weight:800;flex:1">⭐ ביקורות לקוחות</div>
+      <div style="display:flex;gap:6px">
+        <button class="form-btn sec" onclick="loadReviews('pending')" id="rvTabPending" style="font-size:12px;padding:7px 12px">⏳ ממתינות</button>
+        <button class="form-btn sec" onclick="loadReviews('approved')" id="rvTabApproved" style="font-size:12px;padding:7px 12px">✅ מאושרות</button>
+        <button class="form-btn sec" onclick="loadReviews('all')" id="rvTabAll" style="font-size:12px;padding:7px 12px">הכל</button>
+      </div>
+    </div>
+    <div id="reviewsList"><div class="empty-state"><div class="es-icon">⭐</div><div class="es-txt">לוחצים על טאב לטעינת ביקורות</div></div></div>
+  </div>
+
+  <!-- COUPONS PANE -->
+  <div class="pane" id="pCoupons" style="display:none">
+    <div style="font-size:16px;font-weight:800;color:#2d1005;margin-bottom:16px">🏷️ ניהול קופונים</div>
+    <!-- Add new coupon -->
+    <div style="background:#fff8f3;border:1.5px solid #ecd8c8;border-radius:16px;padding:16px;margin-bottom:18px">
+      <div style="font-size:14px;font-weight:800;color:#c8704a;margin-bottom:12px">➕ הוספת קופון חדש</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end;flex-wrap:wrap">
+        <div>
+          <div class="form-label" style="font-size:11px">קוד קופון</div>
+          <input class="form-input" id="cpCode" placeholder="לדוגמה: SARA10" style="text-transform:uppercase">
+        </div>
+        <div>
+          <div class="form-label" style="font-size:11px">סוג הנחה</div>
+          <select class="form-input" id="cpType">
+            <option value="percent">אחוזים (%)</option>
+            <option value="fixed">סכום קבוע (₪)</option>
+          </select>
+        </div>
+        <div>
+          <div class="form-label" style="font-size:11px">ערך</div>
+          <input class="form-input" id="cpValue" type="number" min="1" placeholder="לדוגמה: 15">
+        </div>
+        <div>
+          <div class="form-label" style="font-size:11px">בתוקף עד (אופציונלי)</div>
+          <input class="form-input" id="cpExpiry" type="date">
+        </div>
+        <button class="form-btn" onclick="addCoupon()" style="white-space:nowrap;height:42px;margin-top:auto">+ הוסף</button>
+      </div>
+    </div>
+    <!-- Coupon list -->
+    <div id="couponsList"><div class="empty-state"><div class="es-icon">🏷️</div><div class="es-txt">אין קופונים עדיין</div></div></div>
+  </div>
+</div>
+
+<!-- CUSTOMER MODAL -->
+<div id="custModal">
+  <div class="cm-box">
+    <div class="cm-hdr">
+      <div class="cm-avatar">👤</div>
+      <div class="cm-info">
+        <div class="cm-name" id="cmName"></div>
+        <div class="cm-sub" id="cmPhone"></div>
+        <div class="cm-sub" id="cmEmail"></div>
+      </div>
+      <button class="cm-close" onclick="closeCustModal()">✕ סגור</button>
+    </div>
+    <div class="cm-section"><h4>סיכום</h4><div class="cm-stat-row" id="cmStats"></div></div>
+    <div class="cm-orders" id="cmOrders"></div>
+    <div style="padding:14px 20px;display:flex;gap:8px;flex-wrap:wrap">
+      <a class="act act-wa" id="cmWaBtn" href="#" target="_blank">💬 WhatsApp</a>
+      <a class="act act-mail" id="cmMailBtn" href="#">📧 מייל</a>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT EDIT MODAL -->
+<div id="prodModal">
+  <div class="pm-box">
+    <div class="pm-hdr">
+      <div class="pm-info">
+        <div class="pm-title" id="pmTitle">מוצר חדש</div>
+      </div>
+      <button class="pm-close" onclick="closeProdModal()">✕ סגור</button>
+    </div>
+    <div class="pm-body">
+      <input type="hidden" id="pmId">
+      <div class="pm-row">
+        <div class="pm-field">
+          <label class="pm-label">שם המוצר *</label>
+          <input type="text" class="pm-input" id="pmName" placeholder="מארז לב מוס...">
+        </div>
+        <div class="pm-field">
+          <label class="pm-label">מחיר (₪) *</label>
+          <input type="number" class="pm-input" id="pmPrice" placeholder="150" min="0">
+        </div>
+      </div>
+      <div class="pm-field">
+        <label class="pm-label">תיאור קצר</label>
+        <input type="text" class="pm-input" id="pmDesc" placeholder="לב מוס עם כיתוב אישי...">
+      </div>
+      <div class="pm-field">
+        <label class="pm-label">תיאור מלא (לחלון ההזמנה)</label>
+        <textarea class="pm-textarea" id="pmDescFull" placeholder="תיאור מפורט של המוצר..."></textarea>
+      </div>
+      <div class="pm-row">
+        <div class="pm-field">
+          <label class="pm-label">קטגוריה</label>
+          <select class="pm-select" id="pmCat">
+            <optgroup label="— קטלוג —">
+              <option value="maarz">🎁 מארזים</option>
+              <option value="mispar">🔢 עוגות מספרים</option>
+              <option value="mgash">🍪 מגשים</option>
+              <option value="custom">✨ מותאם אישית</option>
+            </optgroup>
+            <optgroup label="— תפריט אירועים —">
+              <option value="ev-mgash">🎉 אירועים – מגשים מתוקים</option>
+              <option value="ev-mispar">🎉 אירועים – עוגת מספרים</option>
+              <option value="ev-cakes">🎉 אירועים – עוגות</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="pm-field">
+          <label class="pm-label">סדר תצוגה</label>
+          <input type="number" class="pm-input" id="pmOrder" placeholder="1" min="1">
+        </div>
+      </div>
+      <div class="pm-row">
+        <div class="pm-field">
+          <label class="pm-label">טקסט סרט (ribbon)</label>
+          <input type="text" class="pm-input" id="pmRibbon" placeholder="🔥 פופולרי">
+        </div>
+        <div class="pm-field">
+          <label class="pm-label">צבע סרט</label>
+          <select class="pm-select" id="pmRibbonClass">
+            <option value="rb-best">🔥 כתום (פופולרי)</option>
+            <option value="rb-bday">🎂 כחול (יום הולדת)</option>
+            <option value="rb-love">💝 ורוד (אהבה)</option>
+            <option value="rb-tray">🍪 ירוק (מגש)</option>
+            <option value="rb-num">🔢 סגול (מספרים)</option>
+            <option value="rb-custom">✨ זהב (מיוחד)</option>
+          </select>
+        </div>
+      </div>
+      <div class="pm-field">
+        <label class="pm-label">תמונה — שם קובץ או URL</label>
+        <input type="text" class="pm-input" id="pmImage" placeholder="mousse_box.jpg" oninput="previewPmImg()">
+        <div style="margin-top:8px;border-radius:10px;overflow:hidden;height:100px;background:#2a1507;display:flex;align-items:center;justify-content:center">
+          <img id="pmImgPreview" src="" alt="" style="max-height:100px;max-width:100%;display:none;border-radius:10px">
+          <span id="pmImgPlaceholder" style="font-size:32px">🖼️</span>
+        </div>
+      </div>
+      <div class="pm-field" style="display:flex;align-items:center;gap:10px">
+        <input type="checkbox" id="pmActive" checked style="width:20px;height:20px;accent-color:#c8704a">
+        <label for="pmActive" style="font-size:14px;font-weight:700;cursor:pointer">מוצר פעיל (מוצג באתר)</label>
+      </div>
+    </div>
+    <div class="pm-footer">
+      <button class="form-btn" onclick="saveProd()" style="flex:1">💾 שמור</button>
+      <button class="form-btn sec" onclick="closeProdModal()" style="flex:1">ביטול</button>
+      <button class="form-btn danger" id="pmDeleteBtn" onclick="deleteProd()" style="display:none">🗑️ מחק</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import{initializeApp}from'https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js';
+import{getAuth,signInWithEmailAndPassword,signOut,setPersistence,browserLocalPersistence,onAuthStateChanged}from'https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js';
+import{getFirestore,collection,query,where,orderBy,onSnapshot,doc,updateDoc,deleteDoc,getDoc,setDoc,addDoc,getDocs,serverTimestamp}from'https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js';
+
+const FB={apiKey:"AIzaSyDUiu7JxAzdjmZS3Dp1A_TESM6fvxdPPaw",authDomain:"sarabakery.firebaseapp.com",projectId:"sarabakery",storageBucket:"sarabakery.firebasestorage.app",messagingSenderId:"595236323371",appId:"1:595236323371:web:e2004d0f0d9cdbab23ea6e"};
+const app=initializeApp(FB),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id);
+let allOrders=[],allCustomers=[],allProducts=[],settings={},curDate=new Date(),curFilter='all',showAll=false,selCust=null,editProdId=null;
+
+/* ── DEFAULT PRODUCTS ── */
+const DEFAULT_PRODUCTS=[
+  {name:'מארז לב מוס + פחזניות',desc:'לב מוס גדול עם כיתוב אישי + פחזניות קרמבל מסביב',descFull:'לב מוס גדול עם כיתוב אישי + פחזניות קרמבל מסביב',price:150,image:'mousse_box.jpg',cat:'maarz',ribbon:'🔥 פופולרי',ribbonClass:'rb-best',order:1,active:true},
+  {name:'מארז מוס גדול מפנק',desc:'מוס עגול גדול עם כיתוב + מגולגלות קינדר + אלפחורס',descFull:'מוס עגול גדול עם כיתוב + מגולגלות קינדר + אלפחורס',price:195,image:'mousse_big.jpg',cat:'maarz',ribbon:'✨ מיוחד',ribbonClass:'rb-bday',order:2,active:true},
+  {name:'מארז יום הולדת',desc:'מוס עגול עם כיתוב + מגולגלות קינדר',descFull:'מוס עגול עם כיתוב + מגולגלות קינדר',price:183,image:'box1.jpg',cat:'maarz',ribbon:'🎂 יום הולדת',ribbonClass:'rb-bday',order:3,active:true},
+  {name:'מארז לב מוס + הפתעות',desc:'לב מוס עם כיתוב + הפתעות',descFull:'לב מוס עם כיתוב + הפתעות',price:315,image:'box2.jpg',cat:'maarz',ribbon:'🔥 פופולרי',ribbonClass:'rb-best',order:4,active:true},
+  {name:'מארז מינימליסטי',desc:'מוס לבן עם כיתוב + הפתעות',descFull:'מוס לבן עם כיתוב + הפתעות',price:217,image:'box3.jpg',cat:'maarz',ribbon:'🎁 מתנה',ribbonClass:'rb-love',order:5,active:true},
+  {name:'מארז הכל מהכל – תודה רבה',desc:'לב לבן עם כיתוב + הכל מהכל',descFull:'לב לבן עם כיתוב + הכל מהכל',price:249,image:'box4.jpg',cat:'maarz',ribbon:'🙏 תודה',ribbonClass:'rb-love',order:6,active:true},
+  {name:'מארז מיוחד יום הולדת',desc:'לב עם כיתוב + הכל מהכל',descFull:'לב עם כיתוב + הכל מהכל',price:274,image:'box5.jpg',cat:'maarz',ribbon:'🎂 יום הולדת',ribbonClass:'rb-bday',order:7,active:true},
+  {name:'מארז אדם יקר',desc:'לב לבן עם כיתוב + אלפחורס + מגולגלות קינדר',descFull:'לב לבן עם כיתוב + אלפחורס + מגולגלות קינדר',price:134,image:'box6.jpg',cat:'maarz',ribbon:'💝 לאדם יקר',ribbonClass:'rb-love',order:8,active:true},
+  {name:'מארז הערכה מיוחד',desc:'לב לבן עם כיתוב + הפתעות',descFull:'לב לבן עם כיתוב + הפתעות',price:120,image:'box7.jpg',cat:'maarz',ribbon:'הערכה',ribbonClass:'rb-love',order:9,active:true},
+  {name:'עוגת מספרים – חד ספרתי',desc:'עוגת מספרים עם ממתקים, מרשמלו ושוקולדים',descFull:'עוגת מספרים חד ספרתי עם ממתקים, מרשמלו ושוקולדים',price:250,image:'number1.jpg',cat:'mispar',ribbon:'🔢 חד ספרתי',ribbonClass:'rb-num',order:10,active:true},
+  {name:'עוגת מספרים – דו ספרתי',desc:'עוגת מספר דו ספרתי עם ממתקים, מרשמלו',descFull:'עוגת מספר דו ספרתי עם ממתקים, מרשמלו',price:340,image:'number2.jpg',cat:'mispar',ribbon:'🔢 דו ספרתי',ribbonClass:'rb-num',order:11,active:true},
+  {name:'מגש מתוקים גדול',desc:'פחזניות | מגולגלות | עוגיות | אלפחורס',descFull:'מגש מתוקים גדול: פחזניות + מגולגלות + עוגיות + אלפחורס',price:110,image:'sweet_tray1.jpg',cat:'mgash',ribbon:'🍪 מגש',ribbonClass:'rb-tray',order:12,active:true},
+  {name:'מגש מתוקים ענק – ללא פחזניות',desc:'כ-100 עוגיות! מגולגלות | עוגיות | אלפחורס',descFull:'מגש מתוקים ענק ללא פחזניות: כ-100 עוגיות! מגולגלות + עוגיות + אלפחורס',price:550,image:'sweet_tray2.jpg',cat:'mgash',ribbon:'🍪 מגש ענק',ribbonClass:'rb-tray',order:13,active:true},
+  {name:'מגש לבבות',desc:'קרם בורלה | מגולגלות קינדר | עוגיות',descFull:'מגש לבבות: קרם בורלה + מגולגלות קינדר + עוגיות',price:410,image:'sweet_tray3.jpg',cat:'mgash',ribbon:'🍪 מגש',ribbonClass:'rb-tray',order:14,active:true},
+  {name:'מגש פחזניות וכדורים',desc:'פחזניות | מגולגלות | כדורים',descFull:'מגש: פחזניות + מגולגלות + כדורים',price:208,image:'sweet_tray4.jpg',cat:'mgash',ribbon:'🍪 מגש',ribbonClass:'rb-tray',order:15,active:true},
+  {name:'מגש אמסטרדם',desc:'פחזניות | עוגיות | עוגיות אמסטרדם',descFull:'מגש: פחזניות + עוגיות + עוגיות אמסטרדם',price:140,image:'sweet_tray5.jpg',cat:'mgash',ribbon:'🔥 פופולרי',ribbonClass:'rb-best',order:16,active:true},
+  {name:'מארז מותאם אישית',desc:'ספרו לשרה מה אתם רוצים!',descFull:'מארז מותאם אישית לפי הבקשה שלך – ספרו לשרה מה אתם רוצים!',price:0,image:'',cat:'custom',ribbon:'✨ מותאם אישית',ribbonClass:'rb-custom',order:17,active:true},
+  /* ── אירועים – מגשים מתוקים ── */
+  {name:'פחזניות קראמבל במילוי קרם וניל',desc:'30 יחידות',descFull:'פחזניות קראמבל במילוי קרם וניל – 30 יחידות',price:180,image:'',cat:'ev-mgash',ribbon:'',ribbonClass:'',order:18,active:true},
+  {name:'קינוחי כוסות בטעמים',desc:'20 יחידות',descFull:'קינוחי כוסות בטעמים – 20 יחידות',price:250,image:'',cat:'ev-mgash',ribbon:'',ribbonClass:'',order:19,active:true},
+  {name:'מגש חיתוכיות בראוניז',desc:'3 סוגים: פיסטוק, טריקולד, אמסטרדם',descFull:'מגש חיתוכיות בראוניז ב-3 סוגים: פיסטוק, טריקולד, אמסטרדם',price:200,image:'',cat:'ev-mgash',ribbon:'',ribbonClass:'',order:20,active:true},
+  {name:'מיקס עוגיות',desc:'אלפחורס, מגולגלות, פאי לימון, שוקולד',descFull:'מיקס עוגיות: אלפחורס, מגולגלות, פאי לימון, שוקולד',price:250,image:'',cat:'ev-mgash',ribbon:'',ribbonClass:'',order:21,active:true},
+  {name:'מגש מיני סופלה שוקולדי',desc:'',descFull:'מגש מיני סופלה שוקולדי',price:190,image:'',cat:'ev-mgash',ribbon:'',ribbonClass:'',order:22,active:true},
+  /* ── אירועים – עוגת מספרים ── */
+  {name:'עוגת מספרים – ספרה אחת / לב',desc:'שכבות פריך שקדים, קרם וניל, קישוט שוקולדיס/פירות',descFull:'עוגת מספרים ספרה אחת או לב: שכבות פריך שקדים, קרם וניל, קישוט שוקולדיס/פירות',price:230,image:'',cat:'ev-mispar',ribbon:'',ribbonClass:'',order:23,active:true},
+  {name:'עוגת מספרים – 2 ספרות',desc:'שכבות פריך שקדים, קרם וניל, קישוט שוקולדיס/פירות',descFull:'עוגת מספרים 2 ספרות: שכבות פריך שקדים, קרם וניל, קישוט שוקולדיס/פירות',price:340,image:'',cat:'ev-mispar',ribbon:'',ribbonClass:'',order:24,active:true},
+  /* ── אירועים – עוגות ── */
+  {name:'גבינה אפויה',desc:'קוטר 22',descFull:'עוגת גבינה אפויה קוטר 22 ס״מ',price:250,image:'',cat:'ev-cakes',ribbon:'',ribbonClass:'',order:25,active:true},
+  {name:'טריקולד',desc:'קוטר 22',descFull:'עוגת טריקולד קוטר 22 ס״מ',price:300,image:'',cat:'ev-cakes',ribbon:'',ribbonClass:'',order:26,active:true},
+  {name:'גבינה פרורים',desc:'קוטר 22',descFull:'עוגת גבינה פרורים קוטר 22 ס״מ',price:250,image:'',cat:'ev-cakes',ribbon:'',ribbonClass:'',order:27,active:true},
+  {name:'מוס לוטוס',desc:'קוטר 22 · תוספת הקדשה 2 מילים – ₪10',descFull:'עוגת מוס לוטוס קוטר 22 ס״מ · תוספת הקדשה 2 מילים 10 ₪',price:250,image:'',cat:'ev-cakes',ribbon:'',ribbonClass:'',order:28,active:true}
+];
+
+/* NORMALIZERS */
+const oName=o=>(o.name||o.customer?.name||'').trim()||'לקוח לא ידוע';
+const oPhone=o=>(o.phone||o.customer?.phone||'').trim();
+const oEmail=o=>(o.userEmail||o.customer?.email||o.email||'').trim();
+const oNote=o=>(o.notes||o.note||o.checkout?.note||'').trim();
+const oItems=o=>Array.isArray(o.items)?o.items:[];
+const oTotal=o=>{var it=oItems(o);return o.total||o.totals?.orderTotal||it.reduce((s,i)=>s+(+(i.price||0))*(+(i.qty||1)),0);};
+const oIsDelivery=o=>{var m=o.deliveryType||o.checkout?.deliveryMode||o.delivery||'';return m==='delivery'||m==='כן';};
+const oAddress=o=>(o.street||o.checkout?.address||o.address||'').trim();
+const oCity=o=>(o.city||o.checkout?.deliveryCity||o.checkout?.deliveryCityLabel||'').trim();
+function oStatus(o){
+  var s=o.status||'';
+  if(!s||s==='new'||s==='ממתינה'||s==='pending')return'pending';
+  if(s==='confirmed'||s==='התקבלה')return'confirmed';
+  if(s==='in_progress'||s==='בהכנה')return'in_progress';
+  if(s==='ready'||s==='מוכן'||s==='מוכנה')return'ready';
+  if(s==='completed'||s==='הושלם'||s==='נאספה'||s==='נמסרה')return'completed';
+  if(s==='cancelled'||s==='בוטל')return'cancelled';
+  return'pending';
+}
+function parseReadyBy(o){
+  var raw=o.readyBy||o.checkout?.readyBy||o.deliveryDate||'';
+  if(!raw)return{date:'',time:'',dateKey:'',raw:''};
+  var str=String(raw).replace(/[‏‎‪-‮]/g,'');
+  var m=str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[^\d]*(\d{1,2}:\d{2}))?/);
+  if(m){var d=m[1].padStart(2,'0'),mo=m[2].padStart(2,'0'),y=m[3];return{date:d+'/'+mo+'/'+y,time:m[4]||'',dateKey:y+'-'+mo+'-'+d,raw:str};}
+  if(/^\d{4}-\d{2}-\d{2}/.test(str)){var dk=str.slice(0,10),p=dk.split('-');return{date:p[2]+'/'+p[1]+'/'+p[0],time:o.deliveryTime||o.checkout?.deliveryTime||'',dateKey:dk,raw:str};}
+  return{date:str,time:'',dateKey:'',raw:str};
+}
+function normPhone(p){if(!p)return'';var n=String(p).replace(/\D/g,'');if(n.startsWith('0'))n='972'+n.slice(1);return n;}
+function fmtKey(d){var x=new Date(d);return x.getFullYear()+'-'+(x.getMonth()+1).toString().padStart(2,'0')+'-'+x.getDate().toString().padStart(2,'0');}
+function todayKey(){return fmtKey(new Date());}
+function createdKey(o){var ca=o.createdAt?.toDate?o.createdAt.toDate():(o.createdAt?new Date(o.createdAt):null);return ca&&!isNaN(ca)?fmtKey(ca):'';}
+function matchesDate(o,date){var rb=parseReadyBy(o);var ds=fmtKey(date);if(rb.dateKey)return rb.dateKey===ds;return createdKey(o)===ds;}
+function sortKey(o){var rb=parseReadyBy(o);if(rb.dateKey)return rb.dateKey+(rb.time||'99:99');return(createdKey(o)||'9999-99-99')+'99:99';}
+function hebrewDay(d){return['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'][new Date(d).getDay()];}
+
+const SF=[{k:'pending',l:'ממתינה',i:'⏳'},{k:'confirmed',l:'התקבלה',i:'✅'},{k:'in_progress',l:'בהכנה',i:'🔧'},{k:'ready',l:'מוכן',i:'🍰'},{k:'completed',l:'הושלם',i:'🏁'}];
+
+let toastT;
+function toast(msg,type=''){var t=$('toast');t.textContent=msg;t.className='on '+(type||'');clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3200);}
+function updateClock(){$('clock').textContent=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});}
+setInterval(updateClock,15000);updateClock();
+
+const USERS={'sara':'admin@sarabakery.local','admin':'admin@sarabakery.local','שרה':'admin@sarabakery.local','שרהחברוני':'admin@sarabakery.local','sara':'admin@sarabakery.local'};
+window.doLogin=async function(){
+  var btn=$('loginBtn'),msg=$('lMsg');
+  var u=$('uInput').value.trim(),p=$('pInput').value;
+  if(!u||!p){msg.textContent='נא למלא שם משתמש וסיסמא';return;}
+  var email=USERS[u]||u;
+  btn.disabled=true;btn.textContent='⏳ מתחבר...';msg.textContent='';
+  try{await setPersistence(auth,browserLocalPersistence);await signInWithEmailAndPassword(auth,email,p);}
+  catch(e){msg.textContent=e.code==='auth/wrong-password'||e.code==='auth/invalid-credential'?'סיסמא שגויה':'שגיאה: '+e.message;btn.disabled=false;btn.textContent='כניסה';}
+};
+window.doLogout=async function(){await signOut(auth);};
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&$('loginScreen').style.display!=='none')window.doLogin();});
+
+onAuthStateChanged(auth,user=>{
+  if(user){$('loginScreen').style.display='none';$('dash').classList.add('on');initDash();}
+  else{$('loginScreen').style.display='';$('dash').classList.remove('on');}
+});
+
+let unsubOrders=null,unsubProducts=null;
+function initDash(){
+  renderDateNav();
+  if(unsubOrders)unsubOrders();
+  unsubOrders=onSnapshot(query(collection(db,'orders'),orderBy('createdAt','desc')),snap=>{
+    allOrders=snap.docs.map(d=>({id:d.id,...d.data()}));
+    buildCustomers();renderOrders();renderKpis();updateBadge();
+  });
+  if(unsubProducts)unsubProducts();
+  unsubProducts=onSnapshot(query(collection(db,'products'),orderBy('order','asc')),snap=>{
+    allProducts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderProducts();
+    $('prodBadge').textContent=allProducts.length;
+  },()=>{
+    unsubProducts=onSnapshot(collection(db,'products'),snap=>{
+      allProducts=snap.docs.map(d=>({id:d.id,...d.data()}));
+      allProducts.sort((a,b)=>(a.order||99)-(b.order||99));
+      renderProducts();
+      $('prodBadge').textContent=allProducts.length;
+    });
+  });
+  loadSettings();
+}
+
+/* ── PRODUCTS MANAGEMENT ── */
+function renderProducts(){
+  if(!allProducts.length){
+    $('prodList').innerHTML='<div class="empty-state"><div class="es-icon">🛍️</div><div class="es-txt">אין מוצרים עדיין</div><div class="es-sub">לחצי "ייבא ברירת מחדל" להתחלה</div></div>';
+    return;
+  }
+  const catLabels={maarz:'🎁 מארזים',mispar:'🔢 מספרים',mgash:'🍪 מגשים',custom:'✨ מותאם','ev-mgash':'🎉 אירועים-מגשים','ev-mispar':'🎉 אירועים-מספרים','ev-cakes':'🎉 אירועים-עוגות'};
+  $('prodList').innerHTML=allProducts.map(p=>{
+    var imgHtml=p.image
+      ?`<img class="prod-row-img" src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+      :'';
+    var placeholder=`<div class="prod-row-img-placeholder" style="${p.image?'display:none':''}">🍰</div>`;
+    var priceStr=p.price?'₪'+p.price:'בקשה';
+    return`<div class="prod-row">
+      ${imgHtml}${placeholder}
+      <div class="prod-row-info">
+        <div class="prod-row-name">${p.name}</div>
+        <div class="prod-row-meta">
+          <span class="cat-badge">${catLabels[p.cat]||p.cat}</span>
+          ${p.ribbon?`<span>${p.ribbon}</span>`:''}
+          ${p.active===false?'<span style="color:#e07050">⚠️ לא פעיל</span>':'<span style="color:#3a9a50">✓ פעיל</span>'}
+        </div>
+        ${p.desc?`<div style="font-size:12px;color:#7a5040;margin-top:3px">${p.desc}</div>`:''}
+      </div>
+      <div class="prod-row-price">${priceStr}</div>
+      <div class="prod-row-actions">
+        <button class="act-sm act-cancel" style="min-width:50px" onclick="window._editProd('${p.id}')">✏️ עריכה</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.openProdModal=function(id){
+  editProdId=id||null;
+  $('pmTitle').textContent=id?'עריכת מוצר':'מוצר חדש';
+  $('pmDeleteBtn').style.display=id?'':'none';
+  if(id){
+    var p=allProducts.find(x=>x.id===id);
+    if(!p)return;
+    $('pmId').value=id;
+    $('pmName').value=p.name||'';
+    $('pmPrice').value=p.price||'';
+    $('pmDesc').value=p.desc||'';
+    $('pmDescFull').value=p.descFull||p.desc||'';
+    $('pmCat').value=p.cat||'maarz';
+    $('pmOrder').value=p.order||'';
+    $('pmRibbon').value=p.ribbon||'';
+    $('pmRibbonClass').value=p.ribbonClass||'rb-best';
+    $('pmImage').value=p.image||'';
+    $('pmActive').checked=p.active!==false;
+    previewPmImg();
+  }else{
+    $('pmId').value='';
+    $('pmName').value='';$('pmPrice').value='';$('pmDesc').value='';
+    $('pmDescFull').value='';$('pmCat').value='maarz';$('pmOrder').value='';
+    $('pmRibbon').value='';$('pmRibbonClass').value='rb-best';
+    $('pmImage').value='';$('pmActive').checked=true;
+    $('pmImgPreview').style.display='none';$('pmImgPlaceholder').style.display='';
+  }
+  $('prodModal').classList.add('on');
+};
+window._editProd=id=>window.openProdModal(id);
+window.closeProdModal=()=>{$('prodModal').classList.remove('on');editProdId=null;};
+$('prodModal').addEventListener('click',e=>{if(e.target===$('prodModal'))window.closeProdModal();});
+
+window.previewPmImg=function(){
+  var src=$('pmImage').value.trim();
+  if(src){$('pmImgPreview').src=src;$('pmImgPreview').style.display='block';$('pmImgPlaceholder').style.display='none';}
+  else{$('pmImgPreview').style.display='none';$('pmImgPlaceholder').style.display='';}
+};
+
+window.saveProd=async function(){
+  var name=$('pmName').value.trim();
+  var price=parseFloat($('pmPrice').value)||0;
+  if(!name){toast('שם המוצר חובה','err');return;}
+  var data={
+    name,price,
+    desc:$('pmDesc').value.trim(),
+    descFull:$('pmDescFull').value.trim()||$('pmDesc').value.trim(),
+    cat:$('pmCat').value,
+    order:parseInt($('pmOrder').value)||99,
+    ribbon:$('pmRibbon').value.trim(),
+    ribbonClass:$('pmRibbonClass').value,
+    image:$('pmImage').value.trim(),
+    active:$('pmActive').checked,
+    updatedAt:serverTimestamp()
+  };
+  try{
+    if(editProdId){
+      await updateDoc(doc(db,'products',editProdId),data);
+      toast('מוצר עודכן ✓');
+    }else{
+      data.createdAt=serverTimestamp();
+      await addDoc(collection(db,'products'),data);
+      toast('מוצר נוסף ✓');
+    }
+    window.closeProdModal();
+  }catch(e){
+    console.error('saveProd error:',e);
+    if(e.code==='permission-denied'||String(e.message).includes('permission')){
+      toast('⚠️ שגיאת הרשאות Firestore — ראה הוראות בקונסולת Firebase','err');
+    }else{
+      toast('שגיאה: '+e.message,'err');
+    }
+  }
+};
+
+window.deleteProd=async function(){
+  if(!editProdId)return;
+  var p=allProducts.find(x=>x.id===editProdId);
+  if(!confirm('למחוק את "'+((p&&p.name)||'המוצר')+'" לצמיתות?'))return;
+  try{
+    await deleteDoc(doc(db,'products',editProdId));
+    window.closeProdModal();
+    toast('מוצר נמחק');
+  }catch(e){toast('שגיאת מחיקה','err');}
+};
+
+window.seedDefaultProducts=async function(){
+  var snap=await getDocs(collection(db,'products'));
+  if(snap.size>0){
+    if(!confirm('כבר קיימים '+snap.size+' מוצרים. להוסיף גם את ברירת המחדל?'))return;
+  }
+  try{
+    var batch=DEFAULT_PRODUCTS.map(p=>addDoc(collection(db,'products'),{...p,createdAt:serverTimestamp(),updatedAt:serverTimestamp()}));
+    await Promise.all(batch);
+    toast('יובאו '+DEFAULT_PRODUCTS.length+' מוצרים ✓');
+  }catch(e){
+    console.error('seedDefaultProducts error:',e);
+    if(e.code==='permission-denied'||String(e.message).includes('permission')){
+      toast('⚠️ שגיאת הרשאות Firestore — עדכן את Rules בקונסולת Firebase','err');
+    }else{
+      toast('שגיאה: '+e.message,'err');
+    }
+  }
+};
+
+/* ── ORDERS ── */
+function buildCustomers(){
+  var map={};
+  allOrders.forEach(o=>{
+    var ph=normPhone(oPhone(o)),key=ph||oEmail(o)||oName(o);
+    if(!key||key==='לקוח לא ידוע')return;
+    if(!map[key])map[key]={id:key,fullName:oName(o),phone:oPhone(o),email:oEmail(o),orders:[]};
+    map[key].orders.push(o);
+    if(oName(o)&&oName(o)!=='לקוח לא ידוע')map[key].fullName=oName(o);
+    if(oEmail(o))map[key].email=oEmail(o);
+  });
+  allCustomers=Object.values(map);
+}
+
+function renderOrders(){
+  var list=showAll?[...allOrders]:allOrders.filter(o=>matchesDate(o,curDate));
+  if(curFilter!=='all')list=list.filter(o=>oStatus(o)===curFilter);
+  list.sort((a,b)=>sortKey(a).localeCompare(sortKey(b)));
+  if(!list.length){$('ordersList').innerHTML=`<div class="empty-state"><div class="es-icon">📭</div><div class="es-txt">אין הזמנות</div><div class="es-sub">${showAll?'':'נסי תאריך אחר'}</div></div>`;return;}
+  if(showAll){
+    var groups={};
+    list.forEach(o=>{var rb=parseReadyBy(o);var dk=rb.dateKey||createdKey(o)||'ללא תאריך';if(!groups[dk])groups[dk]=[];groups[dk].push(o);});
+    var sk=Object.keys(groups).sort();
+    $('ordersList').innerHTML=sk.map(dk=>{var p=dk.split('-');var label=dk==='ללא תאריך'?dk:(p[2]+'/'+p[1]+'/'+p[0]);return`<div style="margin-bottom:6px;padding:6px 10px;background:#150a04;border-radius:10px;font-size:13px;font-weight:700;color:#c8704a">📅 ${label} — ${groups[dk].length} הזמנות</div>${groups[dk].map(renderCard).join('')}`;}).join('');
+  }else{$('ordersList').innerHTML=list.map(renderCard).join('');}
+}
+
+function renderCard(o){
+  var s=oStatus(o),rb=parseReadyBy(o),name=oName(o),phone=oPhone(o),email=oEmail(o),items=oItems(o),total=oTotal(o),isDelivery=oIsDelivery(o),note=oNote(o),num=o.orderNum||o.id||'';
+  var initials=name!=='לקוח לא ידוע'?name.trim().split(' ').map(w=>w[0]||'').join('').slice(0,2):'?';
+  var timingHtml=rb.time||rb.date?`<div class="oc-timing">${rb.time?`<div class="oc-timing-time">${rb.time}</div>`:''}<div class="oc-timing-date">${rb.date||''}</div><div class="oc-timing-mode">${isDelivery?'🚗 משלוח':'🏠 איסוף'}</div></div>`:'';
+  var curIdx=SF.findIndex(x=>x.k===s);
+  var stepperHtml='';
+  if(s==='cancelled'){
+    stepperHtml=`<div class="stepper-wrap"><div class="status-cancelled">❌ הזמנה בוטלה</div><div class="action-row"><button class="act-sm act-delete" onclick="window._delete('${o.id}')">🗑️ מחק לצמיתות</button></div></div>`;
+  }else{
+    var steps=SF.map((step,i)=>{var isDone=i<curIdx,isCur=i===curIdx,isNext=i===curIdx+1;var cls=isDone?'done':isCur?'current':isNext?'next':'future';var line=i<SF.length-1?`<div class="sl ${isDone?'done':''}"></div>`:'';return`<div class="ss ${cls}"><div class="sd">${isDone?'✓':step.i}</div><div class="slb">${step.l}</div></div>${line}`;}).join('');
+    var nextStep=curIdx>=0&&curIdx<SF.length-1?SF[curIdx+1]:null;
+    var advBtn=nextStep?`<button class="adv-btn" onclick="window._adv('${o.id}')">קדם → ${nextStep.l} ${nextStep.i}</button>`:`<div class="status-done">✅ הזמנה הושלמה</div>`;
+    stepperHtml=`<div class="stepper-wrap"><div class="stepper">${steps}</div>${advBtn}<div class="action-row">${s!=='completed'?`<button class="act-sm act-cancel" onclick="window._cancel('${o.id}')">⛔ ביטול הזמנה</button>`:''}<button class="act-sm act-delete" onclick="window._delete('${o.id}')">🗑️ מחק</button></div></div>`;
+  }
+  var itemsHtml='';
+  if(items.length){var rows=items.map(it=>{if(!it)return'';var details=[it.size,it.flavor,it.color,it.filling,it.decoration,it.details,it.note,it.inscription].filter(Boolean).join(' · ');return`<div class="item-row"><div class="item-qty">${it.qty||1}x</div><div class="item-name">${it.name||'פריט'}<br>${details?`<span class="item-details">${details}</span>`:''}</div><div class="item-price">₪${((it.price||0)*(it.qty||1)).toFixed(0)}</div></div>`;}).join('');itemsHtml=`<div class="oc-items"><div class="items-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('on')"><span>🛒 ${items.length} פריטים — ₪${(+total).toFixed(0)}</span><span style="margin-right:auto;font-size:11px;color:#6a4030">לפרטים ▼</span></div><div class="items-list">${rows}</div></div>`;}
+  var payMethod=o.paymentMethod||o.checkout?.payment||o.checkout?.paymentCode||'',isPaid=o.paid===true;
+  var payHtml=`<div class="oc-pay"><span class="pay-label">💰 תשלום:</span><select class="pay-select" onchange="window._setPay('${o.id}',this.value)"><option value="" ${!payMethod?'selected':''}>— בחר —</option><option value="cash" ${'cash'===payMethod?'selected':''}>מזומן</option><option value="bit" ${'bit'===payMethod||payMethod==='ביט'?'selected':''}>ביט</option><option value="paybox" ${'paybox'===payMethod||payMethod==='פייבוקס'?'selected':''}>פייבוקס</option><option value="transfer" ${'transfer'===payMethod||payMethod==='העברה'?'selected':''}>העברה</option></select><div class="pay-toggle"><input type="checkbox" id="paid_${o.id}" ${isPaid?'checked':''} onchange="window._setPaid('${o.id}',this.checked)"><label for="paid_${o.id}">${isPaid?'✅ שילם':'⏳ לא שילם'}</label></div></div>`;
+  var waLink=phone?`<a class="act act-wa" href="https://wa.me/${normPhone(phone)}?text=${encodeURIComponent('שלום '+name+' 😊')}" target="_blank">💬 ${phone}</a>`:'';
+  var mailLink=email?`<a class="act act-mail" href="mailto:${email}">📧 ${email}</a>`:'';
+  var addrHtml='';if(isDelivery){var addr=[oAddress(o),oCity(o)].filter(Boolean).join(', ');if(addr)addrHtml=`<div class="note-box"><strong>📍 משלוח:</strong> ${addr}</div>`;}
+  var noteHtml=note?`<div class="note-box"><strong>📝 הערה:</strong> ${note}</div>`:'';
+  return`<div class="oc ${s==='pending'?'urgent':''}"><div class="oc-hdr"><div class="oc-avatar" onclick="window._profile('${o.id}')">${initials}</div><div class="oc-id"><div class="oc-name" onclick="window._profile('${o.id}')">${name} <span class="oc-name-hint">← פרופיל</span></div><div class="oc-meta">${phone?`<span class="oc-contact">📱 ${phone}</span>`:''}${num?`<span class="oc-num">#${num}</span>`:''}</div></div>${timingHtml}</div>${stepperHtml}${itemsHtml}${addrHtml}${noteHtml}${payHtml}${waLink||mailLink?`<div class="oc-acts">${waLink}${mailLink}</div>`:''}</div>`;
+}
+
+function renderKpis(){
+  var today=todayKey(),dayList=showAll?allOrders:allOrders.filter(o=>matchesDate(o,curDate));
+  var todayNew=allOrders.filter(o=>createdKey(o)===today).length;
+  var pending=dayList.filter(o=>oStatus(o)==='pending').length;
+  var rev=dayList.reduce((s,o)=>s+(+oTotal(o)||0),0);
+  var del=dayList.filter(oIsDelivery).length;
+  $('kpis').innerHTML=`<div class="ds"><div class="ds-v">${dayList.length}</div><div class="ds-l">${showAll?'סה"כ':'הזמנות'}</div></div><div class="ds"><div class="ds-v">${pending}</div><div class="ds-l">ממתינות</div></div><div class="ds"><div class="ds-v">${todayNew}</div><div class="ds-l">נכנסו היום</div></div><div class="ds"><div class="ds-v">${allOrders.length}</div><div class="ds-l">סה"כ כל הזמנות</div></div><div class="ds"><div class="ds-v">₪${rev.toFixed(0)}</div><div class="ds-l">הכנסות</div></div><div class="ds"><div class="ds-v">${del}</div><div class="ds-l">משלוחים</div></div>`;
+}
+function updateBadge(){$('pendingBadge').textContent=allOrders.filter(o=>oStatus(o)==='pending').length;}
+
+function renderDateNav(){
+  if(showAll){$('dateMain').textContent='כל ההזמנות';$('dateSub').textContent='';$('allBtn').classList.add('active');$('todayBtn').classList.remove('active');}
+  else{var today=new Date();today.setHours(0,0,0,0);var d=new Date(curDate);d.setHours(0,0,0,0);var diff=Math.round((d-today)/864e5);var label=diff===0?'היום':diff===1?'מחר':diff===-1?'אתמול':null;$('dateMain').textContent=label||d.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'});$('dateSub').textContent='יום '+hebrewDay(curDate);$('todayBtn').classList.toggle('active',diff===0);$('allBtn').classList.remove('active');}
+}
+window.shiftDate=d=>{showAll=false;var x=new Date(curDate);x.setDate(x.getDate()+d);curDate=x;renderDateNav();renderOrders();renderKpis();};
+window.goToday=()=>{showAll=false;curDate=new Date();renderDateNav();renderOrders();renderKpis();};
+window.toggleAll=()=>{showAll=!showAll;renderDateNav();renderOrders();renderKpis();};
+window.toggleDatePicker=()=>{var p=$('datePicker');p.classList.toggle('on');if(p.classList.contains('on'))p.value=fmtKey(curDate);};
+window.pickDate=v=>{if(!v)return;showAll=false;curDate=new Date(v+'T00:00:00');$('datePicker').classList.remove('on');renderDateNav();renderOrders();renderKpis();};
+window.setFilter=function(f,btn){curFilter=f;document.querySelectorAll('.sf').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderOrders();};
+window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons'].forEach(p=>$(p).style.display='none');document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();};
+
+// ── Coupons ─────────────────────────────────────────────────────
+async function loadCoupons(){
+  var el=$('couponsList');
+  el.innerHTML='<div class="empty-state"><div class="es-icon">⏳</div><div class="es-txt">טוען...</div></div>';
+  try{
+    var snap=await getDocs(collection(db,'coupons'));
+    var list=[];
+    snap.forEach(d=>list.push({id:d.id,...d.data()}));
+    if(!list.length){el.innerHTML='<div class="empty-state"><div class="es-icon">🏷️</div><div class="es-txt">אין קופונים עדיין — הוסיפי קופון למעלה</div></div>';return;}
+    var today=new Date().toISOString().split('T')[0];
+    el.innerHTML=list.map(c=>{
+      var typeLabel=c.type==='fixed'?'₪'+c.value+' הנחה':c.value+'% הנחה';
+      var active=c.active!==false;
+      var expired=c.expiry&&c.expiry<today;
+      var expiryTxt=c.expiry?'עד '+c.expiry:'ללא הגבלה';
+      var borderColor=expired?'#f0c8c8':active?'#e8c8a8':'#e0d0c8';
+      var bgColor=expired?'#fff8f8':active?'#fff':'#fafaf8';
+      return '<div style="background:'+bgColor+';border:1.5px solid '+borderColor+';border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-family:monospace;font-size:18px;font-weight:900;color:'+(expired?'#c0a0a0':'#c8704a')+';letter-spacing:2px">'+c.code+'</div>'
+        +'<div style="font-size:12px;color:#9a7060;margin-top:3px">'+typeLabel+' · ⏰ '+expiryTxt+(expired?' <span style="color:#c03030;font-weight:800">— פג תוקף</span>':'')+'</div>'
+        +'</div>'
+        +'<div style="display:flex;gap:8px;flex-shrink:0">'
+        +'<button class="form-btn sec" style="font-size:12px;padding:6px 12px" onclick="toggleCoupon(\''+c.id+'\','+active+')">'+(active&&!expired?'✅ פעיל':'⏸️ כבוי')+'</button>'
+        +'<button class="form-btn danger" style="font-size:12px;padding:6px 12px" onclick="deleteCoupon(\''+c.id+'\',\''+c.code+'\')">🗑️</button>'
+        +'</div>'
+        +'</div>';
+    }).join('');
+  }catch(e){el.innerHTML='<div class="empty-state"><div class="es-txt">❌ שגיאה: '+e.message+'</div></div>';}
+}
+
+window.addCoupon=async function(){
+  var code=($('cpCode').value||'').trim().toUpperCase();
+  var type=$('cpType').value;
+  var value=+$('cpValue').value;
+  var expiry=$('cpExpiry').value||'';
+  if(!code){toast('נא להזין קוד קופון','err');return;}
+  if(!value||value<=0){toast('נא להזין ערך הנחה','err');return;}
+  try{
+    await addDoc(collection(db,'coupons'),{code,type,value,expiry,active:true,createdAt:serverTimestamp()});
+    $('cpCode').value='';$('cpValue').value='';$('cpExpiry').value='';
+    toast('קופון נוסף ✅');
+    loadCoupons();
+  }catch(e){toast('שגיאה: '+e.message,'err');}
+};
+
+window.toggleCoupon=async function(id,currentlyActive){
+  try{
+    await updateDoc(doc(db,'coupons',id),{active:!currentlyActive});
+    loadCoupons();
+  }catch(e){toast('שגיאה: '+e.message,'err');}
+};
+
+window.deleteCoupon=async function(id,code){
+  if(!confirm('למחוק קופון '+code+'?'))return;
+  try{
+    await deleteDoc(doc(db,'coupons',id));
+    toast('קופון נמחק');
+    loadCoupons();
+  }catch(e){toast('שגיאה: '+e.message,'err');}
+};
+
+window._adv=async function(orderId){
+  var order=allOrders.find(o=>o.id===orderId);if(!order)return;
+  var cur=oStatus(order),idx=SF.findIndex(x=>x.k===cur);
+  if(idx<0||idx>=SF.length-1)return;
+  var next=SF[idx+1].k;
+  try{await updateDoc(doc(db,'orders',orderId),{status:next,updatedAt:serverTimestamp()});var i=allOrders.findIndex(o=>o.id===orderId);if(i!==-1)allOrders[i].status=next;renderOrders();renderKpis();updateBadge();toast('עברת ל: '+SF[idx+1].l);sendWA(order,next);}
+  catch(e){toast('שגיאה: '+e.message,'err');}
+};
+window._cancel=async function(orderId){
+  if(!confirm('לבטל הזמנה זו?\nהשעה תשוחרר ותהיה פנויה שוב.'))return;
+  try{await updateDoc(doc(db,'orders',orderId),{status:'cancelled',updatedAt:serverTimestamp()});var i=allOrders.findIndex(o=>o.id===orderId);if(i!==-1)allOrders[i].status='cancelled';renderOrders();renderKpis();updateBadge();toast('הזמנה בוטלה — השעה שוחררה','warn');}
+  catch(e){toast('שגיאה','err');}
+};
+window._delete=async function(orderId){
+  var order=allOrders.find(o=>o.id===orderId),rb=parseReadyBy(order||{});
+  var timeInfo=rb.date&&rb.time?` (${rb.date} ${rb.time})`:'';
+  if(!confirm('למחוק הזמנה זו לצמיתות?'+timeInfo+'\nהשעה תשתחרר לחלוטין ותהיה פנויה להזמנות חדשות.'))return;
+  try{await deleteDoc(doc(db,'orders',orderId));allOrders=allOrders.filter(o=>o.id!==orderId);buildCustomers();renderOrders();renderKpis();updateBadge();toast('הזמנה נמחקה — השעה פנויה ✓');}
+  catch(e){toast('שגיאת מחיקה: '+e.message,'err');}
+};
+window._setPay=async function(orderId,method){
+  try{await updateDoc(doc(db,'orders',orderId),{paymentMethod:method,updatedAt:serverTimestamp()});var i=allOrders.findIndex(o=>o.id===orderId);if(i!==-1)allOrders[i].paymentMethod=method;}catch(e){toast('שגיאת שמירה','err');}
+};
+window._setPaid=async function(orderId,paid){
+  try{await updateDoc(doc(db,'orders',orderId),{paid,updatedAt:serverTimestamp()});var i=allOrders.findIndex(o=>o.id===orderId);if(i!==-1)allOrders[i].paid=paid;toast(paid?'✅ סומן כשולם':'⏳ לא שולם');}catch(e){toast('שגיאת שמירה','err');}
+};
+
+function sendWA(o,newStatus){
+  var phone=normPhone(oPhone(o));if(!phone)return;
+  var name=oName(o),rb=parseReadyBy(o),now=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}),msg='';
+  if(newStatus==='confirmed')msg=`שלום ${name}! ✅\nההזמנה שלך התקבלה בשעה ${now} 🎉\nנעדכן אותך כשתהיה מוכנה!`;
+  else if(newStatus==='ready'){if(oIsDelivery(o))msg=`שלום ${name}! 🚗\nההזמנה שלך יצאה למשלוח ובדרך אליך!${rb.time?' ⏰ '+rb.time:''}`;else msg=`שלום ${name}! 🍰\nההזמנה שלך מוכנה ומחכה לך!\n${settings.address?'📍 '+settings.address+'\n':''}${rb.time?'⏰ זמן איסוף: '+rb.time:''}`.trim();}
+  if(msg)window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+}
+
+window._profile=function(orderId){
+  var o=allOrders.find(x=>x.id===orderId);if(!o)return;
+  var phone=normPhone(oPhone(o));
+  var custOrders=allOrders.filter(x=>{var xp=normPhone(oPhone(x));if(phone&&xp===phone)return true;if(oEmail(x)&&oEmail(x)===oEmail(o))return true;return false;}).sort((a,b)=>sortKey(b).localeCompare(sortKey(a)));
+  var total=custOrders.reduce((s,x)=>s+(+oTotal(x)||0),0),name=oName(o),ph=oPhone(o),email=oEmail(o);
+  $('cmName').textContent=name;$('cmPhone').textContent=ph?'📱 '+ph:'אין טלפון';$('cmEmail').textContent=email?'📧 '+email:'';
+  $('cmStats').innerHTML=`<div class="cm-stat"><div class="cm-stat-v">${custOrders.length}</div><div class="cm-stat-l">הזמנות</div></div><div class="cm-stat"><div class="cm-stat-v">₪${total.toFixed(0)}</div><div class="cm-stat-l">סה"כ</div></div>`;
+  $('cmWaBtn').href=ph?'https://wa.me/'+normPhone(ph):'#';$('cmMailBtn').href=email?'mailto:'+email:'#';
+  $('cmOrders').innerHTML=`<h4>היסטוריה</h4>`+custOrders.map(x=>{var rb=parseReadyBy(x),st=oStatus(x);var stL={'pending':'⏳ ממתינה','confirmed':'✅ התקבלה','in_progress':'🔧 בהכנה','ready':'🍰 מוכן','completed':'🏁 הושלם','cancelled':'❌ בוטל'}[st]||st;return`<div class="cm-order-row"><div class="cm-order-date">${rb.date||createdKey(x)||''}${rb.time?' ⏰ '+rb.time:''}</div><div class="cm-order-sum">₪${(+oTotal(x)).toFixed(0)} — ${oItems(x).length} פריטים</div><div class="cm-order-status">${stL}</div></div>`;}).join('');
+  $('custModal').classList.add('on');
+};
+window.closeCustModal=()=>$('custModal').classList.remove('on');
+$('custModal').addEventListener('click',e=>{if(e.target===$('custModal'))window.closeCustModal();});
+
+async function loadSettings(){
+  try{var s=await getDoc(doc(db,'settings','main'));settings=s.exists()?s.data():{};
+    $('sAddr').value=settings.address||'';$('sWa').value=settings.whatsapp||'972523394838';
+    $('sHours').value=settings.hours||'';$('sBanner').value=settings.banner||'';
+    $('sOrdersOpen').checked=settings.ordersClosed!==true;
+    // Sale
+    var sale=settings.sale||{};
+    $('sSaleActive').checked=!!sale.active;toggleSaleFields();
+    if(sale.type){setSaleType(sale.type,document.querySelector('.sale-type-btn[data-type="'+sale.type+'"]'));}
+    $('sSaleValue').value=sale.value||'';$('sSaleText').value=sale.text||'';
+    // Coupon popup
+    var cp=settings.couponPopup||{};
+    $('sCpPopupActive').checked=!!cp.active;toggleCpPopupFields();
+    $('sCpPopupTitle').value=cp.title||'';$('sCpPopupCode').value=cp.code||'';$('sCpPopupDesc').value=cp.desc||'';$('sCpPopupExpiry').value=cp.expiry||'';
+  }catch(e){}
+}
+window.toggleCpPopupFields=function(){$('cpPopupFields').style.display=$('sCpPopupActive').checked?'':'none';};
+window.toggleSaleFields=function(){$('saleFields').style.display=$('sSaleActive').checked?'':'none';};
+window.setSaleType=function(type,btn){
+  document.querySelectorAll('.sale-type-btn').forEach(b=>b.classList.remove('on'));
+  if(btn)btn.classList.add('on');
+  $('salePercentRow').style.display=(type==='percent')?'':'none';
+};
+window.saveSettings=async function(){
+  var btn=$('saveSettingsBtn'),msg=$('setMsg');btn.disabled=true;btn.textContent='⏳...';msg.textContent='';
+  try{
+    var saleType=document.querySelector('.sale-type-btn.on')?document.querySelector('.sale-type-btn.on').dataset.type:'percent';
+    var sale={active:$('sSaleActive').checked,type:saleType,value:+$('sSaleValue').value||0,text:$('sSaleText').value.trim()};
+    var couponPopup={active:$('sCpPopupActive').checked,title:$('sCpPopupTitle').value.trim(),code:($('sCpPopupCode').value||'').trim().toUpperCase(),desc:$('sCpPopupDesc').value.trim(),expiry:$('sCpPopupExpiry').value||''};
+    var data={address:$('sAddr').value.trim(),whatsapp:$('sWa').value.trim(),hours:$('sHours').value.trim(),banner:$('sBanner').value.trim(),ordersClosed:!$('sOrdersOpen').checked,sale:sale,couponPopup:couponPopup,updatedAt:serverTimestamp()};
+    await setDoc(doc(db,'settings','main'),data,{merge:true});settings={...settings,...data};msg.textContent='✅ נשמר — רענן את האתר הראשי לראות שינויים';msg.className='set-msg ok';toast('הגדרות נשמרו ✅');
+  }catch(e){msg.textContent='שגיאה: '+e.message;msg.className='set-msg err';}
+  btn.disabled=false;btn.textContent='💾 שמור הגדרות';setTimeout(()=>msg.textContent='',4000);
+};
+
+const TMPLS={promo:'🎉 מבצע מיוחד!\n[תיאור]\nתקף עד [תאריך] 🍰',holiday:'🍰 חג שמח!\nשרה מאחלת לכם חג שמח ומתוק ❤️',update:'📢 עדכון:\n[כתבי]\n\nשרה 🍰',closed:'🔒 הזמנות סגורות זמנית.\nנחזור בקרוב! 🙏',open:'✅ חזרנו!\nמקבלות הזמנות 🍰'};
+document.querySelectorAll('.tpl').forEach(b=>b.addEventListener('click',()=>{if(TMPLS[b.dataset.tpl])$('bulkMsg').value=TMPLS[b.dataset.tpl];}));
+window.sendBulkMail=()=>{var em=allCustomers.map(c=>c.email).filter(Boolean).join(';');if(!em){toast('אין מיילים','warn');return;}location.href='mailto:?bcc='+encodeURIComponent(em)+'&subject='+encodeURIComponent('הודעה מ-שרה 🍰')+'&body='+encodeURIComponent(($('bulkMsg').value||'').trim());};
+window.copyEmails=()=>{var em=allCustomers.map(c=>c.email).filter(Boolean).join(', ');if(!em){toast('אין מיילים','warn');return;}navigator.clipboard.writeText(em).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתק:',em));};
+$('custSearch').addEventListener('input',function(){
+  var q=this.value.trim().toLowerCase();if(!q){$('custDrop').classList.remove('on');return;}
+  var r=allCustomers.filter(c=>(c.fullName||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q));
+  if(!r.length){$('custDrop').classList.remove('on');return;}
+  $('custDrop').innerHTML=r.slice(0,6).map(c=>`<div class="cust-row" onclick="window._selCust('${c.id}')"><div class="cust-row-name">${c.fullName||c.email||'לקוח'}</div><div class="cust-row-sub">${[c.phone,c.email].filter(Boolean).join(' · ')}</div></div>`).join('');
+  $('custDrop').classList.add('on');
+});
+document.addEventListener('click',e=>{if(!e.target.closest('.cust-wrap'))$('custDrop').classList.remove('on');});
+window._selCust=function(id){selCust=allCustomers.find(c=>c.id===id);if(!selCust)return;$('custSearch').value='';$('custDrop').classList.remove('on');$('selCustCard').style.display='block';$('scName').textContent=selCust.fullName||'לקוח';$('scSub').textContent=[selCust.phone,selCust.email].filter(Boolean).join(' · ');var name=selCust.fullName||'';$('custMsg').value='שלום '+(name?name+' ':'')+'😊\n\n';$('custMsg').focus();};
+const CUST_TMPLS={greeting:(n)=>'שלום '+(n?n+' ':'')+'😊\nכאן שרה ממאפיית שרה 🍰\n\n',reminder:(n)=>'שלום '+(n?n+' ':'')+'⏰\nרצינו להזכיר שיש לך הזמנה אצלנו בקרוב.\nלפרטים נוספים אנחנו כאן! 🍰\n\nשרה',thanks:(n)=>'שלום '+(n?n+' ':'')+'🙏\nתודה שהזמנת אצלנו!\nנשמח לראות אותך שוב 🍰\n\nשרה',ready:(n)=>'שלום '+(n?n+' ':'')+'🍰\nההזמנה שלך מוכנה לאיסוף!\nנשמח לראותך! ❤️\n\nשרה',promo:(n)=>'שלום '+(n?n+' ':'')+'🎉\n\nיש לנו מבצע מיוחד עבורך!\n[פרטי המבצע]\n\nשרה 🍰'};
+window.insertCustTpl=function(key){if(!CUST_TMPLS[key])return;var name=selCust?selCust.fullName||'':'';$('custMsg').value=CUST_TMPLS[key](name);$('custMsg').focus();};
+window.sendCustWa=()=>{if(!selCust){toast('בחרי לקוח','warn');return;}var ph=normPhone(selCust.phone);if(!ph){toast('אין מספר','warn');return;}window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(($('custMsg').value||'').trim()),'_blank');};
+window.sendCustMail=()=>{if(!selCust){toast('בחרי לקוח','warn');return;}if(!selCust.email){toast('אין מייל','warn');return;}location.href='mailto:'+selCust.email+'?subject='+encodeURIComponent('הודעה מ-שרה 🍰')+'&body='+encodeURIComponent(($('custMsg').value||'').trim());};
+
+// ── Reviews ──────────────────────────────────────────────────────────────────
+var _rvFilter='pending';
+window.loadReviews=async function(filter){
+  _rvFilter=filter||'pending';
+  ['rvTabPending','rvTabApproved','rvTabAll'].forEach(id=>{var el=$$(id);if(el)el.style.opacity='.5';});
+  var activeId={pending:'rvTabPending',approved:'rvTabApproved',all:'rvTabAll'}[_rvFilter];
+  if($$(activeId)){$$(activeId).style.opacity='1';}
+  var el=$('reviewsList');if(!el)return;
+  el.innerHTML='<div class="empty-state"><div class="es-icon">⏳</div><div class="es-txt">טוען...</div></div>';
+  try{
+    var snap=await getDocs(collection(db,'reviews'));
+    var all=[];
+    snap.forEach(d=>{all.push({id:d.id,ref:d.ref,...d.data()});});
+    all.sort((a,b)=>{var ta=a.createdAt?.seconds||a.timestamp?.seconds||0;var tb=b.createdAt?.seconds||b.timestamp?.seconds||0;return tb-ta;});
+    var list=all;
+    if(_rvFilter==='pending') list=all.filter(r=>!r.approved&&!r.rejected);
+    else if(_rvFilter==='approved') list=all.filter(r=>r.approved===true);
+    var pending=all.filter(r=>!r.approved&&!r.rejected).length;
+    var badge=$('reviewsBadge');if(badge){badge.textContent=pending;badge.style.display=pending?'':'none';}
+    if(!list.length){el.innerHTML='<div class="empty-state"><div class="es-icon">⭐</div><div class="es-txt">אין ביקורות ב'+(filter==='pending'?'ממתינות':filter==='approved'?'מאושרות':'')+'</div></div>';return;}
+    el.innerHTML=list.map(r=>renderReviewCard(r)).join('');
+  }catch(e){
+    var isPerms=e.code==='permission-denied'||String(e.message).includes('permissions');
+    el.innerHTML='<div class="empty-state" style="padding:24px;text-align:right">' +
+      '<div class="es-icon">'+(isPerms?'🔒':'❌')+'</div>' +
+      '<div class="es-txt">'+(isPerms?'חסרות הרשאות Firestore':'שגיאה: '+escapeHtml(e.message))+'</div>' +
+      (isPerms?'<div class="es-sub" style="max-width:400px;margin:10px auto;line-height:1.7;font-size:12px">כדי לפתור: Firebase Console → Firestore → Rules → הוסיפי:<br><code style="background:#2a1507;padding:4px 8px;border-radius:6px;font-size:11px">match /reviews/{id} { allow read, write: if request.auth != null; }</code></div>':'') +
+    '</div>';
+  }
+};
+function $$(id){return document.getElementById(id);}
+function renderReviewCard(r){
+  var name=r.userName||r.fullName||r.name||'אנונימי';
+  var initial=name[0]||'?';
+  var rating=+r.rating||5;
+  var stars='★'.repeat(Math.min(5,rating))+'☆'.repeat(Math.max(0,5-rating));
+  var text=r.text||r.review||r.body||'';
+  var date='';if(r.createdAt?.seconds){var d=new Date(r.createdAt.seconds*1000);date=d.toLocaleDateString('he-IL');}
+  var status=r.approved?'approved':r.rejected?'rejected':'pending';
+  var statusTxt={approved:'✅ מאושר',rejected:'❌ נדחה',pending:'⏳ ממתין'}[status];
+  return '<div class="rv-card '+status+'" id="rvCard_'+r.id+'">' +
+    '<div class="rv-top"><div class="rv-av">'+initial+'</div><div style="flex:1"><div class="rv-name">'+escapeHtml(name)+'</div><div class="rv-meta">'+(r.city||'')+(date?' · '+date:'')+'</div></div><div class="rv-stars">'+stars+'</div></div>' +
+    '<span class="rv-status '+status+'">'+statusTxt+'</span>' +
+    '<div class="rv-text">'+escapeHtml(text)+'</div>' +
+    '<div class="rv-actions">' +
+      (status!=='approved'?'<button class="rv-btn rv-approve" onclick="reviewAction(\'approve\',\''+r.id+'\',this)">✅ אשר</button>':'') +
+      (status!=='rejected'?'<button class="rv-btn rv-reject" onclick="reviewAction(\'reject\',\''+r.id+'\',this)">❌ דחה</button>':'') +
+      '<button class="rv-btn rv-delete" onclick="reviewAction(\'delete\',\''+r.id+'\',this)">🗑️ מחק</button>' +
+    '</div></div>';
+}
+function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+window.reviewAction=async function(action,id,btnEl){
+  if(btnEl)btnEl.disabled=true;
+  try{
+    var ref=doc(db,'reviews',id);
+    if(action==='approve'){await updateDoc(ref,{approved:true,rejected:false,approvedAt:serverTimestamp()});toast('ביקורת אושרה ✅');}
+    else if(action==='reject'){await updateDoc(ref,{rejected:true,approved:false});toast('ביקורת נדחתה');}
+    else if(action==='delete'){if(!confirm('למחוק ביקורת זו?')){if(btnEl)btnEl.disabled=false;return;}await deleteDoc(ref);toast('נמחקה');}
+    window.loadReviews(_rvFilter);
+  }catch(e){toast('שגיאה: '+e.message,'err');if(btnEl)btnEl.disabled=false;}
+};
+// load review badge on startup
+setTimeout(async()=>{try{var s=await getDocs(collection(db,'reviews'));var p=0;s.forEach(d=>{var r=d.data();if(!r.approved&&!r.rejected)p++;});var b=$('reviewsBadge');if(b&&p){b.textContent=p;b.style.display='';};}catch(e){}},2000);
+</script>
+</body>
+</html>
