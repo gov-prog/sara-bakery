@@ -200,8 +200,9 @@
           <label class="co-label" for="coCity">עיר</label>
           <select class="co-input" id="coCity" onchange="updateDeliveryFee()">
             <option value="">בחרו עיר</option>
-            <option value="harish">חריש (חינם מ-₪150, ₪10 מתחת)</option>
-            <option value="tal_menashe">טל מנשה (₪70)</option>
+            <option value="harish">חריש (₪20 / חינם במארז מ-₪150)</option>
+            <option value="mavoa_dotan">מבוא דותן (₪70)</option>
+            <option value="tal_menashe">טל מנשה (₪60)</option>
             <option value="pardes_hanna">פרדס חנה (₪70)</option>
           </select>
           <div id="deliveryFeeMsg" style="font-size:12px;color:var(--copper);font-weight:700;margin-top:5px;display:none"></div>
@@ -300,7 +301,7 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, setDoc, getDoc, getDocs, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, getDocs, collection, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -405,6 +406,8 @@ function renderCartItems(){
     document.getElementById('toStep2Btn').disabled = true;
     return;
   }
+  const evCats = ['ev-mgash','ev-mispar','ev-cakes'];
+  const hasEvents = cartItems.some(i => evCats.includes(i.cat));
   el.innerHTML = cartItems.map(item => `
     <div class="co-item">
       <div>
@@ -412,7 +415,8 @@ function renderCartItems(){
         ${item.details ? `<div class="co-item-details">${item.details}</div>` : ''}
       </div>
       <div class="co-item-price">${item.price > 0 ? shekel(item.price) : 'לפי הסכם'}</div>
-    </div>`).join('');
+    </div>`).join('') +
+    (hasEvents ? '<div style="margin-top:10px;background:#fff3e6;border:1.5px solid #f0c878;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;color:#7a4500">⚠️ פריטי אירועים לא מצברים נקודות מתנות — הנקודות מצטברות רק על מארזים ומותאם אישית.</div>' : '');
   updateTotalsDisplay();
 }
 
@@ -518,12 +522,17 @@ window.updateDeliveryFee = function(){
   const city = document.getElementById('coCity').value;
   const sub = getSubtotal();
   const feeMsg = document.getElementById('deliveryFeeMsg');
+  const hasMaarz = cartItems.some(i => i.cat === 'maarz' || i.cat === 'custom');
   if(city === 'harish'){
-    deliveryFee = sub >= 150 ? 0 : 10;
-    if(feeMsg){ feeMsg.textContent = sub >= 150 ? '✅ משלוח חינם!' : '🚚 דמי משלוח: ₪10'; feeMsg.style.display = 'block'; }
-  } else if(city === 'tal_menashe' || city === 'pardes_hanna'){
+    const free = hasMaarz && sub >= 150;
+    deliveryFee = free ? 0 : 20;
+    if(feeMsg){ feeMsg.textContent = free ? '✅ משלוח חינם! (מארז מעל ₪150)' : '🚚 דמי משלוח: ₪20'; feeMsg.style.display = 'block'; }
+  } else if(city === 'mavoa_dotan' || city === 'pardes_hanna'){
     deliveryFee = 70;
     if(feeMsg){ feeMsg.textContent = '🚚 דמי משלוח: ₪70'; feeMsg.style.display = 'block'; }
+  } else if(city === 'tal_menashe'){
+    deliveryFee = 60;
+    if(feeMsg){ feeMsg.textContent = '🚚 דמי משלוח: ₪60'; feeMsg.style.display = 'block'; }
   } else {
     deliveryFee = 0;
     if(feeMsg) feeMsg.style.display = 'none';
@@ -622,6 +631,16 @@ window.submitOrder = async function(){
     }));
     await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({ rows }), headers:{'Content-Type':'application/json'} });
   } catch(e){ console.warn('Sheets:', e); }
+
+  // Award points only for non-event items
+  if(currentUser){
+    const evCats = ['ev-mgash','ev-mispar','ev-cakes'];
+    const pointsEligible = cartItems.filter(i => !evCats.includes(i.cat));
+    const pointsTotal = Math.floor(pointsEligible.reduce((s,i) => s + (Number(i.price)||0), 0));
+    if(pointsTotal > 0){
+      try{ await setDoc(doc(db,'users',currentUser.uid),{points:increment(pointsTotal)},{merge:true}); }catch(e){}
+    }
+  }
 
   clearCart();
 
