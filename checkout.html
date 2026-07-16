@@ -200,8 +200,9 @@
           <label class="co-label" for="coCity">עיר</label>
           <select class="co-input" id="coCity" onchange="updateDeliveryFee()">
             <option value="">בחרו עיר</option>
-            <option value="harish">חריש (חינם מ-₪150, ₪10 מתחת)</option>
-            <option value="tal_menashe">טל מנשה (₪70)</option>
+            <option value="harish">חריש (₪20 / חינם במארז מ-₪150)</option>
+            <option value="mavoa_dotan">מבוא דותן (₪70)</option>
+            <option value="tal_menashe">טל מנשה (₪60)</option>
             <option value="pardes_hanna">פרדס חנה (₪70)</option>
           </select>
           <div id="deliveryFeeMsg" style="font-size:12px;color:var(--copper);font-weight:700;margin-top:5px;display:none"></div>
@@ -221,26 +222,28 @@
       <div class="co-row">
         <div class="co-field">
           <label class="co-label" for="coDate">תאריך</label>
-          <input class="co-input" id="coDate" type="date" required>
+          <input class="co-input" id="coDate" type="date" required onchange="checkDateBlocks()">
         </div>
         <div class="co-field">
           <label class="co-label" for="coTime">שעה</label>
           <select class="co-input" id="coTime">
             <option value="">בחרו שעה</option>
-            <option>09:00</option><option>10:00</option><option>11:00</option>
-            <option>12:00</option><option>13:00</option><option>14:00</option>
-            <option>15:00</option><option>16:00</option><option>17:00</option>
-            <option>18:00</option><option>19:00</option><option>20:00</option>
+            <option>16:00</option><option>16:30</option>
+            <option>17:00</option><option>17:30</option>
+            <option>18:00</option><option>18:30</option>
+            <option>19:00</option><option>19:30</option>
+            <option>20:00</option>
           </select>
         </div>
       </div>
+      <div id="dateBlockWarning" style="display:none;background:#fff3cd;border:1.5px solid #f0c050;border-radius:12px;padding:12px 14px;margin-top:8px;font-size:13px;color:#7a5010;direction:rtl;line-height:1.6"></div>
       <div class="co-field">
         <label class="co-label" for="coNote">הערות (אופציונלי)</label>
         <textarea class="co-input" id="coNote" rows="2" placeholder="בקשות מיוחדות, אלרגיות, כיתוב להקדשה..."></textarea>
       </div>
     </div>
 
-    <button class="co-submit" onclick="goToStep(3)">המשך לתשלום →</button>
+    <button class="co-submit" id="step2NextBtn" onclick="goToStep(3)">המשך לתשלום →</button>
     <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(1)">← חזרה לסל</button>
   </div>
 
@@ -299,7 +302,7 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getFirestore, doc, setDoc, getDoc, getDocs, collection, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, getDocs, collection, serverTimestamp, increment } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
 const firebaseConfig = {
@@ -404,6 +407,8 @@ function renderCartItems(){
     document.getElementById('toStep2Btn').disabled = true;
     return;
   }
+  const evCats = ['ev-mgash','ev-mispar','ev-cakes'];
+  const hasEvents = cartItems.some(i => evCats.includes(i.cat));
   el.innerHTML = cartItems.map(item => `
     <div class="co-item">
       <div>
@@ -411,7 +416,8 @@ function renderCartItems(){
         ${item.details ? `<div class="co-item-details">${item.details}</div>` : ''}
       </div>
       <div class="co-item-price">${item.price > 0 ? shekel(item.price) : 'לפי הסכם'}</div>
-    </div>`).join('');
+    </div>`).join('') +
+    (hasEvents ? '<div style="margin-top:10px;background:#fff3e6;border:1.5px solid #f0c878;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700;color:#7a4500">⚠️ פריטי אירועים לא מצברים נקודות מתנות — הנקודות מצטברות רק על מארזים ומותאם אישית.</div>' : '');
   updateTotalsDisplay();
 }
 
@@ -517,17 +523,51 @@ window.updateDeliveryFee = function(){
   const city = document.getElementById('coCity').value;
   const sub = getSubtotal();
   const feeMsg = document.getElementById('deliveryFeeMsg');
+  const hasMaarz = cartItems.some(i => i.cat === 'maarz' || i.cat === 'custom');
   if(city === 'harish'){
-    deliveryFee = sub >= 150 ? 0 : 10;
-    if(feeMsg){ feeMsg.textContent = sub >= 150 ? '✅ משלוח חינם!' : '🚚 דמי משלוח: ₪10'; feeMsg.style.display = 'block'; }
-  } else if(city === 'tal_menashe' || city === 'pardes_hanna'){
+    const free = hasMaarz && sub >= 150;
+    deliveryFee = free ? 0 : 20;
+    if(feeMsg){ feeMsg.textContent = free ? '✅ משלוח חינם! (מארז מעל ₪150)' : '🚚 דמי משלוח: ₪20'; feeMsg.style.display = 'block'; }
+  } else if(city === 'mavoa_dotan' || city === 'pardes_hanna'){
     deliveryFee = 70;
     if(feeMsg){ feeMsg.textContent = '🚚 דמי משלוח: ₪70'; feeMsg.style.display = 'block'; }
+  } else if(city === 'tal_menashe'){
+    deliveryFee = 60;
+    if(feeMsg){ feeMsg.textContent = '🚚 דמי משלוח: ₪60'; feeMsg.style.display = 'block'; }
   } else {
     deliveryFee = 0;
     if(feeMsg) feeMsg.style.display = 'none';
   }
   updateTotalsDisplay();
+};
+
+window.checkDateBlocks = function(){
+  const dateVal = (document.getElementById('coDate') || {}).value;
+  const warn = document.getElementById('dateBlockWarning');
+  const nextBtn = document.getElementById('step2NextBtn');
+  if(!warn) return;
+  if(!dateVal){ warn.style.display='none'; return; }
+  const blocks = window._productBlocks || [];
+  if(!blocks.length){ warn.style.display='none'; return; }
+  // find cart items that are blocked on selected date
+  const blocked = [];
+  cartItems.forEach(function(item){
+    const b = blocks.filter(function(bl){
+      return bl.productName === item.name && bl.from <= dateVal && dateVal <= bl.to;
+    });
+    if(b.length) blocked.push({name:item.name, blocks:b});
+  });
+  if(!blocked.length){ warn.style.display='none'; if(nextBtn) nextBtn.disabled=false; return; }
+  const msgs = blocked.map(function(b){
+    const ranges = b.blocks.map(function(bl){
+      function fmt(s){var m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:s;}
+      return fmt(bl.from)+' עד '+fmt(bl.to);
+    }).join(', ');
+    return '⛔ '+b.name+' — לא זמין בתאריכים: '+ranges;
+  });
+  warn.innerHTML = '<strong>שים לב!</strong> חלק מהמוצרים בסל לא זמינים בתאריך שנבחר:<br>' + msgs.join('<br>') + '<br><span style="font-size:12px">אנא בחרי תאריך אחר או צרי קשר עם שרה.</span>';
+  warn.style.display = 'block';
+  if(nextBtn) nextBtn.disabled = false; // warn but don't block completely
 };
 
 // ── Payment ──────────────────────────────────────────────────────
@@ -622,6 +662,16 @@ window.submitOrder = async function(){
     await fetch(SHEETS_URL, { method:'POST', body: JSON.stringify({ rows }), headers:{'Content-Type':'application/json'} });
   } catch(e){ console.warn('Sheets:', e); }
 
+  // Award points only for non-event items
+  if(currentUser){
+    const evCats = ['ev-mgash','ev-mispar','ev-cakes'];
+    const pointsEligible = cartItems.filter(i => !evCats.includes(i.cat));
+    const pointsTotal = Math.floor(pointsEligible.reduce((s,i) => s + (Number(i.price)||0), 0));
+    if(pointsTotal > 0){
+      try{ await setDoc(doc(db,'users',currentUser.uid),{points:increment(pointsTotal)},{merge:true}); }catch(e){}
+    }
+  }
+
   clearCart();
 
   // success
@@ -711,6 +761,8 @@ function showSaleTag(sale){
           const cp = s.couponPopup;
           if(cp.code) window._cpPopup = cp;
         }
+        // Product blocks
+        window._productBlocks = s.productBlocks || [];
       }
     } catch(e){}
     try {
