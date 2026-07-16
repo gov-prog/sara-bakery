@@ -212,6 +212,35 @@ input[type="date"]#datePicker.on{display:block}
 .rv-approve{background:#e8f8ee;color:#1a7a28;border:1.5px solid #a8d8b8}
 .rv-reject{background:#fff5e0;color:#a05010;border:1.5px solid #e8c878}
 .rv-delete{background:#fff0f0;color:#c03030;border:1.5px solid #f0c8c8}
+/* ── Deliveries ── */
+.del-card{background:#fff;border:1.5px solid #ecd8c8;border-radius:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 3px 14px rgba(200,112,74,.08);border-right:5px solid #c8704a}
+.del-card.done{border-right-color:#4caf50;opacity:.7}
+.del-hdr{padding:14px 16px;display:flex;gap:10px;align-items:flex-start;background:#fff8f3;border-bottom:1px solid #f0e0d0}
+.del-num{font-size:22px;font-weight:900;color:#c8704a;font-family:'Playfair Display',serif;flex-shrink:0;min-width:32px;text-align:center;margin-top:2px}
+.del-info{flex:1;min-width:0}
+.del-name{font-size:17px;font-weight:800;color:#2d1005}
+.del-phone{font-size:14px;color:#9a7060;margin-top:2px;font-weight:600}
+.del-body{padding:12px 16px}
+.del-addr{display:flex;align-items:flex-start;gap:8px;background:#fffbf7;border:1.5px solid #e8d0c0;border-radius:12px;padding:10px 13px;margin-bottom:10px}
+.del-addr-text{font-size:14px;font-weight:800;color:#2d1005;line-height:1.5}
+.del-addr-city{font-size:12px;color:#9a7060;font-weight:600;margin-top:2px}
+.del-time{display:inline-flex;align-items:center;gap:5px;background:#fff3e6;border:1px solid #e8c890;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:800;color:#a06010;margin-bottom:10px}
+.del-items{margin-bottom:10px}
+.del-item-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f5ece5;font-size:13px;color:#4a2810}
+.del-item-row:last-child{border-bottom:none}
+.del-item-name{font-weight:700}
+.del-item-qty{color:#9a7060;font-size:12px;margin-right:4px}
+.del-total{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:15px;font-weight:800;color:#2d1005;border-top:2px solid #ecd8c8;margin-top:4px}
+.del-note{background:#fff5e6;border:1px solid #e8d0b0;border-radius:10px;padding:8px 12px;font-size:13px;color:#7a5040;margin-bottom:10px;line-height:1.5}
+.del-actions{display:flex;gap:8px;flex-wrap:wrap}
+.del-btn{flex:1;min-width:120px;border:none;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px}
+.del-btn-waze{background:linear-gradient(135deg,#33ccff,#00aaee);color:#fff;box-shadow:0 6px 16px rgba(0,170,238,.25)}
+.del-btn-waze:hover{opacity:.9;transform:translateY(-1px)}
+.del-btn-wa{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;box-shadow:0 6px 16px rgba(37,211,102,.22)}
+.del-btn-wa:hover{opacity:.9;transform:translateY(-1px)}
+.del-btn-done{background:#e8f5e9;color:#2e7d32;border:1.5px solid #a5d6a7}
+.del-btn-done:hover{background:#c8e6c9}
+.del-summary-chip{background:#fff;border:1.5px solid #ecd8c8;border-radius:12px;padding:10px 16px;font-size:13px;font-weight:800;color:#2d1005;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(200,112,74,.07)}
 /* ── Sale section ── */
 .sale-type-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .sale-type-btn{flex:1;min-width:80px;background:#fff;border:1.5px solid #e8d0c0;color:#9a7060;border-radius:10px;padding:9px 8px;font-size:13px;font-weight:800;font-family:inherit;cursor:pointer;transition:all .2s;text-align:center}
@@ -250,6 +279,7 @@ input[type="date"]#datePicker.on{display:block}
     <button class="tb" onclick="showTab('settings',this)">⚙️ הגדרות</button>
     <button class="tb" onclick="showTab('reviews',this)">⭐ ביקורות <span class="nb" id="reviewsBadge" style="display:none">0</span></button>
     <button class="tb" onclick="showTab('coupons',this)">🏷️ קופונים</button>
+    <button class="tb" onclick="showTab('deliveries',this)">🚗 משלוחים <span class="nb" id="deliveryBadge" style="display:none">0</span></button>
   </div>
 
   <!-- ORDERS PANE -->
@@ -411,6 +441,19 @@ input[type="date"]#datePicker.on{display:block}
       </div>
     </div>
     <div id="reviewsList"><div class="empty-state"><div class="es-icon">⭐</div><div class="es-txt">לוחצים על טאב לטעינת ביקורות</div></div></div>
+  </div>
+
+  <!-- DELIVERIES PANE -->
+  <div class="pane" id="pDeliveries" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <div style="flex:1">
+        <div style="font-size:18px;font-weight:900;color:#2d1005">🚗 משלוחים היום</div>
+        <div style="font-size:12px;color:#9a7060;margin-top:2px">רשימת משלוחים ממתינים עם ניווט לוויז</div>
+      </div>
+      <button class="form-btn sec" onclick="renderDeliveries()" style="font-size:12px;padding:7px 12px">🔄 רענן</button>
+    </div>
+    <div id="deliverySummary" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"></div>
+    <div id="deliveriesList"><div class="empty-state"><div class="es-icon">🚗</div><div class="es-txt">אין משלוחים להיום</div><div class="es-sub">הזמנות עם משלוח יופיעו כאן</div></div></div>
   </div>
 
   <!-- COUPONS PANE -->
@@ -673,6 +716,9 @@ function initDash(){
   unsubOrders=onSnapshot(query(collection(db,'orders'),orderBy('createdAt','desc')),snap=>{
     allOrders=snap.docs.map(d=>({id:d.id,...d.data()}));
     buildCustomers();renderOrders();renderKpis();updateBadge();
+    // update delivery badge + list if tab is active
+    if($('pDeliveries')&&$('pDeliveries').style.display!=='none') renderDeliveries();
+    else{var db2=allOrders.filter(o=>oIsDelivery(o)&&oStatus(o)!=='cancelled'&&oStatus(o)!=='completed');var b=$('deliveryBadge');if(b){b.textContent=db2.length;b.style.display=db2.length?'':'none';}}
   });
   if(unsubProducts)unsubProducts();
   unsubProducts=onSnapshot(query(collection(db,'products'),orderBy('order','asc')),snap=>{
@@ -899,7 +945,7 @@ window.toggleAll=()=>{showAll=!showAll;renderDateNav();renderOrders();renderKpis
 window.toggleDatePicker=()=>{var p=$('datePicker');p.classList.toggle('on');if(p.classList.contains('on'))p.value=fmtKey(curDate);};
 window.pickDate=v=>{if(!v)return;showAll=false;curDate=new Date(v+'T00:00:00');$('datePicker').classList.remove('on');renderDateNav();renderOrders();renderKpis();};
 window.setFilter=function(f,btn){curFilter=f;document.querySelectorAll('.sf').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderOrders();};
-window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons'].forEach(p=>$(p).style.display='none');document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();};
+window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons','pDeliveries'].forEach(p=>$(p).style.display='none');document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();if(tab==='deliveries')renderDeliveries();};
 
 // ── Coupons ─────────────────────────────────────────────────────
 async function loadCoupons(){
@@ -1131,6 +1177,116 @@ window.reviewAction=async function(action,id,btnEl){
 };
 // load review badge on startup
 setTimeout(async()=>{try{var s=await getDocs(collection(db,'reviews'));var p=0;s.forEach(d=>{var r=d.data();if(!r.approved&&!r.rejected)p++;});var b=$('reviewsBadge');if(b&&p){b.textContent=p;b.style.display='';};}catch(e){}},2000);
+
+// ── Deliveries ───────────────────────────────────────────────────────────────
+window.renderDeliveries = function(){
+  var el=$('deliveriesList');
+  var summaryEl=$('deliverySummary');
+  if(!el) return;
+
+  // Filter delivery orders that are not completed/cancelled
+  var deliveries=allOrders.filter(o=>oIsDelivery(o)&&oStatus(o)!=='cancelled');
+
+  // Further filter: today + future (not completed unless done today)
+  var today=todayKey();
+  deliveries=deliveries.filter(function(o){
+    var rb=parseReadyBy(o);
+    if(rb.dateKey) return rb.dateKey>=today;
+    var ck=createdKey(o);
+    return !ck || ck===today;
+  });
+
+  // Sort by date then time
+  deliveries.sort((a,b)=>sortKey(a).localeCompare(sortKey(b)));
+
+  // Update badge
+  var pending=deliveries.filter(o=>oStatus(o)!=='completed').length;
+  var badge=$('deliveryBadge');
+  if(badge){badge.textContent=pending;badge.style.display=pending?'':'none';}
+
+  // Summary chips
+  if(summaryEl){
+    var total=deliveries.length;
+    var done=deliveries.filter(o=>oStatus(o)==='completed').length;
+    var waiting=total-done;
+    summaryEl.innerHTML=
+      '<div class="del-summary-chip">📦 סה"כ: <strong>'+total+'</strong></div>'+
+      '<div class="del-summary-chip">⏳ ממתינים: <strong>'+waiting+'</strong></div>'+
+      (done?'<div class="del-summary-chip">✅ הושלמו: <strong>'+done+'</strong></div>':'');
+  }
+
+  if(!deliveries.length){
+    el.innerHTML='<div class="empty-state"><div class="es-icon">🚗</div><div class="es-txt">אין משלוחים פעילים</div><div class="es-sub">הזמנות עם משלוח עתידי יופיעו כאן</div></div>';
+    return;
+  }
+
+  el.innerHTML=deliveries.map(function(o,i){
+    var name=oName(o);
+    var phone=oPhone(o);
+    var address=oAddress(o);
+    var city=oCity(o);
+    var fullAddr=[address,city].filter(Boolean).join(', ');
+    var rb=parseReadyBy(o);
+    var items=oItems(o);
+    var total=oTotal(o);
+    var note=oNote(o);
+    var status=oStatus(o);
+    var isDone=status==='completed';
+    var normPh=normPhone(phone);
+    var wazeUrl=fullAddr?'https://waze.com/ul?q='+encodeURIComponent(fullAddr)+'&navigate=yes':'';
+    var waUrl=normPh?'https://wa.me/'+normPh+'?text='+encodeURIComponent('שלום '+name+'! 🚗\nנוסעים אליך עם ההזמנה! '):'';
+
+    var timeBadge='';
+    if(rb.date||rb.time){
+      var timeStr=[rb.date,rb.time].filter(Boolean).join(' ⏰ ');
+      timeBadge='<div class="del-time">📅 '+escapeHtml(timeStr)+'</div>';
+    }
+
+    var itemsHtml=items.length?items.map(function(it){
+      return '<div class="del-item-row"><span class="del-item-name">'+escapeHtml(it.name||it.item||'')+'</span><span><span class="del-item-qty">×'+(it.qty||1)+'</span> <strong>₪'+(+(it.price||0)*(+(it.qty||1))).toFixed(0)+'</strong></span></div>';
+    }).join(''):'<div style="color:#9a7060;font-size:13px">אין פרטי פריטים</div>';
+
+    var noteHtml=note?'<div class="del-note">📝 '+escapeHtml(note)+'</div>':'';
+    var addrHtml=fullAddr?'<div class="del-addr"><span style="font-size:20px">📍</span><div><div class="del-addr-text">'+escapeHtml(address)+'</div><div class="del-addr-city">'+escapeHtml(city)+'</div></div></div>':'<div style="color:#c03030;font-size:13px;font-weight:700;margin-bottom:10px">⚠️ לא הוזנה כתובת</div>';
+
+    return '<div class="del-card'+(isDone?' done':'')+'">'+
+      '<div class="del-hdr">'+
+        '<div class="del-num">'+(i+1)+'</div>'+
+        '<div class="del-info">'+
+          '<div class="del-name">'+escapeHtml(name)+(isDone?' <span style="color:#4caf50">✓</span>':'')+'</div>'+
+          '<div class="del-phone">'+escapeHtml(phone)+'</div>'+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0">'+
+          (wazeUrl?'<a class="del-btn del-btn-waze" href="'+wazeUrl+'" target="_blank" rel="noopener">🗺️ וויז</a>':'<div style="font-size:11px;color:#c03030">אין כתובת</div>')+
+        '</div>'+
+      '</div>'+
+      '<div class="del-body">'+
+        timeBadge+
+        addrHtml+
+        '<div class="del-items">'+itemsHtml+'</div>'+
+        '<div class="del-total"><span>סה"כ לתשלום</span><span style="color:#c8704a">₪'+Math.round(total||0)+'</span></div>'+
+        noteHtml+
+        '<div class="del-actions">'+
+          (wazeUrl?'<a class="del-btn del-btn-waze" href="'+wazeUrl+'" target="_blank" rel="noopener">🗺️ פתח בוויז</a>':'')+
+          (waUrl?'<a class="del-btn del-btn-wa" href="'+waUrl+'" target="_blank" rel="noopener">💬 WhatsApp</a>':'')+
+          '<button class="del-btn del-btn-done" onclick="markDeliveryDone(\''+o.id+'\',this)">'+(isDone?'↩️ בטל':'✅ הושלם')+'</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+};
+
+window.markDeliveryDone=async function(orderId,btn){
+  if(!orderId)return;
+  var o=allOrders.find(x=>x.id===orderId);
+  if(!o)return;
+  var newStatus=oStatus(o)==='completed'?'confirmed':'completed';
+  if(btn){btn.disabled=true;btn.textContent='⏳...';}
+  try{
+    await updateDoc(doc(db,'orders',orderId),{status:newStatus,updatedAt:serverTimestamp()});
+    toast(newStatus==='completed'?'✅ משלוח הושלם':'↩️ בוטל',newStatus==='completed'?'ok':'');
+  }catch(e){toast('שגיאה: '+e.message,'err');if(btn){btn.disabled=false;}}
+};
 </script>
 </body>
 </html>

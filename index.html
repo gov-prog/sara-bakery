@@ -2853,13 +2853,13 @@ function applySaleToProducts(sale){
   function nudgeAuth(msg){
     ensureUI();
     if(msg) toast(msg);
-    // פתח מודל כניסה מרכזי
     var modal = document.getElementById('authModal');
     if(modal){
       modal.classList.add('open');
+      switchAuthModalTab('login');
       setTimeout(function(){
-        var usernameElFocus = document.getElementById('authUsername');
-        if(usernameElFocus) usernameElFocus.focus();
+        var emailElFocus = document.getElementById('amLoginEmail');
+        if(emailElFocus) emailElFocus.focus();
       }, 150);
     } else if(typeof window.openAuthModal === 'function'){
       window.openAuthModal();
@@ -3018,8 +3018,18 @@ function ensureUI(){
       '@keyframes authAttention{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}',
       '.auth-fab.attention{animation:authAttention .45s ease 3;border-color:#27ae60;box-shadow:0 0 0 6px rgba(39,174,96,.16),0 10px 24px rgba(0,0,0,.18)}',
       'body.auth-locked{overflow:hidden !important}',
-      '.auth-modal{display:none;position:fixed;inset:0;z-index:1500;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:14px;pointer-events:none}',
+      '.auth-modal{display:none;position:fixed;inset:0;z-index:1500;background:linear-gradient(150deg,#120a06 0%,#1e0f09 50%,#2d1810 100%);align-items:center;justify-content:center;padding:14px;pointer-events:none;overflow:hidden}',
       '.auth-modal.open{display:flex;pointer-events:auto}',
+      '.auth-modal::before{content:"";position:absolute;inset:-15%;background:radial-gradient(circle at 15% 20%,rgba(216,177,106,.18),transparent 45%),radial-gradient(circle at 85% 25%,rgba(200,112,74,.15),transparent 50%),radial-gradient(circle at 30% 80%,rgba(255,230,200,.10),transparent 55%);pointer-events:none;z-index:0;animation:amBgShift 20s ease-in-out infinite}',
+      '@keyframes amBgShift{0%,100%{transform:scale(1) translateY(0)}50%{transform:scale(1.04) translateY(-12px)}}',
+      '.am-emoji{position:absolute;font-size:clamp(18px,2.5vw,26px);opacity:.22;filter:drop-shadow(0 6px 12px rgba(0,0,0,.3));pointer-events:none;z-index:1;animation:amEmojiDrift 14s ease-in-out infinite}',
+      '.am-emoji:nth-child(1){top:8%;left:5%;animation-delay:0s;animation-duration:16s}',
+      '.am-emoji:nth-child(2){top:12%;right:6%;animation-delay:-3s;animation-duration:18s}',
+      '.am-emoji:nth-child(3){top:58%;left:4%;animation-delay:-6s;animation-duration:15s}',
+      '.am-emoji:nth-child(4){top:68%;right:5%;animation-delay:-4s;animation-duration:17s}',
+      '.am-emoji:nth-child(5){top:32%;left:46%;animation-delay:-8s;animation-duration:20s}',
+      '.am-emoji:nth-child(6){top:82%;left:22%;animation-delay:-2s;animation-duration:13s}',
+      '@keyframes amEmojiDrift{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-18px) rotate(7deg)}}',
       '.auth-gate{display:none;position:fixed;inset:0;z-index:1150;background:linear-gradient(160deg,rgba(255,250,244,.96),rgba(250,235,220,.96));align-items:center;justify-content:center;padding:16px;pointer-events:none}',
       '.auth-gate.open{display:flex;pointer-events:auto}',
       '.auth-gate-card{width:min(420px,94vw);background:#fff;border:1px solid #f2d9c0;border-radius:18px;padding:22px;box-shadow:0 20px 45px rgba(0,0,0,.18);text-align:center}',
@@ -3028,8 +3038,54 @@ function ensureUI(){
       '.auth-gate-actions{display:flex;flex-direction:column;gap:8px}',
       '.auth-gate-btn{width:100%;border:none;border-radius:12px;padding:12px;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;font-weight:800;cursor:pointer}',
       '.auth-gate-btn.secondary{background:#fff;color:#6b4433;border:1px solid #e5d0be}',
-      '.auth-card{width:min(400px,94vw);background:#fff;border-radius:22px;padding:26px 22px;box-shadow:0 24px 55px rgba(0,0,0,.28);direction:rtl;border:1px solid #f2d9c0;max-height:90vh;overflow-y:auto}',
-      '.auth-card h3{margin-bottom:10px;color:#2d1a0e}',
+      '.auth-card{position:relative;z-index:10;width:min(440px,94vw);background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,248,240,.96));border:1.5px solid rgba(200,112,74,.3);border-radius:28px;box-shadow:0 40px 80px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.4) inset,0 1px 0 rgba(255,255,255,.9) inset;overflow:hidden;direction:rtl;max-height:92vh;overflow-y:auto}',
+      '.am-card-orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;animation:amOrbPulse 10s ease-in-out infinite}',
+      '.am-card-orb.o1{width:200px;height:200px;top:-60px;right:-50px;background:radial-gradient(circle,rgba(216,177,106,.3),transparent 70%)}',
+      '.am-card-orb.o2{width:180px;height:180px;bottom:-60px;left:-40px;background:radial-gradient(circle,rgba(200,112,74,.25),transparent 70%);animation-delay:-4s}',
+      '@keyframes amOrbPulse{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.1);opacity:1}}',
+      '.am-card-head{position:relative;z-index:2;text-align:center;padding:20px 16px 14px;background:linear-gradient(180deg,rgba(255,255,255,1),rgba(255,244,232,.9));border-bottom:1px solid rgba(200,112,74,.2)}',
+      '.am-brand-logo{font-size:32px;margin-bottom:4px;display:block;filter:drop-shadow(0 4px 8px rgba(200,112,74,.3))}',
+      '.am-brand-name{font-family:Playfair Display,serif;font-size:24px;font-weight:900;color:#2d1a0e;margin-bottom:3px}',
+      '.am-brand-name span{color:#c8704a}',
+      '.am-brand-sub{font-size:12px;color:#7a5040;font-weight:700}',
+      '.am-close-btn{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.85);border:1.5px solid rgba(200,112,74,.25);border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;color:#7a5040;line-height:1;z-index:3;transition:background .2s,border-color .2s}',
+      '.am-close-btn:hover{background:#fff;border-color:#c8704a;color:#c8704a}',
+      '.am-tabs-wrap{position:relative;z-index:2;display:flex;gap:8px;padding:12px 14px 0}',
+      '.am-tab-btn{flex:1;border:2px solid #f2d9c0;background:rgba(255,255,255,.8);border-radius:14px;padding:10px 8px;font-weight:800;font-size:13px;color:#7a5040;cursor:pointer;transition:all .25s ease;font-family:Assistant,sans-serif}',
+      '.am-tab-btn:hover{border-color:#e8905a;color:#c8704a}',
+      '.am-tab-btn.active{background:linear-gradient(135deg,#c8704a,#9f4f2f);border-color:transparent;color:#fff;box-shadow:0 8px 20px rgba(200,112,74,.35)}',
+      '.am-panel{position:relative;z-index:2;display:none;padding:14px 16px}',
+      '.am-panel.active{display:block}',
+      '.am-field{margin-bottom:11px}',
+      '.am-field-label{display:block;font-size:12px;font-weight:800;color:#2d1a0e;margin-bottom:5px;letter-spacing:.3px}',
+      '.am-field-input{width:100%;border:1.8px solid #efcfaf;border-radius:12px;padding:11px 13px;font-family:Assistant,sans-serif;font-size:15px;background:rgba(255,255,255,.9);color:#2d1a0e;transition:border-color .2s,box-shadow .2s;outline:none;box-sizing:border-box}',
+      '.am-field-input:focus{border-color:#c8704a;box-shadow:0 0 0 4px rgba(200,112,74,.15);background:#fff}',
+      '.am-field-input::placeholder{color:#c0a090}',
+      '.am-pass-wrap{position:relative}',
+      '.am-pass-toggle{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#7a5040;line-height:1;padding:2px}',
+      '.am-pass-wrap .am-field-input{padding-left:38px}',
+      '.am-btn-main{width:100%;border:none;background:linear-gradient(135deg,#c8704a,#9f4f2f);color:#fff;border-radius:14px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;box-shadow:0 10px 24px rgba(200,112,74,.3);transition:transform .2s,box-shadow .2s,opacity .2s;margin-bottom:8px}',
+      '.am-btn-main:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(200,112,74,.4)}',
+      '.am-btn-main:active{transform:translateY(0)}',
+      '.am-btn-main:disabled{opacity:.65;cursor:not-allowed;transform:none}',
+      '.am-btn-ghost{width:100%;border:2px solid #f2d9c0;background:#fff;color:#7a5040;border-radius:14px;padding:11px;font-size:13px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;transition:all .2s;margin-bottom:6px}',
+      '.am-btn-ghost:hover{border-color:#e8905a;color:#c8704a}',
+      '.am-btn-link{background:none;border:none;color:#9f4f2f;font-size:12px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;text-decoration:underline;text-underline-offset:2px;display:block;text-align:center;padding:4px;margin-bottom:4px}',
+      '.am-msg-bar{position:relative;z-index:2;min-height:22px;padding:0 16px 4px;font-size:12px;font-weight:700;text-align:center;color:transparent;transition:color .2s}',
+      '.am-msg-bar.err{color:#b23b2a}',
+      '.am-msg-bar.ok{color:#1a7a3c}',
+      '.am-card-foot{position:relative;z-index:2;padding:0 16px 16px}',
+      '.am-foot-note{text-align:center;font-size:10px;color:#7a5040;line-height:1.6;margin-top:6px;opacity:.8}',
+      '.am-hint-box{background:#fff8f2;border:1px solid #f2d9c0;border-radius:10px;padding:8px 11px;font-size:11px;color:#7a5040;line-height:1.6;margin-bottom:10px}',
+      '.am-success-overlay{display:none;position:absolute;inset:0;z-index:50;background:linear-gradient(160deg,rgba(255,255,255,.98),rgba(255,248,240,.98));border-radius:28px;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:36px 26px;animation:amFadeIn .3s ease}',
+      '.am-success-overlay.show{display:flex}',
+      '@keyframes amFadeIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}',
+      '.am-success-icon{font-size:58px;margin-bottom:12px;animation:amPopIn .5s cubic-bezier(.34,1.56,.64,1) both}',
+      '@keyframes amPopIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}',
+      '.am-success-title{font-family:Playfair Display,serif;font-size:22px;font-weight:900;color:#2d1a0e;margin-bottom:6px}',
+      '.am-success-sub{font-size:13px;color:#7a5040;font-weight:600;line-height:1.6;margin-bottom:16px}',
+      '.am-success-bar{width:100%;height:6px;background:rgba(200,112,74,.15);border-radius:999px;overflow:hidden;margin-bottom:10px}',
+      '.am-success-fill{height:100%;background:linear-gradient(90deg,#c8704a,#d8b16a);border-radius:999px;width:0%;transition:width 1.5s linear}',
       '.auth-row{display:flex;gap:8px;margin-top:8px}',
       '.auth-btn{flex:1;padding:10px;border:none;border-radius:10px;cursor:pointer;font-weight:700}',
       '.auth-btn.primary{background:#c8704a;color:#fff}',
@@ -3039,7 +3095,7 @@ function ensureUI(){
       '.cart-sticky-footer{padding:14px 16px;background:#fff;border-top:2px solid #f2d9c0;display:none;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 -6px 24px rgba(200,112,74,.14);flex-shrink:0}',
       '.cart-sticky-footer.visible{display:flex}',
       '.cart-sticky-total{font-family:\'Playfair Display\',serif;font-size:16px;font-weight:900;color:#5a3224}',
-      '.cart-sticky-btn{background:linear-gradient(135deg,#c8704a,#a8522e);color:#fff;border-radius:50px;padding:12px 24px;font-size:14px;font-weight:900;text-decoration:none;font-family:\'Gisha\',\'Assistant\',sans-serif;box-shadow:0 6px 16px rgba(200,112,74,.3);white-space:nowrap;flex-shrink:0}',,
+      '.cart-sticky-btn{background:linear-gradient(135deg,#c8704a,#a8522e);color:#fff;border-radius:50px;padding:12px 24px;font-size:14px;font-weight:900;text-decoration:none;font-family:\'Gisha\',\'Assistant\',sans-serif;box-shadow:0 6px 16px rgba(200,112,74,.3);white-space:nowrap;flex-shrink:0}',
       '.profile-drawer{position:fixed;right:0;top:0;height:100vh;width:min(420px,94vw);background:#fff;z-index:1200;box-shadow:-20px 0 40px rgba(0,0,0,.22);transform:translateX(102%);transition:transform .25s ease;display:flex;flex-direction:column}',
       '.profile-drawer.open{transform:translateX(0)}',
       '.profile-head{padding:14px 16px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:10px}',
@@ -3252,37 +3308,72 @@ function ensureUI(){
       '<a id="cartFab" class="cart-fab" href="#" role="button" title="סל" onclick="runCartAction();return false;">🛒<span id="cartBadge" class="cart-badge">0</span></a>' +
 
       '<div id="authModal" class="auth-modal" onclick="closeAuthModal(event)">' +
+        '<div class="am-emoji" aria-hidden="true">🧁</div>' +
+        '<div class="am-emoji" aria-hidden="true">🍰</div>' +
+        '<div class="am-emoji" aria-hidden="true">🍪</div>' +
+        '<div class="am-emoji" aria-hidden="true">🍫</div>' +
+        '<div class="am-emoji" aria-hidden="true">🎂</div>' +
+        '<div class="am-emoji" aria-hidden="true">🍩</div>' +
         '<div class="auth-card">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
-            '<div style="font-family:Playfair Display,serif;font-size:20px;font-weight:900;color:#2d1a0e">כניסה / הרשמה 🎁</div>' +
-            '<button type="button" onclick="var m=document.getElementById(\'authModal\');if(m)m.classList.remove(\'open\')" style="background:none;border:none;font-size:22px;cursor:pointer;color:#7a5040;line-height:1">✕</button>' +
+          '<div class="am-card-orb o1" aria-hidden="true"></div>' +
+          '<div class="am-card-orb o2" aria-hidden="true"></div>' +
+          '<div class="am-success-overlay" id="amSuccessOverlay">' +
+            '<div class="am-success-icon">🎉</div>' +
+            '<div class="am-success-title" id="amSuccessTitle">ברוכה הבאה!</div>' +
+            '<div class="am-success-sub">מתחברים אותך...</div>' +
+            '<div class="am-success-bar"><div class="am-success-fill" id="amSuccessFill"></div></div>' +
           '</div>' +
-          '<div style="font-size:12px;color:#7a5040;margin-bottom:12px">התחברי כדי להזמין, לצבור נקודות ולקבל מתנות</div>' +
-          '<div style="display:flex;gap:6px;margin-bottom:14px">' +
-            '<button id="authTabLogin" type="button" onclick="switchAuthModalTab(\'login\')" style="flex:1;padding:8px;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff">התחברות</button>' +
-            '<button id="authTabReg" type="button" onclick="switchAuthModalTab(\'reg\')" style="flex:1;padding:8px;border:1.5px solid #e5d0be;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;background:#fff;color:#6b4433">הרשמה</button>' +
+          '<button type="button" class="am-close-btn" onclick="var m=document.getElementById(\'authModal\');if(m)m.classList.remove(\'open\')" aria-label="סגירה">✕</button>' +
+          '<div class="am-card-head">' +
+            '<span class="am-brand-logo" aria-hidden="true">🍰</span>' +
+            '<div class="am-brand-name">שרה <span>חברוני</span></div>' +
+            '<div class="am-brand-sub">כניסה לחשבון · Home Made Bakery</div>' +
           '</div>' +
-          '<div id="authPanelLogin">' +
-            '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">שם משתמש</label>' +
-            '<input id="authUsername" type="text" autocomplete="username" placeholder="שם המשתמש שלך" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:10px;box-sizing:border-box" dir="ltr">' +
-            '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">סיסמה</label>' +
-            '<input id="authPass" type="password" autocomplete="current-password" placeholder="לפחות 6 תווים" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:14px;box-sizing:border-box">' +
-            '<button id="authLoginBtn" type="button" onclick="loginUser()" style="width:100%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif;margin-bottom:8px">התחברות</button>' +
-            '<button type="button" onclick="authForgotPassword()" style="width:100%;background:none;border:none;color:#a07060;font-size:12px;cursor:pointer;font-family:Assistant,sans-serif;padding:4px">שכחתי סיסמה</button>' +
+          '<div class="am-tabs-wrap">' +
+            '<button type="button" id="amTabLogin" class="am-tab-btn active" onclick="switchAuthModalTab(\'login\')">🔑 התחברות</button>' +
+            '<button type="button" id="amTabReg" class="am-tab-btn" onclick="switchAuthModalTab(\'reg\')">✨ הרשמה חדשה</button>' +
           '</div>' +
-          '<div id="authPanelReg" style="display:none">' +
-            '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">שם מלא</label>' +
-            '<input id="authRegName" type="text" autocomplete="name" placeholder="שם מלא" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:10px;box-sizing:border-box">' +
-            '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">אימייל</label>' +
-            '<input id="authRegEmail" type="email" autocomplete="email" placeholder="name@example.com" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:10px;box-sizing:border-box" dir="ltr">' +
-            '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">שם משתמש</label>' +
-            '<input id="authRegUsername" type="text" autocomplete="username" placeholder="שם משתמש לכניסה" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:10px;box-sizing:border-box" dir="ltr">' +
-            '<label style="font-size:12px;font-weight:700;color:#6b4433;display:block;margin-bottom:4px">סיסמה</label>' +
-            '<input id="authRegPass" type="password" autocomplete="new-password" placeholder="לפחות 6 תווים" style="width:100%;border:1.5px solid #e5d0be;border-radius:10px;padding:10px 12px;font-family:Assistant,sans-serif;font-size:14px;outline:none;margin-bottom:14px;box-sizing:border-box">' +
-            '<button id="authRegisterBtn" type="button" onclick="registerUser()" style="width:100%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:800;cursor:pointer;font-family:Assistant,sans-serif">הרשמה חינמית</button>' +
+          '<div id="authPanelLogin" class="am-panel active">' +
+            '<div class="am-field">' +
+              '<label class="am-field-label" for="amLoginEmail">📧 אימייל</label>' +
+              '<input id="amLoginEmail" class="am-field-input" type="email" autocomplete="email" placeholder="name@example.com" inputmode="email">' +
+            '</div>' +
+            '<div class="am-field">' +
+              '<label class="am-field-label" for="amLoginPass">🔒 סיסמה</label>' +
+              '<div class="am-pass-wrap">' +
+                '<input id="amLoginPass" class="am-field-input" type="password" autocomplete="current-password" placeholder="הסיסמה שלך" onkeydown="if(event.key===\'Enter\')loginUser()">' +
+                '<button type="button" class="am-pass-toggle" onclick="amTogglePass(\'amLoginPass\',this)" aria-label="הצג/הסתר סיסמה">👁</button>' +
+              '</div>' +
+            '</div>' +
+            '<button id="authLoginBtn" type="button" class="am-btn-main" onclick="loginUser()">כניסה לחשבון</button>' +
+            '<button type="button" class="am-btn-link" onclick="authForgotPassword()">שכחתי סיסמה</button>' +
+            '<div class="am-hint-box">💡 אין חשבון עדיין? לחצי על "הרשמה חדשה" למעלה.</div>' +
           '</div>' +
-          '<div id="authModalMsg" style="font-size:12px;color:#c0392b;margin-top:8px;text-align:center;min-height:18px"></div>' +
-          '<button id="logoutBtn" type="button" class="auth-btn secondary" style="width:100%;margin-top:8px;display:none" onclick="logoutUser()">התנתקות</button>' +
+          '<div id="authPanelReg" class="am-panel">' +
+            '<div class="am-field">' +
+              '<label class="am-field-label" for="amRegName">👤 שם מלא</label>' +
+              '<input id="amRegName" class="am-field-input" type="text" autocomplete="name" placeholder="למשל: יעל כהן">' +
+            '</div>' +
+            '<div class="am-field">' +
+              '<label class="am-field-label" for="amRegEmail">📧 אימייל</label>' +
+              '<input id="amRegEmail" class="am-field-input" type="email" autocomplete="email" placeholder="name@example.com" inputmode="email">' +
+            '</div>' +
+            '<div class="am-field">' +
+              '<label class="am-field-label" for="amRegPass">🔒 סיסמה</label>' +
+              '<div class="am-pass-wrap">' +
+                '<input id="amRegPass" class="am-field-input" type="password" autocomplete="new-password" placeholder="לפחות 6 תווים" onkeydown="if(event.key===\'Enter\')registerUser()">' +
+                '<button type="button" class="am-pass-toggle" onclick="amTogglePass(\'amRegPass\',this)" aria-label="הצג/הסתר סיסמה">👁</button>' +
+              '</div>' +
+            '</div>' +
+            '<button id="authRegisterBtn" type="button" class="am-btn-main" onclick="registerUser()">יצירת חשבון חדש ✨</button>' +
+            '<div class="am-hint-box">🎁 הרשמה = צבירת נקודות על כל הזמנה + מתנות!</div>' +
+          '</div>' +
+          '<div class="am-msg-bar" id="authModalMsg"></div>' +
+          '<div class="am-card-foot">' +
+            '<button type="button" class="am-btn-ghost" onclick="var m=document.getElementById(\'authModal\');if(m)m.classList.remove(\'open\')">← חזרה לאתר</button>' +
+            '<button id="logoutBtn" type="button" class="am-btn-link" style="display:none" onclick="logoutUser()">התנתקות</button>' +
+            '<div class="am-foot-note">🔐 המידע שלך מאובטח ומשמש רק לניהול ההזמנות</div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
 
@@ -5540,8 +5631,8 @@ function ensureUI(){
       modal.classList.add('open');
       switchAuthModalTab('login');
       try {
-        var usernameEl2 = document.getElementById('authUsername');
-        if(usernameEl2) setTimeout(function(){ usernameEl2.focus(); }, 150);
+        var emailEl = document.getElementById('amLoginEmail');
+        if(emailEl) setTimeout(function(){ emailEl.focus(); }, 150);
       } catch(e){}
     } else {
       var target = 'auth.html?return=' + encodeURIComponent(window.location.href);
@@ -5552,23 +5643,37 @@ function ensureUI(){
   window.switchAuthModalTab = function(tab){
     var panelLogin = document.getElementById('authPanelLogin');
     var panelReg   = document.getElementById('authPanelReg');
-    var tabLogin   = document.getElementById('authTabLogin');
-    var tabReg     = document.getElementById('authTabReg');
+    var tabLogin   = document.getElementById('amTabLogin');
+    var tabReg     = document.getElementById('amTabReg');
     var msg        = document.getElementById('authModalMsg');
     var isLogin    = (tab === 'login');
-    if(panelLogin) panelLogin.style.display = isLogin ? 'block' : 'none';
-    if(panelReg)   panelReg.style.display   = isLogin ? 'none' : 'block';
-    if(tabLogin){ tabLogin.style.background = isLogin ? 'linear-gradient(135deg,#c8704a,#a85535)' : '#fff'; tabLogin.style.color = isLogin ? '#fff' : '#6b4433'; tabLogin.style.border = isLogin ? 'none' : '1.5px solid #e5d0be'; }
-    if(tabReg)  { tabReg.style.background  = isLogin ? '#fff' : 'linear-gradient(135deg,#c8704a,#a85535)'; tabReg.style.color  = isLogin ? '#6b4433' : '#fff'; tabReg.style.border  = isLogin ? '1.5px solid #e5d0be' : 'none'; }
-    if(msg) msg.textContent = '';
+    if(panelLogin) panelLogin.className = 'am-panel' + (isLogin ? ' active' : '');
+    if(panelReg)   panelReg.className   = 'am-panel' + (isLogin ? '' : ' active');
+    if(tabLogin)   tabLogin.className   = 'am-tab-btn' + (isLogin ? ' active' : '');
+    if(tabReg)     tabReg.className     = 'am-tab-btn' + (isLogin ? '' : ' active');
+    if(msg){ msg.textContent = ''; msg.className = 'am-msg-bar'; }
     setTimeout(function(){
-      var f = isLogin ? document.getElementById('authUsername') : document.getElementById('authRegName');
+      var f = isLogin ? document.getElementById('amLoginEmail') : document.getElementById('amRegName');
       if(f) f.focus();
     }, 100);
   };
 
   window.authForgotPassword = async function(){
-    setAuthModalMsg('לאיפוס סיסמה, פנו ישירות לשרה 💛', true);
+    if(!fb){ setAuthModalMsg('שירות לא זמין כרגע'); return; }
+    var emailEl = document.getElementById('amLoginEmail');
+    var email = (emailEl && emailEl.value ? emailEl.value : '').trim();
+    if(!email){ setAuthModalMsg('הכניסי אימייל בשדה למעלה ואז לחצי שוב'); return; }
+    setAuthModalMsg('');
+    try {
+      await fb.sendPasswordResetEmail(fb.auth, email);
+      setAuthModalMsg('נשלח אימייל לאיפוס סיסמה ✅', true);
+    } catch(err){
+      var code = err && err.code ? err.code : '';
+      var msg = 'שגיאה בשליחת איפוס סיסמה';
+      if(code === 'auth/user-not-found') msg = 'לא נמצא חשבון עם האימייל הזה';
+      if(code === 'auth/invalid-email')  msg = 'אימייל לא תקין';
+      setAuthModalMsg(msg);
+    }
   };
 
 
@@ -5688,7 +5793,7 @@ function ensureUI(){
     var el = document.getElementById('authModalMsg');
     if(!el) return;
     el.textContent = msg || '';
-    el.style.color = isOk ? '#27ae60' : '#c0392b';
+    el.className = 'am-msg-bar' + (msg ? (isOk ? ' ok' : ' err') : '');
   }
 
   function usernameToEmail(input){
@@ -5699,64 +5804,89 @@ function ensureUI(){
     return cleaned + '@sara.local';
   }
 
+  window.amTogglePass = function(inputId, btn){
+    var input = document.getElementById(inputId);
+    if(!input) return;
+    var show = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    btn.textContent = show ? '🙈' : '👁';
+  };
+
+  function amShowSuccess(name){
+    var overlay = document.getElementById('amSuccessOverlay');
+    var title   = document.getElementById('amSuccessTitle');
+    var fill    = document.getElementById('amSuccessFill');
+    if(!overlay) return;
+    var first = (name || '').trim().split(' ')[0];
+    if(title) title.textContent = first ? 'ברוכה הבאה, ' + first + '! 👋' : 'ברוכה הבאה!';
+    overlay.classList.add('show');
+    if(fill) requestAnimationFrame(function(){ requestAnimationFrame(function(){ fill.style.width='100%'; }); });
+    setTimeout(function(){
+      overlay.classList.remove('show');
+      if(fill) fill.style.width='0%';
+      var modal = document.getElementById('authModal');
+      if(modal) modal.classList.remove('open');
+      try { updateHeroWelcome(); } catch(e){}
+      toast('ברוכה הבאה! 🎉', 'ok');
+    }, 1700);
+  }
+
   window.loginUser = async function(){
     if(!fb){ window.openAuthModal(); return; }
-    var usernameEl = document.getElementById('authUsername');
-    var passEl     = document.getElementById('authPass');
-    var username   = (usernameEl && usernameEl.value ? usernameEl.value : '').trim();
-    var pass       = (passEl  && passEl.value  ? passEl.value  : '').trim();
-    if(!username || !pass){ setAuthModalMsg('הכניסו שם משתמש וסיסמה'); return; }
-    var email = usernameToEmail(username);
+    var emailEl = document.getElementById('amLoginEmail');
+    var passEl  = document.getElementById('amLoginPass');
+    var email   = (emailEl && emailEl.value ? emailEl.value : '').trim();
+    var pass    = (passEl  && passEl.value  ? passEl.value  : '').trim();
+    if(!email || !pass){ setAuthModalMsg('הכניסי אימייל וסיסמה'); return; }
+    var isAdminAlias = email === 'שרה חברוני' || email.toLowerCase() === 'admin';
+    var loginEmail = isAdminAlias ? 'admin@sarabakery.local' : email;
     var loginBtn = document.getElementById('authLoginBtn');
     if(loginBtn){ loginBtn.disabled = true; loginBtn.textContent = 'מתחבר...'; }
     setAuthModalMsg('');
     try {
-      await fb.signInWithEmailAndPassword(fb.auth, email, pass);
-      var modal = document.getElementById('authModal');
-      if(modal) modal.classList.remove('open');
-      toast('התחברת בהצלחה! 🎉', 'ok');
-      try { updateHeroWelcome(); } catch(e){}
+      var cred = await fb.signInWithEmailAndPassword(fb.auth, loginEmail, pass);
+      var user = cred && cred.user;
+      var name = (user && user.displayName) ? user.displayName : (email.split('@')[0]);
+      if(isAdminAlias){
+        try{ localStorage.setItem('sara_admin_mode','1'); }catch(e){}
+        try{ sessionStorage.setItem('sara_admin_mode','1'); }catch(e){}
+      }
+      amShowSuccess(name);
     } catch(err){
       var msg = 'שגיאה בהתחברות';
-      if(err && err.code === 'auth/user-not-found')     msg = 'שם משתמש לא קיים — נסה להירשם';
+      if(err && err.code === 'auth/user-not-found')     msg = 'לא קיים חשבון עם האימייל הזה';
       if(err && err.code === 'auth/wrong-password')     msg = 'סיסמה שגויה';
-      if(err && err.code === 'auth/invalid-email')      msg = 'שם משתמש לא תקין';
-      if(err && err.code === 'auth/invalid-credential') msg = 'שם משתמש או סיסמה שגויים';
+      if(err && err.code === 'auth/invalid-email')      msg = 'אימייל לא תקין';
+      if(err && err.code === 'auth/invalid-credential') msg = 'אימייל או סיסמה שגויים';
+      if(err && err.code === 'auth/too-many-requests')  msg = 'יותר מדי ניסיונות — נסי שוב בעוד כמה דקות';
       setAuthModalMsg(msg);
     } finally {
-      if(loginBtn){ loginBtn.disabled = false; loginBtn.textContent = 'התחברות'; }
+      if(loginBtn){ loginBtn.disabled = false; loginBtn.textContent = 'כניסה לחשבון'; }
     }
   };
 
   window.registerUser = async function(){
     if(!fb){ window.openAuthModal(); return; }
-    var nameEl     = document.getElementById('authRegName');
-    var emailEl    = document.getElementById('authRegEmail');
-    var usernameEl = document.getElementById('authRegUsername');
-    var passEl     = document.getElementById('authRegPass');
-    var fullName   = (nameEl     && nameEl.value     ? nameEl.value     : '').trim();
-    var realEmail  = (emailEl    && emailEl.value    ? emailEl.value    : '').trim();
-    var username   = (usernameEl && usernameEl.value ? usernameEl.value : '').trim();
-    var pass       = (passEl     && passEl.value     ? passEl.value     : '').trim();
-    if(!fullName || !realEmail || !username || !pass){ setAuthModalMsg('יש למלא את כל השדות'); return; }
+    var nameEl  = document.getElementById('amRegName');
+    var emailEl = document.getElementById('amRegEmail');
+    var passEl  = document.getElementById('amRegPass');
+    var fullName = (nameEl  && nameEl.value  ? nameEl.value  : '').trim();
+    var email    = (emailEl && emailEl.value ? emailEl.value : '').trim();
+    var pass     = (passEl  && passEl.value  ? passEl.value  : '').trim();
+    if(!fullName || !email || !pass){ setAuthModalMsg('יש למלא את כל השדות'); return; }
     if(pass.length < 6){ setAuthModalMsg('סיסמה חייבת להיות לפחות 6 תווים'); return; }
-    var email = usernameToEmail(username);
-    var displayName = fullName;
     var regBtn = document.getElementById('authRegisterBtn');
-    if(regBtn){ regBtn.disabled = true; regBtn.textContent = 'נרשם...'; }
+    if(regBtn){ regBtn.disabled = true; regBtn.textContent = 'יוצר חשבון...'; }
     setAuthModalMsg('');
     try {
       var cred = await fb.createUserWithEmailAndPassword(fb.auth, email, pass);
       if(cred && cred.user){
-        try {
-          await fb.updateProfile(cred.user, { displayName: displayName });
-        } catch(e){}
+        try { await fb.updateProfile(cred.user, { displayName: fullName }); } catch(e){}
         try {
           await fb.setDoc(fb.doc(fb.db, 'users', cred.user.uid), {
-            email: realEmail,
-            username: username,
-            fullName: displayName,
-            fullNameLower: displayName.toLowerCase(),
+            email: email,
+            fullName: fullName,
+            fullNameLower: fullName.toLowerCase(),
             role: 'user',
             points: 0,
             redeemedRewards: [],
@@ -5765,17 +5895,15 @@ function ensureUI(){
           }, { merge: true });
         } catch(e){}
       }
-      var modal = document.getElementById('authModal');
-      if(modal) modal.classList.remove('open');
-      toast('נרשמת בהצלחה! ברוכה הבאה 🎉', 'ok');
-      try { updateHeroWelcome(); } catch(e){}
+      amShowSuccess(fullName);
     } catch(err){
       var msg = 'שגיאה בהרשמה';
-      if(err && err.code === 'auth/email-already-in-use') msg = 'שם משתמש זה כבר קיים — נסה אחר';
-      if(err && err.code === 'auth/weak-password')        msg = 'סיסמה חלשה מדי (לפחות 6 תווים)';
+      if(err && err.code === 'auth/email-already-in-use') msg = 'האימייל כבר רשום — נסי להתחבר';
+      if(err && err.code === 'auth/invalid-email')        msg = 'אימייל לא תקין';
+      if(err && err.code === 'auth/weak-password')        msg = 'הסיסמה חלשה מדי (לפחות 6 תווים)';
       setAuthModalMsg(msg);
     } finally {
-      if(regBtn){ regBtn.disabled = false; regBtn.textContent = 'הרשמה חינמית'; }
+      if(regBtn){ regBtn.disabled = false; regBtn.textContent = 'יצירת חשבון חדש ✨'; }
     }
   };
 
@@ -9698,9 +9826,9 @@ function ensureUI(){
         return;
       }
 
-      var usernameEl = document.getElementById('authUsername');
-      var passEl = document.getElementById('authPass');
-      var inputUser = (usernameEl && usernameEl.value ? usernameEl.value : '').trim();
+      var emailEl = document.getElementById('amLoginEmail');
+      var passEl = document.getElementById('amLoginPass');
+      var inputUser = (emailEl && emailEl.value ? emailEl.value : '').trim();
       var pass = (passEl && passEl.value ? passEl.value : '').trim();
 
       if(inputUser === ADMIN_ALIAS){
