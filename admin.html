@@ -504,7 +504,11 @@ input[type="date"]#datePicker.on{display:block}
         <div style="font-size:18px;font-weight:900;color:#2d1005">🧾 קבלות ודוחות</div>
         <div style="font-size:12px;color:#9a7060;margin-top:2px">ניהול קבלות וייצוא לאקסל — מסודר לרשות המיסוי, עסק פטור ממע"מ</div>
       </div>
-      <button class="form-btn" onclick="exportReceiptsExcel()">📊 ייצוא לאקסל</button>
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+        <button class="form-btn" onclick="exportReceiptsExcel(false)" style="white-space:nowrap">📊 ייצוא חדשות</button>
+        <button class="form-btn sec" onclick="exportReceiptsExcel(true)" style="font-size:11px;padding:6px 12px;white-space:nowrap">📋 ייצוא הכל</button>
+        <div id="rcLastExportNote" style="font-size:10px;color:#9a7060;display:none"></div>
+      </div>
     </div>
     <div class="rc-period-btns">
       <button class="rc-period-btn on" onclick="setRcPeriod('today',this)">היום</button>
@@ -1129,7 +1133,7 @@ window.toggleAll=()=>{showAll=!showAll;renderDateNav();renderOrders();renderKpis
 window.toggleDatePicker=()=>{var p=$('datePicker');p.classList.toggle('on');if(p.classList.contains('on'))p.value=fmtKey(curDate);};
 window.pickDate=v=>{if(!v)return;showAll=false;curDate=new Date(v+'T00:00:00');$('datePicker').classList.remove('on');renderDateNav();renderOrders();renderKpis();};
 window.setFilter=function(f,btn){curFilter=f;document.querySelectorAll('.sf').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderOrders();};
-window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons','pDeliveries','pReceipts'].forEach(p=>$(p).style.display='none');document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();if(tab==='deliveries')renderDeliveries();if(tab==='receipts')renderReceipts();};
+window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons','pDeliveries','pReceipts'].forEach(p=>$(p).style.display='none');document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();if(tab==='deliveries')renderDeliveries();if(tab==='receipts'){renderReceipts();updateExportNote();}};
 
 // ── Coupons ─────────────────────────────────────────────────────
 async function loadCoupons(){
@@ -1500,6 +1504,13 @@ window.reviewAction=async function(action,id,btnEl){
 setTimeout(async()=>{try{var s=await getDocs(collection(db,'reviews'));var p=0;s.forEach(d=>{var r=d.data();if(!r.approved&&!r.rejected)p++;});var b=$('reviewsBadge');if(b&&p){b.textContent=p;b.style.display='';};}catch(e){}},2000);
 
 // ── Receipts ─────────────────────────────────────────────────────────────────
+function updateExportNote(){
+  var noteEl=$('rcLastExportNote');if(!noteEl)return;
+  var ts=parseInt(localStorage.getItem('sara_last_export_ts')||'0')||0;
+  if(ts){var nd=new Date(ts).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});noteEl.textContent='ייצוא אחרון: '+nd+' — "ייצוא חדשות" יוציא רק מאז.';noteEl.style.display='';}
+  else{noteEl.textContent='לא יוצא עדיין — "ייצוא חדשות" יוציא הכל';noteEl.style.display='';}
+}
+
 var rcPeriod='today';
 window.setRcPeriod=function(period,btn){
   rcPeriod=period;
@@ -1583,9 +1594,23 @@ window.renderReceipts=function(){
   }).join('');
 };
 
-window.exportReceiptsExcel=function(){
+window.exportReceiptsExcel=function(exportAll){
   var orders=rcFilterOrders();
   if(!orders.length){toast('אין נתונים לייצוא','warn');return;}
+  var lastExportTs=parseInt(localStorage.getItem('sara_last_export_ts')||'0')||0;
+  // Incremental export: only orders created after last export (unless exportAll=true)
+  if(!exportAll&&lastExportTs>0){
+    var beforeFilter=orders.length;
+    orders=orders.filter(function(o){
+      var ca=o.createdAt&&o.createdAt.toDate?o.createdAt.toDate():(o.createdAt?new Date(o.createdAt):null);
+      return!ca||ca.getTime()>lastExportTs;
+    });
+    if(!orders.length){
+      var lastFmt=new Date(lastExportTs).toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      toast('אין קבלות חדשות מאז '+lastFmt+'. השתמשי ב"ייצוא הכל" לייצוא מחדש.','warn');
+      return;
+    }
+  }
   var sorted=[...orders].sort((a,b)=>sortKey(b).localeCompare(sortKey(a)));
 
   function fmtPhone(ph){
@@ -1642,7 +1667,10 @@ window.exportReceiptsExcel=function(){
   var a=document.createElement('a');a.href=url;a.download='קבלות_שרה_חברוני_'+todayKey()+'.csv';
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  toast('ייצוא הושלם ✅ — פותח בExcel');
+  localStorage.setItem('sara_last_export_ts',Date.now().toString());
+  var noteEl=$('rcLastExportNote');
+  if(noteEl){var nd=new Date().toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});noteEl.textContent='ייצוא אחרון: '+nd+' ('+sorted.length+' קבלות)';noteEl.style.display='';}
+  toast('ייצוא הושלם ✅ — '+sorted.length+' קבלות');
 };
 
 window.openReceipt=function(orderId){
