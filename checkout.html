@@ -222,7 +222,7 @@
       <div class="co-row">
         <div class="co-field">
           <label class="co-label" for="coDate">תאריך</label>
-          <input class="co-input" id="coDate" type="date" required>
+          <input class="co-input" id="coDate" type="date" required onchange="checkDateBlocks()">
         </div>
         <div class="co-field">
           <label class="co-label" for="coTime">שעה</label>
@@ -236,13 +236,14 @@
           </select>
         </div>
       </div>
+      <div id="dateBlockWarning" style="display:none;background:#fff3cd;border:1.5px solid #f0c050;border-radius:12px;padding:12px 14px;margin-top:8px;font-size:13px;color:#7a5010;direction:rtl;line-height:1.6"></div>
       <div class="co-field">
         <label class="co-label" for="coNote">הערות (אופציונלי)</label>
         <textarea class="co-input" id="coNote" rows="2" placeholder="בקשות מיוחדות, אלרגיות, כיתוב להקדשה..."></textarea>
       </div>
     </div>
 
-    <button class="co-submit" onclick="goToStep(3)">המשך לתשלום →</button>
+    <button class="co-submit" id="step2NextBtn" onclick="goToStep(3)">המשך לתשלום →</button>
     <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(1)">← חזרה לסל</button>
   </div>
 
@@ -540,6 +541,35 @@ window.updateDeliveryFee = function(){
   updateTotalsDisplay();
 };
 
+window.checkDateBlocks = function(){
+  const dateVal = (document.getElementById('coDate') || {}).value;
+  const warn = document.getElementById('dateBlockWarning');
+  const nextBtn = document.getElementById('step2NextBtn');
+  if(!warn) return;
+  if(!dateVal){ warn.style.display='none'; return; }
+  const blocks = window._productBlocks || [];
+  if(!blocks.length){ warn.style.display='none'; return; }
+  // find cart items that are blocked on selected date
+  const blocked = [];
+  cartItems.forEach(function(item){
+    const b = blocks.filter(function(bl){
+      return bl.productName === item.name && bl.from <= dateVal && dateVal <= bl.to;
+    });
+    if(b.length) blocked.push({name:item.name, blocks:b});
+  });
+  if(!blocked.length){ warn.style.display='none'; if(nextBtn) nextBtn.disabled=false; return; }
+  const msgs = blocked.map(function(b){
+    const ranges = b.blocks.map(function(bl){
+      function fmt(s){var m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:s;}
+      return fmt(bl.from)+' עד '+fmt(bl.to);
+    }).join(', ');
+    return '⛔ '+b.name+' — לא זמין בתאריכים: '+ranges;
+  });
+  warn.innerHTML = '<strong>שים לב!</strong> חלק מהמוצרים בסל לא זמינים בתאריך שנבחר:<br>' + msgs.join('<br>') + '<br><span style="font-size:12px">אנא בחרי תאריך אחר או צרי קשר עם שרה.</span>';
+  warn.style.display = 'block';
+  if(nextBtn) nextBtn.disabled = false; // warn but don't block completely
+};
+
 // ── Payment ──────────────────────────────────────────────────────
 window.selectPay = function(code){
   selectedPay = code;
@@ -731,6 +761,8 @@ function showSaleTag(sale){
           const cp = s.couponPopup;
           if(cp.code) window._cpPopup = cp;
         }
+        // Product blocks
+        window._productBlocks = s.productBlocks || [];
       }
     } catch(e){}
     try {

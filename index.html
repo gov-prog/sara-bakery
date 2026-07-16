@@ -778,8 +778,19 @@
   </div>
 </div>
 
+<!-- Product Blocked Popup -->
+<div id="productBlockedPopup" style="display:none;position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#fff;border-radius:22px;max-width:380px;width:100%;padding:28px 24px;text-align:center;direction:rtl;font-family:Arial,'Arial Hebrew',sans-serif;box-shadow:0 24px 60px rgba(0,0,0,.25)">
+    <div style="font-size:44px;margin-bottom:14px">⚠️</div>
+    <div id="pbPopupTitle" style="font-size:18px;font-weight:900;color:#2d1005;margin-bottom:10px"></div>
+    <div id="pbPopupMsg" style="font-size:14px;color:#c03030;line-height:1.6;margin-bottom:10px"></div>
+    <div id="pbPopupAvail" style="font-size:13px;color:#3a7a50;font-weight:700;margin-bottom:22px;line-height:1.6"></div>
+    <button onclick="document.getElementById('productBlockedPopup').style.display='none'" style="background:linear-gradient(135deg,#c8704a,#e8905a);color:#fff;border:none;border-radius:13px;padding:14px 28px;font-size:14px;font-weight:800;cursor:pointer;font-family:Arial,'Arial Hebrew',sans-serif;width:100%">הבנתי</button>
+  </div>
+</div>
+
 <nav>
-    <a class="logo" href="#" id="siteLogo"><span class="logo-main">שרה</span><span class="logo-sub">מאפייה ביתית</span></a>
+    <a class="logo" href="#" id="siteLogo" style="flex-direction:row;align-items:center;gap:8px"><img src="logo.png" alt="שרה חברוני" style="height:46px;width:46px;object-fit:contain;border-radius:50%;flex-shrink:0" onerror="this.style.display='none'"><div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span class="logo-main">שרה</span><span class="logo-sub">מאפייה ביתית</span></div></a>
     <div class="nav-links">
         <a href="#catalog" class="nav-link">קטלוג</a>
         <a href="#events" class="nav-link">אירועים</a>
@@ -2182,7 +2193,42 @@ window.toggleMoreReviews = function(){
       var saleShown = sale.active && !sessionStorage.getItem('sara_sale_popup_seen');
       setTimeout(function(){ showCpPopup(cp); }, saleShown ? 4000 : 1400);
     }
+    // Product blocks
+    window._productBlocks = s.productBlocks || [];
   } catch(e){}
+})();
+
+// ── SOUNDS ───────────────────────────────────────────────────────────────────
+(function(){
+  var _ctx=null;
+  function getCtx(){if(!_ctx)try{_ctx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}return _ctx;}
+  document.addEventListener('click',function(){getCtx();},{once:true});
+  window._playCartSound=function(){
+    var ctx=getCtx();if(!ctx)return;
+    try{
+      var osc=ctx.createOscillator(),g=ctx.createGain();
+      osc.connect(g);g.connect(ctx.destination);
+      osc.frequency.setValueAtTime(880,ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+0.08);
+      osc.type='sine';
+      g.gain.setValueAtTime(0.25,ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.22);
+      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.22);
+    }catch(e){}
+  };
+  window._playCouponSound=function(){
+    var ctx=getCtx();if(!ctx)return;
+    try{
+      [784,988,1175].forEach(function(freq,i){
+        var osc=ctx.createOscillator(),g=ctx.createGain();
+        osc.connect(g);g.connect(ctx.destination);
+        osc.frequency.value=freq;osc.type='sine';
+        var t=ctx.currentTime+i*0.14;
+        g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.22,t+0.03);g.gain.exponentialRampToValueAtTime(0.01,t+0.28);
+        osc.start(t);osc.stop(t+0.3);
+      });
+    }catch(e){}
+  };
 })();
 
 function showSalePopup(sale){
@@ -2225,6 +2271,7 @@ function showCpPopup(cp){
   if(el('cpCode')) el('cpCode').textContent = (cp.code || '').toUpperCase();
   var ov = el('cpPopupOverlay');
   if(ov) ov.classList.add('on');
+  try{ window._playCouponSound && window._playCouponSound(); }catch(e){}
 }
 window.closeCpPopup = function(){
   var ov = document.getElementById('cpPopupOverlay');
@@ -6080,6 +6127,7 @@ function ensureUI(){
     cartItems.push({id:newId, name:name, price:price||0, details:details||'', badge:badge||'', cat:cat||''});
     saveCart();
     renderCart();
+    try{ window._playCartSound && window._playCartSound(); }catch(e){}
     toast('✅ ' + name + ' נוסף לסל', 'ok');
     window.toggleCart(true);
   };
@@ -6625,6 +6673,39 @@ function ensureUI(){
     setCheckoutPending(false);
   };
 
+  function fmtDateHe(s){
+    if(!s)return'';
+    var m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);
+    return m?m[3]+'/'+m[2]+'/'+m[1]:s;
+  }
+  function showProductBlockedPopup(prodName, blocks){
+    var today=new Date();
+    var todayStr=today.toISOString().split('T')[0];
+    var available=[];
+    for(var i=0;i<=21;i++){
+      var d=new Date(today);d.setDate(d.getDate()+i);
+      var ds=d.toISOString().split('T')[0];
+      var blk=blocks.some(function(b){return b.from<=ds&&ds<=b.to;});
+      if(!blk)available.push(ds);
+    }
+    var popup=document.getElementById('productBlockedPopup');
+    if(!popup)return;
+    document.getElementById('pbPopupTitle').textContent='⚠️ '+prodName+' לא זמין כרגע';
+    var ranges=blocks.map(function(b){return fmtDateHe(b.from)+' עד '+fmtDateHe(b.to);}).join(', ');
+    document.getElementById('pbPopupMsg').textContent='המוצר לא זמין בתאריכים: '+ranges;
+    var availEl=document.getElementById('pbPopupAvail');
+    if(available.length){
+      var firstFew=available.slice(0,6).map(function(s){
+        var dt=new Date(s+'T00:00:00');
+        return dt.toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit'});
+      }).join(' · ');
+      availEl.textContent='✅ ימים זמינים הקרובים: '+firstFew;
+    }else{
+      availEl.textContent='אין תאריכים זמינים ב-21 הימים הקרובים';
+    }
+    popup.style.display='flex';
+  }
+
   var originalOpenModal = window.openModal;
   if(typeof originalOpenModal === 'function'){
     window.openModal = function(card){
@@ -6633,6 +6714,14 @@ function ensureUI(){
       if(!currentUser || currentUser.__soft){
         nudgeAuth('כדי להוסיף לעגלה צריך להתחבר או להירשם');
         return;
+      }
+      // check product availability blocks
+      var blocks=window._productBlocks||[];
+      if(blocks.length){
+        var prodName=(card.querySelector('.prod-name')||{}).textContent||'';
+        var todayStr=new Date().toISOString().split('T')[0];
+        var blocked=blocks.filter(function(b){return b.productName===prodName&&b.from<=todayStr&&todayStr<=b.to;});
+        if(blocked.length>0){showProductBlockedPopup(prodName,blocked);return;}
       }
       // proceed to open modal
       originalOpenModal(card);
@@ -6721,6 +6810,7 @@ function ensureUI(){
     });
 
     saveCart();
+    try{ window._playCartSound && window._playCartSound(); }catch(e){}
     if(typeof closeModal === 'function') closeModal();
     // fly-to-cart dot animation
     try {
