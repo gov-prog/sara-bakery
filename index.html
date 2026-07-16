@@ -2206,14 +2206,18 @@ window.toggleMoreReviews = function(){
   window._playCartSound=function(){
     var ctx=getCtx();if(!ctx)return;
     try{
-      var osc=ctx.createOscillator(),g=ctx.createGain();
-      osc.connect(g);g.connect(ctx.destination);
-      osc.frequency.setValueAtTime(880,ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(1320,ctx.currentTime+0.08);
-      osc.type='sine';
-      g.gain.setValueAtTime(0.25,ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.22);
-      osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.22);
+      // pleasant "+1" — two soft rising notes
+      [[523,0],[784,0.13]].forEach(function(pair){
+        var freq=pair[0],delay=pair[1];
+        var osc=ctx.createOscillator(),g=ctx.createGain();
+        osc.connect(g);g.connect(ctx.destination);
+        osc.frequency.value=freq;osc.type='sine';
+        var t=ctx.currentTime+delay;
+        g.gain.setValueAtTime(0,t);
+        g.gain.linearRampToValueAtTime(0.15,t+0.025);
+        g.gain.exponentialRampToValueAtTime(0.001,t+0.38);
+        osc.start(t);osc.stop(t+0.4);
+      });
     }catch(e){}
   };
   window._playCouponSound=function(){
