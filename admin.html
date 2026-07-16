@@ -1351,8 +1351,24 @@ window.exportReceiptsExcel=function(){
   var orders=rcFilterOrders();
   if(!orders.length){toast('אין נתונים לייצוא','warn');return;}
   var sorted=[...orders].sort((a,b)=>sortKey(b).localeCompare(sortKey(a)));
+
+  function fmtPhone(ph){
+    var d=String(ph||'').replace(/\D/g,'');
+    if(!d)return '';
+    if(d.length===10)return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);
+    if(d.length===9)return d.slice(0,2)+'-'+d.slice(2,5)+'-'+d.slice(5);
+    return ph;
+  }
+  function fmtDate(s){
+    if(!s)return '';
+    var m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);
+    if(m)return m[3]+'/'+m[2]+'/'+m[1];
+    return s;
+  }
+  function stripEmoji(s){return String(s||'').replace(/[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27FF}]|[\uD800-\uDFFF]|\p{Emoji_Presentation}/gu,'').trim();}
+
   var bom='﻿';
-  var headers=['מספר קבלה','שם פרטי','שם משפחה','שם מלא','טלפון','אימייל','שיטת תשלום','סכום','תאריך','שעה','פריטים','סוג הזמנה','מזהה הזמנה'];
+  var headers=['מספר קבלה','שם פרטי','שם משפחה','שם מלא','טלפון','אימייל','שיטת תשלום','סכום (₪)','תאריך','שעה','פריטים','סוג הזמנה','מזהה הזמנה'];
   var rows=[headers];
   sorted.forEach(function(o,i){
     var fullName=(oName(o)||'').trim();
@@ -1362,12 +1378,12 @@ window.exportReceiptsExcel=function(){
     var pm=payMethodLabel(o.paymentMethod||o.checkout?.payment||o.checkout?.paymentCode||'');
     var tot=+oTotal(o)||0;
     var rb=parseReadyBy(o);
-    var dateStr=rb.date||createdKey(o)||'';
+    var dateStr=fmtDate(rb.date||createdKey(o)||'');
     var timeStr=rb.time||'';
-    var items=oItems(o).map(it=>(it.name||it.item||'')+(it.qty>1?' x'+it.qty:'')+(it.price?' ₪'+(+(it.price||0)*(+(it.qty||1))).toFixed(0):'')).join(' | ');
+    var items=oItems(o).map(it=>(it.name||it.item||'')+(it.qty>1?' x'+it.qty:'')+(it.price?' ('+( +(it.price||0)*(+(it.qty||1)) ).toFixed(0)+'₪)':'')).join(' | ');
     var rcNum='RC-'+(sorted.length-i).toString().padStart(4,'0');
     var delivType=oIsDelivery(o)?'משלוח':'איסוף עצמי';
-    rows.push([rcNum,firstName,lastName,fullName,oPhone(o)||'',oEmail(o)||'',pm.l.replace(/[^֐-׾\w\s]/g,'').trim(),tot.toFixed(2),dateStr,timeStr,items,delivType,o.id||'']);
+    rows.push([rcNum,firstName,lastName,fullName,fmtPhone(oPhone(o)),oEmail(o)||'',stripEmoji(pm.l),tot.toFixed(0),dateStr,timeStr,items,delivType,o.id||'']);
   });
   var csv=rows.map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
   var blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
