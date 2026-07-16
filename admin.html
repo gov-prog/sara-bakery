@@ -4,10 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>פאנל ניהול | שרה 🍰</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{font-family:'Assistant',sans-serif;background:#fff8f3;color:#2d1005;direction:rtl;min-height:100vh}
+html,body{font-family:Arial,'Arial Hebrew',sans-serif;background:#fff8f3;color:#2d1005;direction:rtl;min-height:100vh}
 #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(160deg,#fff8f0,#fdecd8 60%,#f5d4b8)}
 .lc{background:#fff;border:1.5px solid #e8c8a8;border-radius:24px;padding:44px 36px 36px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(200,112,74,.14);text-align:center}
 .lc-logo{font-size:52px;margin-bottom:10px}.lc-title{font-size:26px;font-weight:800;color:#2d1005;margin-bottom:4px}.lc-sub{font-size:14px;color:#9a7060;margin-bottom:28px}
@@ -21,7 +20,7 @@ html,body{font-family:'Assistant',sans-serif;background:#fff8f3;color:#2d1005;di
 #dash.on{display:flex}
 .hdr{background:linear-gradient(135deg,#2d1005 0%,#5a2a10 55%,#3d1a08 100%);border-bottom:none;height:62px;padding:0 20px;position:sticky;top:0;z-index:200;display:flex;align-items:center;gap:12px;box-shadow:0 3px 20px rgba(45,16,5,.45)}
 .hdr-logo{flex:1;white-space:nowrap;line-height:1.15;cursor:default}
-.hdr-logo-main{font-family:'Playfair Display',serif;font-size:19px;font-weight:900;color:#fff;letter-spacing:.5px;display:block}
+.hdr-logo-main{font-family:Arial,'Arial Hebrew',sans-serif;font-size:19px;font-weight:900;color:#fff;letter-spacing:.5px;display:block}
 .hdr-logo-sub{font-size:9px;font-weight:700;color:rgba(241,193,101,.6);letter-spacing:3px;text-transform:uppercase;display:block}
 .hdr-clock{font-size:13px;font-weight:700;color:rgba(255,220,180,.55);white-space:nowrap}
 .hdr-btn{border:none;border-radius:10px;padding:7px 13px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s;white-space:nowrap}
@@ -45,7 +44,7 @@ input[type="date"]#datePicker{background:#fff;border:1.5px solid #e8d0c0;color:#
 input[type="date"]#datePicker.on{display:block}
 .day-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .ds{background:linear-gradient(160deg,#fff8f3,#fff);border:1.5px solid #e8d0c0;border-radius:16px;padding:12px 14px;flex:1;min-width:80px;text-align:center;box-shadow:0 3px 14px rgba(200,112,74,.09)}
-.ds-v{font-size:28px;font-weight:900;color:#c8704a;font-family:'Playfair Display',serif;line-height:1.1}.ds-l{font-size:10px;color:#9a7060;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
+.ds-v{font-size:28px;font-weight:900;color:#c8704a;font-family:Arial,'Arial Hebrew',sans-serif;line-height:1.1}.ds-l{font-size:10px;color:#9a7060;margin-top:4px;font-weight:700;text-transform:uppercase;letter-spacing:.6px}
 .sf-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
 .sf{background:#fff;border:1.5px solid #e8d0c0;color:#9a7060;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
 .sf.on{background:#c8704a;border-color:#c8704a;color:#fff}.sf:hover:not(.on){border-color:#c8704a;color:#c8704a}
@@ -62,7 +61,7 @@ input[type="date"]#datePicker.on{display:block}
 .oc-contact{font-size:13px;color:#7a5040}
 .oc-num{font-size:11px;color:#9a7060;background:#f5ece5;border-radius:6px;padding:2px 7px}
 .oc-timing{background:linear-gradient(160deg,#fff3e8,#fff8f3);border:1.5px solid #e8c8a8;border-radius:12px;padding:8px 14px;text-align:center;flex-shrink:0;min-width:72px}
-.oc-timing-time{font-size:22px;font-weight:900;color:#c8704a;font-family:'Playfair Display',serif;line-height:1.1}
+.oc-timing-time{font-size:22px;font-weight:900;color:#c8704a;font-family:Arial,'Arial Hebrew',sans-serif;line-height:1.1}
 .oc-timing-date{font-size:11px;color:#9a7060;margin-top:2px}
 .oc-timing-mode{font-size:10px;color:#8a6040;margin-top:2px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
 .stepper-wrap{padding:12px 16px;border-top:1px solid #f0e0d0}
@@ -230,7 +229,7 @@ input[type="date"]#datePicker.on{display:block}
 .del-card{background:#fff;border:1.5px solid #ecd8c8;border-radius:18px;margin-bottom:14px;overflow:hidden;box-shadow:0 3px 14px rgba(200,112,74,.08);border-right:5px solid #c8704a}
 .del-card.done{border-right-color:#4caf50;opacity:.7}
 .del-hdr{padding:14px 16px;display:flex;gap:10px;align-items:flex-start;background:#fff8f3;border-bottom:1px solid #f0e0d0}
-.del-num{font-size:22px;font-weight:900;color:#c8704a;font-family:'Playfair Display',serif;flex-shrink:0;min-width:32px;text-align:center;margin-top:2px}
+.del-num{font-size:22px;font-weight:900;color:#c8704a;font-family:Arial,'Arial Hebrew',sans-serif;flex-shrink:0;min-width:32px;text-align:center;margin-top:2px}
 .del-info{flex:1;min-width:0}
 .del-name{font-size:17px;font-weight:800;color:#2d1005}
 .del-phone{font-size:14px;color:#9a7060;margin-top:2px;font-weight:600}
@@ -438,6 +437,7 @@ input[type="date"]#datePicker.on{display:block}
           <div class="form-label" style="font-size:11px">בתוקף עד (הפופאפ לא יופיע אחרי תאריך זה)</div>
           <input type="date" class="form-input" id="sCpPopupExpiry" style="max-width:200px">
         </div>
+        <button class="form-btn sec" onclick="previewCpPopup()" style="font-size:12px;padding:8px 16px;margin-top:4px">👁️ תצוגה מקדימה</button>
       </div>
     </div>
 
@@ -1160,6 +1160,14 @@ async function loadSettings(){
   }catch(e){}
 }
 window.toggleCpPopupFields=function(){$('cpPopupFields').style.display=$('sCpPopupActive').checked?'':'none';};
+window.previewCpPopup=function(){
+  var cp={title:$('sCpPopupTitle').value||'מבצע מיוחד!',code:($('sCpPopupCode').value||'SARA10').toUpperCase(),desc:$('sCpPopupDesc').value||'',active:true};
+  var win=window.open('','_blank','width=460,height=620');
+  if(!win)return;
+  var style='*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,"Arial Hebrew",sans-serif}body{background:rgba(5,20,5,.85);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;direction:rtl}.box{background:linear-gradient(160deg,#f0fff0,#e8f8e8 60%,#d8f0d8);border-radius:28px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,80,0,.35)}.hdr{background:linear-gradient(135deg,#2e7d32,#43a047,#66bb6a);padding:28px 24px 24px;text-align:center}.emoji{font-size:44px;display:block;margin-bottom:10px}.title{font-size:22px;font-weight:900;color:#fff;line-height:1.2}.body{padding:22px 24px 28px;text-align:center}.desc{font-size:15px;color:#2d5a2d;margin-bottom:16px;line-height:1.6}.code-box{background:#fff;border:2.5px dashed #5cb85c;border-radius:14px;padding:14px 20px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s}.code-label{font-size:11px;font-weight:800;color:#5cb85c;text-transform:uppercase;letter-spacing:1px}.code{font-size:24px;font-weight:900;color:#2e7d32;letter-spacing:3px;font-family:monospace}.copy-btn{background:#5cb85c;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer}';
+  win.document.write('<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>תצוגה מקדימה — פופאפ קופון</title><style>'+style+'</style></head><body><div class="box"><div class="hdr"><span class="emoji">🌸</span><div class="title">'+cp.title+'</div></div><div class="body"><p class="desc">'+cp.desc+'</p><div class="code-box"><div><div class="code-label">קוד קופון</div><div class="code">'+cp.code+'</div></div><button class="copy-btn">העתק</button></div></div></div></body></html>');
+  win.document.close();
+};
 window.toggleSaleFields=function(){$('saleFields').style.display=$('sSaleActive').checked?'':'none';};
 window.setSaleType=function(type,btn){
   document.querySelectorAll('.sale-type-btn').forEach(b=>b.classList.remove('on'));
@@ -1367,9 +1375,24 @@ window.exportReceiptsExcel=function(){
   }
   function stripEmoji(s){return String(s||'').replace(/[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27FF}]|[\uD800-\uDFFF]|\p{Emoji_Presentation}/gu,'').trim();}
 
+  // Build date range label
+  var periodLabels={today:'היום',week:'שבוע זה',month:'חודש זה',year:'שנה זו',all:'כל הזמנים',custom:'טווח מותאם'};
+  var rangeLabel=periodLabels[rcPeriod]||rcPeriod;
+  if(rcPeriod==='custom'){
+    var fr=$('rcFrom')&&$('rcFrom').value?fmtDate($('rcFrom').value):'';
+    var to=$('rcTo')&&$('rcTo').value?fmtDate($('rcTo').value):'';
+    if(fr||to)rangeLabel=(fr||'...')+' — '+(to||'...');
+  }
+  var todayFmt=fmtDate(todayKey());
+
   var bom='﻿';
-  var headers=['מספר קבלה','שם פרטי','שם משפחה','שם מלא','טלפון','אימייל','שיטת תשלום','סכום (₪)','תאריך','שעה','פריטים','סוג הזמנה','מזהה הזמנה'];
-  var rows=[headers];
+  var rows=[
+    ['שרה חברוני — מאפייה ביתית','','','','','','','','','','','',''],
+    ['קבלות: '+rangeLabel,'','','','','','','','','','','',''],
+    ['עסק פטור ממע"מ | הופק: '+todayFmt,'','','','','','','','','','','',''],
+    ['','','','','','','','','','','','',''],
+    ['מספר קבלה','שם פרטי','שם משפחה','שם מלא','טלפון','אימייל','שיטת תשלום','סכום (₪)','תאריך','שעה','פריטים','סוג הזמנה','מזהה הזמנה']
+  ];
   sorted.forEach(function(o,i){
     var fullName=(oName(o)||'').trim();
     var parts=fullName.split(/\s+/);
