@@ -3714,6 +3714,10 @@ function ensureUI(){
 
   function updateHeroWelcome(){
     var wrap = document.getElementById('heroWelcome');
+    if(!wrap) return;
+    wrap.classList.remove('show');
+    wrap.style.display = 'none';
+    return;
     var nameEl = document.getElementById('heroWelcomeName');
     var eyebrowEl = document.getElementById('heroWelcomeEyebrow');
     var subEl = document.getElementById('heroWelcomeSub');
