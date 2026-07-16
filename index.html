@@ -1180,28 +1180,6 @@
             <button type="button" class="btn-primary" style="padding:10px 22px;font-size:14px" onclick="openProfileOrAuth()">התחברות</button>
         </div>
 
-        <div class="review-add-card" id="reviewFormCard" style="display:none">
-            <h3>הוספת ביקורת חדשה</h3>
-            <div class="review-form-grid">
-                <input id="reviewName" class="review-input" type="text" placeholder="שם להצגה">
-                <input id="reviewCity" class="review-input" type="text" placeholder="עיר">
-                <select id="reviewRating" class="review-input">
-                    <option value="5">5 כוכבים</option>
-                    <option value="4">4 כוכבים</option>
-                    <option value="3">3 כוכבים</option>
-                    <option value="2">2 כוכבים</option>
-                    <option value="1">1 כוכב</option>
-                </select>
-            </div>
-            <textarea id="reviewText" class="review-textarea" placeholder="כתבו את החוויה שלכם..."></textarea>
-            <div class="review-upload-row">
-                <label for="reviewImages" class="review-upload-label">תמונות (עד 3):</label>
-                <input id="reviewImages" type="file" accept="image/*" multiple onchange="previewReviewImages()">
-            </div>
-            <div id="reviewImagesPreview" class="review-images-preview"></div>
-            <button id="reviewSubmitBtn" type="button" class="btn-primary review-submit-btn" onclick="submitReview()">פרסום ביקורת</button>
-            <div class="review-inline-msg">הביקורת תופיע בפאנל המנהלת ותפורסם באתר אחרי אישור.</div>
-        </div>
     </div>
 </section>
 

@@ -290,7 +290,6 @@ input[type="date"]#datePicker.on{display:block}
     <button class="tb" onclick="showTab('products',this)">🛍️ מוצרים <span class="nb" id="prodBadge">0</span></button>
     <button class="tb" onclick="showTab('messages',this)">💬 הודעות</button>
     <button class="tb" onclick="showTab('settings',this)">⚙️ הגדרות</button>
-    <button class="tb" onclick="showTab('reviews',this)">⭐ ביקורות <span class="nb" id="reviewsBadge" style="display:none">0</span></button>
     <button class="tb" onclick="showTab('coupons',this)">🏷️ קופונים</button>
     <button class="tb" onclick="showTab('deliveries',this)">🚗 משלוחים <span class="nb" id="deliveryBadge" style="display:none">0</span></button>
     <button class="tb" onclick="showTab('receipts',this)">🧾 קבלות</button>
@@ -669,6 +668,41 @@ input[type="date"]#datePicker.on{display:block}
       <button class="form-btn" onclick="saveProd()" style="flex:1">💾 שמור</button>
       <button class="form-btn sec" onclick="closeProdModal()" style="flex:1">ביטול</button>
       <button class="form-btn danger" id="pmDeleteBtn" onclick="deleteProd()" style="display:none">🗑️ מחק</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOLLOWUP REMINDER MODAL -->
+<div id="followupModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:22px;max-width:420px;width:100%;padding:28px 24px;box-shadow:0 24px 60px rgba(0,0,0,.25);direction:rtl;font-family:Arial,'Arial Hebrew',sans-serif">
+    <div style="font-size:36px;text-align:center;margin-bottom:10px">⭐</div>
+    <div style="font-size:18px;font-weight:900;color:#2d1005;text-align:center;margin-bottom:6px">הזמנה הושלמה!</div>
+    <div style="font-size:14px;color:#7a5040;text-align:center;margin-bottom:20px" id="fuName">שלחי ל<strong></strong> ביקורת?</div>
+    <div style="background:#e8f8ee;border:1.5px solid #a5d6a7;border-radius:14px;padding:14px 16px;font-size:14px;color:#1a5c28;line-height:1.7;margin-bottom:16px;white-space:pre-wrap" id="fuMsg"></div>
+    <div style="display:flex;gap:8px">
+      <a id="fuWaBtn" href="#" target="_blank" style="flex:1;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:800;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;font-family:Arial,'Arial Hebrew',sans-serif">💬 שלחי ב-WhatsApp</a>
+      <button onclick="document.getElementById('followupModal').style.display='none'" style="flex:1;background:#f5ece5;color:#7a5040;border:1.5px solid #e8d0c0;border-radius:12px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:Arial,'Arial Hebrew',sans-serif">דלג</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL PREVIEW MODAL -->
+<div id="mailPreviewModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:16px">
+  <div style="background:#fff;border-radius:22px;max-width:520px;width:100%;max-height:85vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.25);direction:rtl;font-family:Arial,'Arial Hebrew',sans-serif">
+    <div style="padding:20px 24px;border-bottom:1px solid #f0e0d0;display:flex;align-items:center;gap:10px;position:sticky;top:0;background:#fff;border-radius:22px 22px 0 0">
+      <div style="flex:1;font-size:16px;font-weight:800;color:#2d1005">📧 תצוגה מקדימה — אימייל</div>
+      <button onclick="document.getElementById('mailPreviewModal').style.display='none'" style="background:none;border:1.5px solid #e8d0c0;color:#9a7060;border-radius:10px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial,'Arial Hebrew',sans-serif">✕ סגור</button>
+    </div>
+    <div style="padding:24px">
+      <div style="background:#f5ece5;border-radius:12px;padding:10px 16px;margin-bottom:16px;font-size:13px;color:#7a5040">
+        <strong>אל:</strong> <span id="mpTo"></span><br>
+        <strong>נושא:</strong> <span id="mpSubject"></span>
+      </div>
+      <div style="background:#fffbf7;border:1.5px solid #ecd8c8;border-radius:14px;padding:24px;font-size:14px;line-height:1.8;color:#2d1005;white-space:pre-wrap" id="mpBody"></div>
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <a id="mpSendBtn" href="#" style="flex:1;background:linear-gradient(135deg,#c8704a,#e8905a);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:800;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;font-family:Arial,'Arial Hebrew',sans-serif">📧 שלח אימייל</a>
+        <button onclick="document.getElementById('mailPreviewModal').style.display='none'" style="background:#f5ece5;color:#7a5040;border:1.5px solid #e8d0c0;border-radius:12px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,'Arial Hebrew',sans-serif">ביטול</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1087,8 +1121,12 @@ window._adv=async function(orderId){
   var cur=oStatus(order),idx=SF.findIndex(x=>x.k===cur);
   if(idx<0||idx>=SF.length-1)return;
   var next=SF[idx+1].k;
-  try{await updateDoc(doc(db,'orders',orderId),{status:next,updatedAt:serverTimestamp()});var i=allOrders.findIndex(o=>o.id===orderId);if(i!==-1)allOrders[i].status=next;renderOrders();renderKpis();updateBadge();toast('עברת ל: '+SF[idx+1].l);sendWA(order,next);}
-  catch(e){toast('שגיאה: '+e.message,'err');}
+  try{
+    await updateDoc(doc(db,'orders',orderId),{status:next,updatedAt:serverTimestamp()});
+    var i=allOrders.findIndex(o=>o.id===orderId);if(i!==-1)allOrders[i].status=next;
+    renderOrders();renderKpis();updateBadge();toast('עברת ל: '+SF[idx+1].l);
+    sendWA(order,next);
+  }catch(e){toast('שגיאה: '+e.message,'err');}
 };
 window._cancel=async function(orderId){
   if(!confirm('לבטל הזמנה זו?\nהשעה תשוחרר ותהיה פנויה שוב.'))return;
@@ -1188,7 +1226,23 @@ window.saveSettings=async function(){
 
 const TMPLS={promo:'🎉 מבצע מיוחד!\n[תיאור]\nתקף עד [תאריך] 🍰',holiday:'🍰 חג שמח!\nשרה מאחלת לכם חג שמח ומתוק ❤️',update:'📢 עדכון:\n[כתבי]\n\nשרה 🍰',closed:'🔒 הזמנות סגורות זמנית.\nנחזור בקרוב! 🙏',open:'✅ חזרנו!\nמקבלות הזמנות 🍰'};
 document.querySelectorAll('.tpl').forEach(b=>b.addEventListener('click',()=>{if(TMPLS[b.dataset.tpl])$('bulkMsg').value=TMPLS[b.dataset.tpl];}));
-window.sendBulkMail=()=>{var em=allCustomers.map(c=>c.email).filter(Boolean).join(';');if(!em){toast('אין מיילים','warn');return;}location.href='mailto:?bcc='+encodeURIComponent(em)+'&subject='+encodeURIComponent('הודעה מ-שרה 🍰')+'&body='+encodeURIComponent(($('bulkMsg').value||'').trim());};
+function openMailPreview(to,subject,body,href){
+  var m=$('mailPreviewModal');if(!m)return;
+  $('mpTo').textContent=to||'כל הלקוחות';
+  $('mpSubject').textContent=subject;
+  $('mpBody').textContent=body;
+  $('mpSendBtn').href=href;
+  m.style.display='flex';
+}
+window.sendBulkMail=()=>{
+  var em=allCustomers.map(c=>c.email).filter(Boolean).join(';');
+  if(!em){toast('אין מיילים','warn');return;}
+  var body=($('bulkMsg').value||'').trim();
+  if(!body){toast('כתבי הודעה תחילה','warn');return;}
+  var subject='הודעה מ-שרה 🍰';
+  var href='mailto:?bcc='+encodeURIComponent(em)+'&subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  openMailPreview('כל הלקוחות ('+allCustomers.filter(c=>c.email).length+' נמענים)',subject,body,href);
+};
 window.copyEmails=()=>{var em=allCustomers.map(c=>c.email).filter(Boolean).join(', ');if(!em){toast('אין מיילים','warn');return;}navigator.clipboard.writeText(em).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתק:',em));};
 $('custSearch').addEventListener('input',function(){
   var q=this.value.trim().toLowerCase();if(!q){$('custDrop').classList.remove('on');return;}
@@ -1202,7 +1256,63 @@ window._selCust=function(id){selCust=allCustomers.find(c=>c.id===id);if(!selCust
 const CUST_TMPLS={greeting:(n)=>'שלום '+(n?n+' ':'')+'😊\nכאן שרה ממאפיית שרה 🍰\n\n',reminder:(n)=>'שלום '+(n?n+' ':'')+'⏰\nרצינו להזכיר שיש לך הזמנה אצלנו בקרוב.\nלפרטים נוספים אנחנו כאן! 🍰\n\nשרה',thanks:(n)=>'שלום '+(n?n+' ':'')+'🙏\nתודה שהזמנת אצלנו!\nנשמח לראות אותך שוב 🍰\n\nשרה',ready:(n)=>'שלום '+(n?n+' ':'')+'🍰\nההזמנה שלך מוכנה לאיסוף!\nנשמח לראותך! ❤️\n\nשרה',promo:(n)=>'שלום '+(n?n+' ':'')+'🎉\n\nיש לנו מבצע מיוחד עבורך!\n[פרטי המבצע]\n\nשרה 🍰'};
 window.insertCustTpl=function(key){if(!CUST_TMPLS[key])return;var name=selCust?selCust.fullName||'':'';$('custMsg').value=CUST_TMPLS[key](name);$('custMsg').focus();};
 window.sendCustWa=()=>{if(!selCust){toast('בחרי לקוח','warn');return;}var ph=normPhone(selCust.phone);if(!ph){toast('אין מספר','warn');return;}window.open('https://wa.me/'+ph+'?text='+encodeURIComponent(($('custMsg').value||'').trim()),'_blank');};
-window.sendCustMail=()=>{if(!selCust){toast('בחרי לקוח','warn');return;}if(!selCust.email){toast('אין מייל','warn');return;}location.href='mailto:'+selCust.email+'?subject='+encodeURIComponent('הודעה מ-שרה 🍰')+'&body='+encodeURIComponent(($('custMsg').value||'').trim());};
+window.sendCustMail=()=>{
+  if(!selCust){toast('בחרי לקוח','warn');return;}
+  if(!selCust.email){toast('אין מייל','warn');return;}
+  var body=($('custMsg').value||'').trim();
+  if(!body){toast('כתבי הודעה','warn');return;}
+  var subject='הודעה מ-שרה 🍰';
+  var href='mailto:'+selCust.email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  openMailPreview(selCust.email,subject,body,href);
+};
+
+// ── Follow-up Reminder (1h after "ready") ────────────────────────────────────
+function scheduleFollowup(order){
+  var name=oName(order),phone=normPhone(oPhone(order));
+  var dueAt=Date.now()+60*60*1000; // 1 hour
+  try{
+    var reminders=JSON.parse(localStorage.getItem('sara_followup_reminders')||'[]');
+    reminders=reminders.filter(r=>r.dueAt>Date.now()-3600000*2); // clean old ones
+    reminders.push({orderId:order.id,name:name,phone:phone,dueAt:dueAt});
+    localStorage.setItem('sara_followup_reminders',JSON.stringify(reminders));
+  }catch(e){}
+}
+function checkFollowupReminders(){
+  try{
+    var reminders=JSON.parse(localStorage.getItem('sara_followup_reminders')||'[]');
+    var now=Date.now();
+    var due=reminders.filter(r=>r.dueAt<=now);
+    var remaining=reminders.filter(r=>r.dueAt>now);
+    localStorage.setItem('sara_followup_reminders',JSON.stringify(remaining));
+    due.forEach(function(r){showFollowupReminder(r);});
+  }catch(e){}
+}
+function showFollowupReminder(order){
+  var name=order.name||oName(order);var phone=order.phone||normPhone(oPhone(order));
+  var modal=$('followupModal');if(!modal)return;
+  var msg='היי שרה 👋\n\nהזמנה של '+name+' הייתה לפני שעה.\nאל תשכחי לשלוח הודעה ולשאול איך היה! 🍰⭐';
+  $('fuName').innerHTML='תזכורת — <strong>'+escapeHtml(name)+'</strong>';
+  $('fuMsg').textContent=msg;
+  var saraPhone=normPhone(settings.whatsapp||'');
+  if(saraPhone){
+    var waMsg='🍰 תזכורת שרה!\n\nשלחי ל'+name+(phone?' ('+phone+')':'')+' הודעה ושאלי איך הייתה ההזמנה 😊⭐';
+    $('fuWaBtn').href='https://wa.me/'+saraPhone+'?text='+encodeURIComponent(waMsg);
+    $('fuWaBtn').style.display='flex';
+  }else{$('fuWaBtn').style.display='none';}
+  modal.style.display='flex';
+}
+// Attach to _adv: when status becomes 'ready'
+var _origAdv=window._adv;
+window._adv=async function(orderId){
+  var order=allOrders.find(o=>o.id===orderId);
+  var cur=order?oStatus(order):'';
+  var nextIdx=SF.findIndex(x=>x.k===cur)+1;
+  var next=nextIdx>0&&nextIdx<SF.length?SF[nextIdx].k:'';
+  await _origAdv(orderId);
+  if(next==='ready'&&order){scheduleFollowup(order);}
+};
+setInterval(checkFollowupReminders,60*1000);
+checkFollowupReminders();
 
 // ── Reviews ──────────────────────────────────────────────────────────────────
 var _rvFilter='pending';
