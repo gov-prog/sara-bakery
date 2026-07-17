@@ -1180,23 +1180,7 @@
                 <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">נ</div><div><div class="rc-name">נטע ב.</div><div class="rc-loc">חריש</div></div></div><div class="rc-stars">★★★★★</div></div><div class="rc-text">"קניתי מארז לחברה שלי ליום הולדת והיא בכתה מרוב שמחה! המארז היה מיוחד ואישי. תודה שרה!"</div></div>
                 <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">ש</div><div><div class="rc-name">שירה מ.</div><div class="rc-loc">זכרון יעקב</div></div></div><div class="rc-stars">★★★★★</div></div><div class="rc-text">"הזמנתי מגש לאירוע משפחתי. כולם שאלו מאיפה. שרה עונה מהר בוואטסאפ ומאוד נחמדה. בהחלט אזמין שוב!"</div></div>
             </div>
-            <!-- Firebase-approved reviews expand section -->
-            <div id="reviewsMoreSection" style="overflow:hidden;max-height:0;transition:max-height .65s cubic-bezier(.4,0,.2,1)">
-                <div id="reviewsUserList" class="reviews-list" style="margin-top:12px" data-stagger></div>
-            </div>
-            <div id="moreReviewsBtnWrap" style="text-align:center;margin-top:22px;display:none">
-                <button class="more-reviews-btn" id="moreReviewsBtn" onclick="toggleMoreReviews()">⭐ עוד ביקורות מלקוחות</button>
-            </div>
         </div>
-    </div>
-
-    <div class="review-add-wrap section-anim delay-3">
-        <div class="review-add-card" id="reviewAuthHint">
-            <h3>רוצים להוסיף ביקורת?</h3>
-            <p>התחברו כדי לפרסם ביקורת חדשה ולהעלות תמונות מההזמנה שלכם.</p>
-            <button type="button" class="btn-primary" style="padding:10px 22px;font-size:14px" onclick="openProfileOrAuth()">התחברות</button>
-        </div>
-
     </div>
 </section>
 
@@ -3470,6 +3454,7 @@ function ensureUI(){
             '<button type="button" class="pay-method" data-code="bit" onclick="selectPaymentMethod(\'bit\')">💳 ביט</button>' +
             '<button type="button" class="pay-method" data-code="paybox" onclick="selectPaymentMethod(\'paybox\')">💙 פייבוקס</button>' +
             '<button type="button" class="pay-method" data-code="cash" onclick="selectPaymentMethod(\'cash\')">💵 מזומן</button>' +
+            '<button type="button" class="pay-method" data-code="bank" onclick="selectPaymentMethod(\'bank\')">🏦 העברה בנקאית</button>' +
           '</div>' +
           '<div id="paymentDetails" class="payment-details">בחרו שיטת תשלום כדי לקבל הוראות.</div>' +
           '<a id="paymentLink" class="payment-link" href="#" target="_blank" rel="noopener" onclick="openExternalPayment(event)">מעבר לתשלום</a>' +
@@ -3971,9 +3956,9 @@ function ensureUI(){
       var delay = idx * 0.07;
       if(unlocked){
         return '<div class="pm-chip unlocked" style="animation-delay:' + delay + 's">' +
-          '<div class="pm-chip-icon">' + gift.emoji + '</div>' +
+          '<div class="pm-chip-icon">🎉</div>' +
           '<div class="pm-chip-pts">' + level + '</div>' +
-          '<div class="pm-chip-label">' + escapeHtml(gift.name) + '</div>' +
+          '<div class="pm-chip-label">הפתעה נפתחה!</div>' +
           '<div class="pm-chip-badge">✓ פתוח</div>' +
         '</div>';
       }
@@ -4043,7 +4028,7 @@ function ensureUI(){
     wrap.innerHTML =
       '<div style="font-weight:800;margin:8px 0">המתנה נוספה לסל בחינם 🎁</div>' +
       '<div class="reward-chip">' +
-        '<div><strong>' + gift.emoji + ' ' + gift.name + '</strong><div style="font-size:12px;color:#7a5040">רמת ' + level + ' נק׳ | שווי ' + shekel(gift.value) + '</div></div>' +
+        '<div><strong>🎉 הפתעה!</strong><div style="font-size:12px;color:#7a5040">רמת ' + level + ' נק׳</div></div>' +
         '<div style="font-size:12px;color:#1c7d44;font-weight:800">ממתינה להזמנה</div>' +
       '</div>';
   }
@@ -4761,6 +4746,7 @@ function ensureUI(){
     if(code === 'bit') return 'ביט';
     if(code === 'paybox') return 'פייבוקס';
     if(code === 'cash') return 'מזומן';
+    if(code === 'bank') return 'העברה בנקאית';
     return '';
   }
 
@@ -4841,6 +4827,22 @@ function ensureUI(){
       confirmBtn.style.display = 'none';
       paymentStepConfirmed = true;
       paymentStepAmount = amount;
+    } else if(code === 'bank'){
+      detailsEl.innerHTML =
+        '<div style="font-weight:800;margin-bottom:8px">פרטי חשבון בנק להעברה:</div>' +
+        '<div style="line-height:1.9;font-size:14px">' +
+          '<div>🏦 <strong>מזרחי טפחות</strong> — חריש</div>' +
+          '<div>📌 סניף: <strong>593</strong></div>' +
+          '<div>💳 חשבון: <strong>102145</strong></div>' +
+          '<div>👤 על שם: <strong>שרה חברוני</strong></div>' +
+        '</div>' +
+        '<div style="margin-top:8px;font-size:12px;color:#7a5040">לאחר ביצוע ההעברה — לחצי ״סימנתי ששלחתי״</div>';
+      linkEl.style.display = 'none';
+      if(confirmBtn){
+        confirmBtn.style.display = 'block';
+        confirmBtn.textContent = 'סימנתי ששלחתי';
+      }
+      if(paymentStepAmount !== amount) paymentStepConfirmed = false;
     } else if(amount <= 0){
       detailsEl.textContent = 'סכום לתשלום יתעדכן מול שרה. אפשר לשלוח הזמנה גם בלי סכום.';
       linkEl.style.display = 'none';
@@ -5606,6 +5608,42 @@ function ensureUI(){
     renderProfileSummary();
   }
 
+  function playLoginSound(){
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [[523.25, 0, 0.18], [659.25, 0.15, 0.18], [783.99, 0.30, 0.25]].forEach(function(n){
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = n[0];
+        gain.gain.setValueAtTime(0, ctx.currentTime + n[1]);
+        gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + n[1] + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n[1] + n[2]);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + n[1]);
+        osc.stop(ctx.currentTime + n[1] + n[2]);
+      });
+    } catch(e){}
+  }
+
+  function playOrderFanfare(){
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      [[523.25,'sawtooth',0,0.15,0.22],[659.25,'sawtooth',0.16,0.15,0.22],[783.99,'sawtooth',0.32,0.15,0.22],[1046.50,'sawtooth',0.48,0.25,0.40]].forEach(function(n){
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = n[1];
+        osc.frequency.value = n[0];
+        gain.gain.setValueAtTime(0, ctx.currentTime + n[2]);
+        gain.gain.linearRampToValueAtTime(0.22, ctx.currentTime + n[2] + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n[2] + n[4]);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + n[2]);
+        osc.stop(ctx.currentTime + n[2] + n[4]);
+      });
+    } catch(e){}
+  }
+
   async function authReady(){
     if(!window.firebaseCtx) return;
     if(fb) return;
@@ -5628,6 +5666,7 @@ function ensureUI(){
         if(lastLoginCelebratedUid !== currentUser.uid){
           lastLoginCelebratedUid = currentUser.uid;
           launchConfetti({ count: 70, burstCount: 1 });
+          playLoginSound();
         }
 
         loadCart();
@@ -6659,6 +6698,7 @@ function ensureUI(){
       renderProfileSummary();
       toggleCart(false);
       closePaymentSheet();
+      playOrderFanfare();
 
       var profileDrawer = document.getElementById('profileDrawer');
       if(profileDrawer && profileDrawer.classList.contains('open')){
@@ -6788,7 +6828,7 @@ function ensureUI(){
     } else {
       price = Number(window.selProd.price || 0);
       if(price > 0){
-        details.push('מחיר מוצר: ' + shekel(price));
+        // price intentionally not shown in edit textarea
       }
     }
 
