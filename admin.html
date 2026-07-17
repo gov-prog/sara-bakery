@@ -958,11 +958,24 @@ function initDash(){
 }
 
 /* ── PRODUCTS MANAGEMENT ── */
+var BUILDER_ITEMS = [
+  {group:'🍮 מוס',items:['לב בינוני 12','לב גדול 16','קריסטל עגול 16','קינוח כוס','תוספת הקדשה']},
+  {group:'🍮 קינוחים',items:['קרם ברולה אישי','מיני מגנום','טארט לימון אישי','טארט לימון זוגי','טארט שוקולד אישי','טארט שוקולד זוגי','בייגלה מצופה']},
+  {group:'🍪 עוגיות',items:['לב אלפחורס','מגולגלת קינדר','שקדים פרלינה','כדור לוטוס/ריבת חלב','בראוניז אמסטרדם','בראוניז טריקולד','כדור פררו','עוגיית אמסטרדם']},
+  {group:'🥐 פחזניות קראמבל',items:['פחזנית וניל','פחזנית פטיסייר','פחזנית מסקרפונה']}
+];
+
 function updatePbProductSelect(){
   var sel=$('pbProduct');if(!sel)return;
-  var custom=allProducts.filter(function(p){return p.cat==='custom';});
-  if(!custom.length){sel.innerHTML='<option value="">אין מוצרים מותאמים אישית</option>';return;}
-  sel.innerHTML=custom.map(function(p){return'<option value="'+p.id+'">'+escapeHtml(p.name)+'</option>';}).join('');
+  var html='<optgroup label="━━ מארז כולו ━━"><option value="מארז מותאם אישית">מארז מותאם אישית (כל המארז)</option></optgroup>';
+  BUILDER_ITEMS.forEach(function(g){
+    html+='<optgroup label="'+g.group+'">';
+    g.items.forEach(function(item){
+      html+='<option value="'+escapeHtml(item)+'">'+escapeHtml(item)+'</option>';
+    });
+    html+='</optgroup>';
+  });
+  sel.innerHTML=html;
 }
 
 function renderProducts(){
@@ -1355,7 +1368,7 @@ window.addProductBlock=async function(){
   if(!prodId||!from||!to){toast('יש לבחור מוצר ותאריכים','warn');return;}
   if(from>to){toast('תאריך התחלה חייב להיות לפני הסיום','warn');return;}
   var prod=allProducts.find(function(p){return p.id===prodId;});
-  var block={productId:prodId,productName:prod?prod.name:prodId,from:from,to:to};
+  var block={productId:prodId,productName:prod?prod.name:prodId,from:from,to:to,isBuilderItem:!prod};
   var blocks=[...(settings.productBlocks||[]),block];
   try{
     await setDoc(doc(db,'settings','main'),{productBlocks:blocks},{merge:true});

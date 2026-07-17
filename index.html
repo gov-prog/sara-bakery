@@ -1532,6 +1532,38 @@
         if(noteEl) noteEl.style.display='none';
     }
 
+    function applyBuilderBlocks(){
+      var blocks = window._productBlocks || [];
+      var todayStr = new Date().toISOString().split('T')[0];
+      document.querySelectorAll('#customBuilderStep .builder-qty').forEach(function(inp){
+        var itemName = inp.getAttribute('data-item') || '';
+        var blocked = blocks.some(function(b){
+          return b.productName === itemName && b.from <= todayStr && todayStr <= b.to;
+        });
+        var row = inp.closest('.builder-row');
+        if(!row) return;
+        var existingTag = row.querySelector('.blocked-tag');
+        if(blocked){
+          inp.value = '0';
+          inp.setAttribute('disabled','disabled');
+          var wrap = inp.closest('.builder-qty-wrap');
+          if(wrap){ wrap.querySelectorAll('.builder-step').forEach(function(btn){ btn.disabled=true; }); }
+          if(!existingTag){
+            var tag = document.createElement('span');
+            tag.className = 'blocked-tag';
+            tag.style.cssText = 'font-size:11px;background:#ffeaea;color:#c03030;border-radius:6px;padding:2px 7px;font-weight:700;margin-right:4px';
+            tag.textContent = '⛔ לא זמין';
+            row.appendChild(tag);
+          }
+        } else {
+          inp.removeAttribute('disabled');
+          var wrap2 = inp.closest('.builder-qty-wrap');
+          if(wrap2){ wrap2.querySelectorAll('.builder-step').forEach(function(btn){ btn.disabled=false; }); }
+          if(existingTag) existingTag.remove();
+        }
+      });
+    }
+
     function initCustomQtyControls(){
         document.querySelectorAll('#customBuilderStep .builder-qty').forEach(function(inp, idx){
             if(inp.dataset.stepReady==='1') return;
@@ -1829,6 +1861,7 @@
         if(isCustom){
             initCustomQtyControls();
             resetCustomBuilder();
+            applyBuilderBlocks();
             document.getElementById('orderDetailsStep').style.display='none';
             document.getElementById('customBuilderStep').style.display='block';
             document.getElementById('mDesc').textContent='בחרו פריטים וכמויות לפי התפריט, ואז לחצו הוספה לסל.';
@@ -2261,7 +2294,7 @@ function showCpPopup(cp){
   if(el('cpCode')) el('cpCode').textContent = (cp.code || '').toUpperCase();
   var ov = el('cpPopupOverlay');
   if(ov) ov.classList.add('on');
-  try{ window._playCouponSound && window._playCouponSound(); }catch(e){}
+  try{ if(typeof playCouponBell === 'function') playCouponBell(); }catch(e){}
 }
 window.closeCpPopup = function(){
   var ov = document.getElementById('cpPopupOverlay');
@@ -5608,38 +5641,20 @@ function ensureUI(){
     renderProfileSummary();
   }
 
-  function playLoginSound(){
+  function playCouponBell(){
     try {
       var ctx = new (window.AudioContext || window.webkitAudioContext)();
-      [[523.25, 0, 0.18], [659.25, 0.15, 0.18], [783.99, 0.30, 0.25]].forEach(function(n){
+      [[1046.5,0],[1318.5,0.18],[1567.98,0.36]].forEach(function(n){
         var osc = ctx.createOscillator();
         var gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.value = n[0];
         gain.gain.setValueAtTime(0, ctx.currentTime + n[1]);
-        gain.gain.linearRampToValueAtTime(0.28, ctx.currentTime + n[1] + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n[1] + n[2]);
+        gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + n[1] + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + n[1] + 0.7);
         osc.connect(gain); gain.connect(ctx.destination);
         osc.start(ctx.currentTime + n[1]);
-        osc.stop(ctx.currentTime + n[1] + n[2]);
-      });
-    } catch(e){}
-  }
-
-  function playOrderFanfare(){
-    try {
-      var ctx = new (window.AudioContext || window.webkitAudioContext)();
-      [[523.25,'sawtooth',0,0.15,0.22],[659.25,'sawtooth',0.16,0.15,0.22],[783.99,'sawtooth',0.32,0.15,0.22],[1046.50,'sawtooth',0.48,0.25,0.40]].forEach(function(n){
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.type = n[1];
-        osc.frequency.value = n[0];
-        gain.gain.setValueAtTime(0, ctx.currentTime + n[2]);
-        gain.gain.linearRampToValueAtTime(0.22, ctx.currentTime + n[2] + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + n[2] + n[4]);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + n[2]);
-        osc.stop(ctx.currentTime + n[2] + n[4]);
+        osc.stop(ctx.currentTime + n[1] + 0.75);
       });
     } catch(e){}
   }
@@ -5666,7 +5681,6 @@ function ensureUI(){
         if(lastLoginCelebratedUid !== currentUser.uid){
           lastLoginCelebratedUid = currentUser.uid;
           launchConfetti({ count: 70, burstCount: 1 });
-          playLoginSound();
         }
 
         loadCart();
@@ -6698,7 +6712,6 @@ function ensureUI(){
       renderProfileSummary();
       toggleCart(false);
       closePaymentSheet();
-      playOrderFanfare();
 
       var profileDrawer = document.getElementById('profileDrawer');
       if(profileDrawer && profileDrawer.classList.contains('open')){
