@@ -1,5 +1,61 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="220" height="70" viewBox="0 0 220 70">
-  <rect width="220" height="70" rx="6" fill="#3a1c08"/>
-  <text x="110" y="36" font-family="Georgia,'Times New Roman',serif" font-size="26" font-weight="900" fill="#f1c165" text-anchor="middle" letter-spacing="1">שרה</text>
-  <text x="110" y="56" font-family="'Segoe UI','Arial Hebrew',Arial,sans-serif" font-size="12" font-weight="400" fill="#d4a85a" text-anchor="middle" letter-spacing="3">מאפייה ביתית</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Pink circular background -->
+  <circle cx="200" cy="200" r="195" fill="#fce8f0" opacity="0.85"/>
+
+  <!-- Hand at top -->
+  <g stroke="#c8904a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Palm/wrist -->
+    <path d="M185 55 Q190 48 200 46 Q210 44 218 50 Q224 55 220 64"/>
+    <!-- Fingers -->
+    <path d="M192 52 Q190 42 193 36 Q196 30 201 30 Q206 30 207 36 Q208 42 206 52"/>
+    <path d="M199 50 Q198 39 201 33 Q204 28 209 29 Q214 30 214 37 Q213 44 210 51"/>
+    <path d="M185 55 Q183 45 185 39 Q188 33 193 33"/>
+    <!-- Thumb -->
+    <path d="M221 58 Q228 52 231 56 Q234 62 228 68"/>
+    <!-- Arm going down to bell jar knob -->
+    <path d="M203 46 L203 78"/>
+  </g>
+
+  <!-- Bell jar / glass dome -->
+  <g stroke="#c8904a" stroke-width="2.2" fill="none">
+    <!-- Knob on top -->
+    <circle cx="203" cy="78" r="6" fill="#fce8f0" stroke="#c8904a" stroke-width="2"/>
+    <!-- Dome glass shape -->
+    <path d="M140 240 Q138 170 150 138 Q163 108 203 96 Q243 108 256 138 Q268 170 266 240"/>
+    <!-- Base plate -->
+    <line x1="128" y1="242" x2="278" y2="242" stroke-width="2.5"/>
+    <path d="M128 242 Q128 252 140 252 L266 252 Q278 252 278 242"/>
+    <!-- Sparkles inside dome -->
+    <path d="M168 155 l3-7 l3 7 l7 3 l-7 3 l-3 7 l-3-7 l-7-3 z" fill="#c8904a" stroke="none"/>
+    <path d="M238 128 l2-5 l2 5 l5 2 l-5 2 l-2 5 l-2-5 l-5-2 z" fill="#c8904a" stroke="none"/>
+    <!-- Small x sparkle -->
+    <path d="M175 130 l3 3 m0-3 l-3 3" stroke-width="1.8"/>
+  </g>
+
+  <!-- Cupcake inside dome -->
+  <g>
+    <!-- Cupcake wrapper / base -->
+    <path d="M170 242 L178 200 L228 200 L236 242 Z" fill="#f5b8d0" stroke="#c8904a" stroke-width="1.8" stroke-linejoin="round"/>
+    <!-- Wrapper vertical lines -->
+    <line x1="186" y1="200" x2="182" y2="242" stroke="#c8904a" stroke-width="1.2" opacity="0.6"/>
+    <line x1="195" y1="200" x2="194" y2="242" stroke="#c8904a" stroke-width="1.2" opacity="0.6"/>
+    <line x1="203" y1="200" x2="203" y2="242" stroke="#c8904a" stroke-width="1.2" opacity="0.6"/>
+    <line x1="211" y1="200" x2="212" y2="242" stroke="#c8904a" stroke-width="1.2" opacity="0.6"/>
+    <line x1="220" y1="200" x2="224" y2="242" stroke="#c8904a" stroke-width="1.2" opacity="0.6"/>
+    <!-- Frosting / cream swirl -->
+    <path d="M175 200 Q180 185 190 178 Q200 165 203 155 Q206 165 216 178 Q226 185 231 200 Z" fill="#f5b8d0" stroke="#c8904a" stroke-width="1.8" stroke-linejoin="round"/>
+    <path d="M185 195 Q192 182 200 170 Q208 182 218 195" fill="none" stroke="#c8904a" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M191 190 Q198 178 203 168 Q208 178 213 190" fill="none" stroke="#c8904a" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+    <!-- Cherry on top -->
+    <circle cx="203" cy="152" r="5" fill="#f5b8d0" stroke="#c8904a" stroke-width="1.5"/>
+  </g>
+
+  <!-- "Sara Hevroni" in script style -->
+  <text x="200" y="295" font-family="Georgia,'Palatino Linotype',serif" font-size="34" font-weight="700" font-style="italic" fill="#b07a32" text-anchor="middle" letter-spacing="1">Sara Hevroni</text>
+
+  <!-- "HOME MADE BAKERY" -->
+  <text x="200" y="320" font-family="'Segoe UI',Arial,sans-serif" font-size="13" font-weight="600" fill="#c8904a" text-anchor="middle" letter-spacing="3.5">HOME MADE BAKERY</text>
+
+  <!-- Decorative line -->
+  <line x1="145" y1="330" x2="255" y2="330" stroke="#c8904a" stroke-width="1" opacity="0.5"/>
 </svg>
