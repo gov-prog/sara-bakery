@@ -111,6 +111,9 @@ input[type="date"]#datePicker.on{display:block}
 .act-wa{background:#e8fde8;color:#1a7a28;border:1px solid #a8dca8}
 .act-mail{background:#e8eeff;color:#3050c0;border:1px solid #b0c0f0}
 .note-box{padding:10px 16px;background:#fffaf5;border-top:1px solid #f0e0d0;font-size:13px;color:#9a7060;font-style:italic}
+.followup-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f0fff4;border-top:2px solid #a8dca8;flex-wrap:wrap}
+.followup-lbl{font-size:12px;font-weight:800;color:#1a7a28;flex:1}
+.followup-btn{background:#25d366;color:#fff;border-radius:999px;padding:7px 16px;font-size:12px;font-weight:800;text-decoration:none;white-space:nowrap}
 .note-box strong{color:#c8704a;font-style:normal}
 /* MODALS */
 #custModal,#prodModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;padding:16px}
@@ -291,6 +294,7 @@ input[type="date"]#datePicker.on{display:block}
     <button class="tb" onclick="showTab('messages',this)">💬 הודעות</button>
     <button class="tb" onclick="showTab('settings',this)">⚙️ הגדרות</button>
     <button class="tb" onclick="showTab('coupons',this)">🏷️ קופונים</button>
+    <button class="tb" onclick="showTab('availability',this)">🚫 זמינות</button>
     <button class="tb" onclick="showTab('deliveries',this)">🚗 משלוחים <span class="nb" id="deliveryBadge" style="display:none">0</span></button>
     <button class="tb" onclick="showTab('receipts',this)">🧾 קבלות</button>
   </div>
@@ -434,9 +438,13 @@ input[type="date"]#datePicker.on{display:block}
         </div>
         <div class="form-group">
           <div class="form-label" style="font-size:11px">בתוקף עד (הפופאפ לא יופיע אחרי תאריך זה)</div>
-          <input type="date" class="form-input" id="sCpPopupExpiry" style="max-width:200px">
+          <input type="date" class="form-input" id="sCpPopupExpiry" style="max-width:200px" onchange="var w=$('cpExpiryWarn');if(w){var t=new Date().toISOString().split('T')[0];w.style.display=(this.value&&this.value<t)?'':'none';}">
+          <div id="cpExpiryWarn" style="display:none;color:#c03030;font-size:12px;font-weight:800;margin-top:6px">⚠️ תאריך התפוגה עבר — הפופאפ לא יוצג! עדכני לתאריך עתידי או רוקני את השדה.</div>
         </div>
-        <button class="form-btn sec" onclick="previewCpPopup()" style="font-size:12px;padding:8px 16px;margin-top:4px">👁️ תצוגה מקדימה</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <button class="form-btn sec" onclick="previewCpPopup()" style="font-size:12px;padding:8px 16px">👁️ תצוגה מקדימה</button>
+          <a href="./index.html?showCoupon=1" target="_blank" class="form-btn sec" style="font-size:12px;padding:8px 16px;text-decoration:none">🔗 בדיקה באתר</a>
+        </div>
       </div>
     </div>
 
@@ -458,30 +466,40 @@ input[type="date"]#datePicker.on{display:block}
       <div style="font-size:11px;color:#9a7060;margin-top:-6px">הפרטים ישלחו אוטומטית ב-WhatsApp בעת אישור הזמנה לפי שיטת התשלום שנבחרה</div>
     </div>
 
-    <!-- PRODUCT AVAILABILITY BLOCKS -->
-    <div style="border:1.5px solid #f0d8a8;border-radius:16px;padding:18px;margin-bottom:16px;background:#fffbf3">
-      <div style="font-size:15px;font-weight:800;color:#b07820;margin-bottom:8px">🚫 זמינות מוצרים — חסימת תאריכים</div>
-      <div style="font-size:12px;color:#7a5040;margin-bottom:12px;line-height:1.6">מוצר לא זמין בתאריכים מסוימים? הוסיפי כאן — הלקוח יראה אזהרה עם תאריכים זמינים ולא יוכל לבחור את התאריך החסום.</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-bottom:10px">
-        <div style="flex:1;min-width:160px">
+    <button class="form-btn" id="saveSettingsBtn" onclick="saveSettings()">💾 שמור הגדרות</button>
+    <div class="set-msg" id="setMsg"></div>
+  </div>
+
+  <!-- AVAILABILITY PANE -->
+  <div class="pane" id="pAvailability" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+      <div style="flex:1">
+        <div style="font-size:18px;font-weight:900;color:#b07820">🚫 זמינות הזמנות מותאמות אישית</div>
+        <div style="font-size:12px;color:#7a5040;margin-top:4px;line-height:1.6">תאריכים שאת לא זמינה לקבל הזמנות מותאמות אישית — הלקוחה תראה אזהרה ולא תוכל לבחור תאריך חסום.</div>
+      </div>
+    </div>
+    <div style="background:#fffbf3;border:1.5px solid #f0d8a8;border-radius:16px;padding:18px;margin-bottom:18px">
+      <div style="font-size:14px;font-weight:800;color:#b07820;margin-bottom:12px">➕ הוסף חסימה חדשה</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
+        <div style="flex:1;min-width:180px">
           <div class="form-label">מוצר</div>
           <select class="form-input" id="pbProduct" style="width:100%"><option>טוען מוצרים...</option></select>
         </div>
         <div>
           <div class="form-label">מ-תאריך</div>
-          <input type="date" class="form-input" id="pbFrom" style="min-width:130px">
+          <input type="date" class="form-input" id="pbFrom" style="min-width:140px">
         </div>
         <div>
           <div class="form-label">עד תאריך</div>
-          <input type="date" class="form-input" id="pbTo" style="min-width:130px">
+          <input type="date" class="form-input" id="pbTo" style="min-width:140px">
         </div>
-        <button class="form-btn" onclick="window.addProductBlock()" style="white-space:nowrap;align-self:flex-end">➕ הוסף חסימה</button>
+        <button class="form-btn" onclick="window.addProductBlock()" style="white-space:nowrap;align-self:flex-end;height:42px">➕ הוסף חסימה</button>
       </div>
+    </div>
+    <div style="background:#fff;border:1.5px solid #ecd8c8;border-radius:16px;padding:18px">
+      <div style="font-size:14px;font-weight:800;color:#2d1005;margin-bottom:12px">📋 חסימות פעילות</div>
       <div id="productBlocksList"><div style="color:#9a7060;font-size:12px">אין חסימות פעילות</div></div>
     </div>
-
-    <button class="form-btn" id="saveSettingsBtn" onclick="saveSettings()">💾 שמור הגדרות</button>
-    <div class="set-msg" id="setMsg"></div>
   </div>
 
   <!-- REVIEWS PANE -->
@@ -605,6 +623,26 @@ input[type="date"]#datePicker.on{display:block}
     <div style="padding:14px 20px;display:flex;gap:8px;flex-wrap:wrap">
       <a class="act act-wa" id="cmWaBtn" href="#" target="_blank">💬 WhatsApp</a>
       <a class="act act-mail" id="cmMailBtn" href="#">📧 מייל</a>
+    </div>
+  </div>
+</div>
+
+<!-- COUPON POPUP PREVIEW OVERLAY -->
+<div id="cpPreviewOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(5,20,5,.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;direction:rtl" onclick="if(event.target===this)closeCpPreview()">
+  <div style="background:linear-gradient(160deg,#f0fff0,#e8f8e8 60%,#d8f0d8);border-radius:28px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,80,0,.4);position:relative">
+    <button onclick="closeCpPreview()" style="position:absolute;top:12px;left:14px;background:rgba(255,255,255,.25);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;color:#fff;font-weight:900;line-height:1;z-index:2">✕</button>
+    <div style="background:linear-gradient(135deg,#2e7d32,#43a047,#66bb6a);padding:28px 24px 24px;text-align:center">
+      <span style="font-size:44px;display:block;margin-bottom:10px">🌸</span>
+      <div id="cpPreviewTitle" style="font-size:22px;font-weight:900;color:#fff;line-height:1.2">מבצע מיוחד!</div>
+    </div>
+    <div style="padding:22px 24px 28px;text-align:center">
+      <div id="cpPreviewDesc" style="font-size:15px;color:#2d5a2d;margin-bottom:16px;line-height:1.6"></div>
+      <div style="background:#fff;border:2.5px dashed #5cb85c;border-radius:14px;padding:14px 20px;display:inline-flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="font-size:11px;font-weight:800;color:#5cb85c;letter-spacing:1px">קוד הקופון שלך</div>
+        <div id="cpPreviewCode" style="font-size:26px;font-weight:900;color:#2e7d32;letter-spacing:3px;font-family:monospace"></div>
+        <div style="font-size:12px;color:#7a9a7a">👆 לחצי להעתקה</div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#7a9a7a">(תצוגה מקדימה בלבד — כך יראה הפופאפ ללקוחות)</div>
     </div>
   </div>
 </div>
@@ -860,15 +898,17 @@ function getAudioCtx(){if(!_audioCtx)try{_audioCtx=new(window.AudioContext||wind
 function playNewOrderSound(){
   var ctx=getAudioCtx();if(!ctx)return;
   try{
-    var notes=[523,659,784,1047];
-    var t=ctx.currentTime;
-    notes.forEach(function(freq,i){
+    // gentle notification — soft double ding
+    [[660,0],[880,0.18]].forEach(function(pair){
+      var freq=pair[0],delay=pair[1];
       var osc=ctx.createOscillator(),g=ctx.createGain();
       osc.connect(g);g.connect(ctx.destination);
-      osc.frequency.value=freq;osc.type='triangle';
-      var st=t+i*0.13;
-      g.gain.setValueAtTime(0,st);g.gain.linearRampToValueAtTime(0.28,st+0.04);g.gain.exponentialRampToValueAtTime(0.01,st+0.42);
-      osc.start(st);osc.stop(st+0.45);
+      osc.frequency.value=freq;osc.type='sine';
+      var t=ctx.currentTime+delay;
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(0.22,t+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,t+0.7);
+      osc.start(t);osc.stop(t+0.75);
     });
   }catch(e){}
 }
@@ -920,8 +960,9 @@ function initDash(){
 /* ── PRODUCTS MANAGEMENT ── */
 function updatePbProductSelect(){
   var sel=$('pbProduct');if(!sel)return;
-  if(!allProducts.length){sel.innerHTML='<option>אין מוצרים</option>';return;}
-  sel.innerHTML=allProducts.map(function(p){return'<option value="'+p.id+'">'+escapeHtml(p.name)+'</option>';}).join('');
+  var custom=allProducts.filter(function(p){return p.cat==='custom';});
+  if(!custom.length){sel.innerHTML='<option value="">אין מוצרים מותאמים אישית</option>';return;}
+  sel.innerHTML=custom.map(function(p){return'<option value="'+p.id+'">'+escapeHtml(p.name)+'</option>';}).join('');
 }
 
 function renderProducts(){
@@ -1110,7 +1151,17 @@ function renderCard(o){
   var mailLink=email?`<a class="act act-mail" href="mailto:${email}">📧 ${email}</a>`:'';
   var addrHtml='';if(isDelivery){var addr=[oAddress(o),oCity(o)].filter(Boolean).join(', ');if(addr)addrHtml=`<div class="note-box"><strong>📍 משלוח:</strong> ${addr}</div>`;}
   var noteHtml=note?`<div class="note-box"><strong>📝 הערה:</strong> ${note}</div>`:'';
-  return`<div class="oc ${s==='pending'?'urgent':''}"><div class="oc-hdr"><div class="oc-avatar" onclick="window._profile('${o.id}')">${initials}</div><div class="oc-id"><div class="oc-name" onclick="window._profile('${o.id}')">${name} <span class="oc-name-hint">← פרופיל</span></div><div class="oc-meta">${phone?`<span class="oc-contact">📱 ${phone}</span>`:''}${num?`<span class="oc-num">#${num}</span>`:''}</div></div>${timingHtml}</div>${stepperHtml}${itemsHtml}${addrHtml}${noteHtml}${payHtml}${waLink||mailLink?`<div class="oc-acts">${waLink}${mailLink}</div>`:''}</div>`;
+  // 24h follow-up
+  var followUpHtml='';
+  if(s!=='cancelled'&&phone){
+    var ca=o.createdAt?.toDate?o.createdAt.toDate():(o.createdAt?new Date(o.createdAt):null);
+    if(ca&&!isNaN(ca)&&(Date.now()-ca.getTime()>86400000)){
+      var productNames=items.map(function(it){return it&&it.name?it.name:'';}).filter(Boolean).slice(0,2).join(' ו-');
+      var fuMsg='שלום '+name+'! 😊\nנשמח לדעת איך היה '+(productNames||'ההזמנה')+' שהכנתי לך 🎂\nפידבק שלך ממש מחמם את הלב! 🙏\n— שרה ❤️';
+      followUpHtml=`<div class="followup-bar"><span class="followup-lbl">📩 עבר יום — שלחי הודעת פידבק ל${name}?</span><a class="followup-btn" href="https://wa.me/${normPhone(phone)}?text=${encodeURIComponent(fuMsg)}" target="_blank">💬 שלחי WhatsApp</a></div>`;
+    }
+  }
+  return`<div class="oc ${s==='pending'?'urgent':''}${s==='completed'?' done-card':''}"><div class="oc-hdr"><div class="oc-avatar" onclick="window._profile('${o.id}')">${initials}</div><div class="oc-id"><div class="oc-name" onclick="window._profile('${o.id}')">${name} <span class="oc-name-hint">← פרופיל</span></div><div class="oc-meta">${phone?`<span class="oc-contact">📱 ${phone}</span>`:''}${num?`<span class="oc-num">#${num}</span>`:''}</div></div>${timingHtml}</div>${stepperHtml}${itemsHtml}${addrHtml}${noteHtml}${payHtml}${waLink||mailLink?`<div class="oc-acts">${waLink}${mailLink}</div>`:''} ${followUpHtml}</div>`;
 }
 
 function renderKpis(){
@@ -1133,7 +1184,7 @@ window.toggleAll=()=>{showAll=!showAll;renderDateNav();renderOrders();renderKpis
 window.toggleDatePicker=()=>{var p=$('datePicker');p.classList.toggle('on');if(p.classList.contains('on'))p.value=fmtKey(curDate);};
 window.pickDate=v=>{if(!v)return;showAll=false;curDate=new Date(v+'T00:00:00');$('datePicker').classList.remove('on');renderDateNav();renderOrders();renderKpis();};
 window.setFilter=function(f,btn){curFilter=f;document.querySelectorAll('.sf').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderOrders();};
-window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons','pDeliveries','pReceipts'].forEach(p=>$(p).style.display='none');document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();if(tab==='deliveries')renderDeliveries();if(tab==='receipts'){renderReceipts();updateExportNote();}};
+window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons','pDeliveries','pReceipts','pAvailability'].forEach(p=>$(p)&&($(p).style.display='none'));document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();if(tab==='deliveries')renderDeliveries();if(tab==='receipts'){renderReceipts();updateExportNote();}if(tab==='availability'){renderProductBlocks(settings.productBlocks||[]);updatePbProductSelect();}};
 
 // ── Coupons ─────────────────────────────────────────────────────
 async function loadCoupons(){
@@ -1272,10 +1323,13 @@ async function loadSettings(){
     var cp=settings.couponPopup||{};
     $('sCpPopupActive').checked=!!cp.active;toggleCpPopupFields();
     $('sCpPopupTitle').value=cp.title||'';$('sCpPopupCode').value=cp.code||'';$('sCpPopupDesc').value=cp.desc||'';$('sCpPopupExpiry').value=cp.expiry||'';
+    // Warn if expiry has passed
+    var exWarn=$('cpExpiryWarn');
+    if(exWarn){var today=new Date().toISOString().split('T')[0];exWarn.style.display=(cp.expiry&&cp.expiry<today)?'':'none';}
     // Payment details
     $('sBitPhone').value=settings.bitPhone||settings.whatsapp||'';
     $('sPayboxPhone').value=settings.payboxPhone||settings.whatsapp||'';
-    $('sBankDetails').value=settings.bankDetails||'';
+    $('sBankDetails').value=settings.bankDetails||'בנק מזרחי טפחות — סניף חריש (593)\nמספר חשבון: 102145\nשם בעל החשבון: שרה חברוני';
     // Product blocks
     renderProductBlocks(settings.productBlocks||[]);
     updatePbProductSelect();
@@ -1321,12 +1375,17 @@ window.removeProductBlock=async function(idx){
 };
 window.toggleCpPopupFields=function(){$('cpPopupFields').style.display=$('sCpPopupActive').checked?'':'none';};
 window.previewCpPopup=function(){
-  var cp={title:$('sCpPopupTitle').value||'מבצע מיוחד!',code:($('sCpPopupCode').value||'SARA10').toUpperCase(),desc:$('sCpPopupDesc').value||'',active:true};
-  var win=window.open('','_blank','width=460,height=620');
-  if(!win)return;
-  var style='*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,"Arial Hebrew",sans-serif}body{background:rgba(5,20,5,.85);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;direction:rtl}.box{background:linear-gradient(160deg,#f0fff0,#e8f8e8 60%,#d8f0d8);border-radius:28px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,80,0,.35)}.hdr{background:linear-gradient(135deg,#2e7d32,#43a047,#66bb6a);padding:28px 24px 24px;text-align:center}.emoji{font-size:44px;display:block;margin-bottom:10px}.title{font-size:22px;font-weight:900;color:#fff;line-height:1.2}.body{padding:22px 24px 28px;text-align:center}.desc{font-size:15px;color:#2d5a2d;margin-bottom:16px;line-height:1.6}.code-box{background:#fff;border:2.5px dashed #5cb85c;border-radius:14px;padding:14px 20px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s}.code-label{font-size:11px;font-weight:800;color:#5cb85c;text-transform:uppercase;letter-spacing:1px}.code{font-size:24px;font-weight:900;color:#2e7d32;letter-spacing:3px;font-family:monospace}.copy-btn{background:#5cb85c;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer}';
-  win.document.write('<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>תצוגה מקדימה — פופאפ קופון</title><style>'+style+'</style></head><body><div class="box"><div class="hdr"><span class="emoji">🌸</span><div class="title">'+cp.title+'</div></div><div class="body"><p class="desc">'+cp.desc+'</p><div class="code-box"><div><div class="code-label">קוד קופון</div><div class="code">'+cp.code+'</div></div><button class="copy-btn">העתק</button></div></div></div></body></html>');
-  win.document.close();
+  var title=$('sCpPopupTitle').value||'מבצע מיוחד!';
+  var code=($('sCpPopupCode').value||'SARA10').toUpperCase();
+  var desc=$('sCpPopupDesc').value||'';
+  $('cpPreviewTitle').textContent=title;
+  $('cpPreviewCode').textContent=code;
+  $('cpPreviewDesc').textContent=desc;
+  var ov=$('cpPreviewOverlay');
+  ov.style.display='flex';
+};
+window.closeCpPreview=function(){
+  $('cpPreviewOverlay').style.display='none';
 };
 window.toggleSaleFields=function(){$('saleFields').style.display=$('sSaleActive').checked?'':'none';};
 window.setSaleType=function(type,btn){
@@ -1542,7 +1601,7 @@ function payMethodLabel(m){
   if(s==='bit'||s==='ביט')return{l:'💳 ביט',k:'bit'};
   if(s==='paybox'||s==='פייבוקס')return{l:'💙 פייבוקס',k:'paybox'};
   if(s==='cash'||s==='מזומן')return{l:'💵 מזומן',k:'cash'};
-  if(s==='transfer'||s==='העברה'||s.includes('בנק'))return{l:'🏦 העברה בנקאית',k:'transfer'};
+  if(s==='transfer'||s==='bank'||s==='העברה'||s.includes('בנק'))return{l:'🏦 העברה בנקאית',k:'transfer'};
   return{l:m,k:'other'};
 }
 
@@ -1613,58 +1672,93 @@ window.exportReceiptsExcel=function(exportAll){
   }
   var sorted=[...orders].sort((a,b)=>sortKey(b).localeCompare(sortKey(a)));
 
-  function fmtPhone(ph){
-    var d=String(ph||'').replace(/\D/g,'');
-    if(!d)return '';
-    if(d.length===10)return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);
-    if(d.length===9)return d.slice(0,2)+'-'+d.slice(2,5)+'-'+d.slice(5);
-    return ph;
-  }
-  function fmtDate(s){
-    if(!s)return '';
-    var m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);
-    if(m)return m[3]+'/'+m[2]+'/'+m[1];
-    return s;
-  }
+  function fmtPhone(ph){var d=String(ph||'').replace(/\D/g,'');if(!d)return'';if(d.length===10)return d.slice(0,3)+'-'+d.slice(3,6)+'-'+d.slice(6);if(d.length===9)return d.slice(0,2)+'-'+d.slice(2,5)+'-'+d.slice(5);return ph;}
+  function fmtDateX(s){if(!s)return'';var m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:String(s);}
   function stripEmoji(s){return String(s||'').replace(/[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27FF}]|[\uD800-\uDFFF]|\p{Emoji_Presentation}/gu,'').trim();}
+  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-  // Build date range label
   var periodLabels={today:'היום',week:'שבוע זה',month:'חודש זה',year:'שנה זו',all:'כל הזמנים',custom:'טווח מותאם'};
   var rangeLabel=periodLabels[rcPeriod]||rcPeriod;
-  if(rcPeriod==='custom'){
-    var fr=$('rcFrom')&&$('rcFrom').value?fmtDate($('rcFrom').value):'';
-    var to=$('rcTo')&&$('rcTo').value?fmtDate($('rcTo').value):'';
-    if(fr||to)rangeLabel=(fr||'...')+' — '+(to||'...');
-  }
-  var todayFmt=fmtDate(todayKey());
+  if(rcPeriod==='custom'){var fr=$('rcFrom')&&$('rcFrom').value?fmtDateX($('rcFrom').value):'';var to=$('rcTo')&&$('rcTo').value?fmtDateX($('rcTo').value):'';if(fr||to)rangeLabel=(fr||'...')+' — '+(to||'...');}
+  var todayFmt=fmtDateX(todayKey());
 
-  var bom='﻿';
-  var rows=[
-    ['שרה חברוני — מאפייה ביתית','','','','','','','','','','','',''],
-    ['קבלות: '+rangeLabel,'','','','','','','','','','','',''],
-    ['עסק פטור ממע"מ | הופק: '+todayFmt,'','','','','','','','','','','',''],
-    ['','','','','','','','','','','','',''],
-    ['מספר קבלה','שם פרטי','שם משפחה','שם מלא','טלפון','אימייל','שיטת תשלום','סכום (₪)','תאריך','שעה','פריטים','סוג הזמנה','מזהה הזמנה']
-  ];
-  sorted.forEach(function(o,i){
-    var fullName=(oName(o)||'').trim();
-    var parts=fullName.split(/\s+/);
-    var firstName=parts[0]||'';
-    var lastName=parts.slice(1).join(' ')||'';
+  var totalRev=sorted.reduce(function(s,o){return s+(+oTotal(o)||0);},0);
+  var byPay={};sorted.forEach(function(o){var k=(o.paymentMethod||o.checkout?.payment||o.checkout?.paymentCode||'אחר');byPay[k]=(byPay[k]||0)+(+oTotal(o)||0);});
+
+  var dataRows=sorted.map(function(o,i){
+    var fullName=(oName(o)||'').trim();var parts=fullName.split(/\s+/);
     var pm=payMethodLabel(o.paymentMethod||o.checkout?.payment||o.checkout?.paymentCode||'');
-    var tot=+oTotal(o)||0;
-    var rb=parseReadyBy(o);
-    var dateStr=fmtDate(rb.date||createdKey(o)||'');
+    var tot=+oTotal(o)||0;var rb=parseReadyBy(o);
+    var dateStr=fmtDateX(rb.date||createdKey(o)||'');
     var timeStr=rb.time||'';
-    var items=oItems(o).map(it=>(it.name||it.item||'')+(it.qty>1?' x'+it.qty:'')+(it.price?' ('+( +(it.price||0)*(+(it.qty||1)) ).toFixed(0)+'₪)':'')).join(' | ');
+    var items=oItems(o).map(function(it){return(it.name||it.item||'')+(it.qty>1?' x'+it.qty:'')+(it.price?' ('+((+(it.price||0))*(+(it.qty||1))).toFixed(0)+'₪)':'');}).join(' | ');
     var rcNum='RC-'+(sorted.length-i).toString().padStart(4,'0');
     var delivType=oIsDelivery(o)?'משלוח':'איסוף עצמי';
-    rows.push([rcNum,firstName,lastName,fullName,fmtPhone(oPhone(o)),oEmail(o)||'',stripEmoji(pm.l),tot.toFixed(0),dateStr,timeStr,items,delivType,o.id||'']);
-  });
-  var csv=rows.map(r=>r.map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(',')).join('\r\n');
-  var blob=new Blob([bom+csv],{type:'text/csv;charset=utf-8'});
+    var bg=i%2===0?'#ffffff':'#fff8f3';
+    var isPaid=o.paid===true;
+    var paidStyle=isPaid?'color:#1a7a3c;font-weight:800':'color:#c87040';
+    return '<tr style="background:'+bg+'">'
+      +'<td style="color:#c8704a;font-weight:900;white-space:nowrap">'+esc(rcNum)+'</td>'
+      +'<td style="font-weight:700">'+esc(parts[0]||'')+'</td>'
+      +'<td>'+esc(parts.slice(1).join(' '))+'</td>'
+      +'<td style="font-weight:700">'+esc(fullName)+'</td>'
+      +'<td style="white-space:nowrap;direction:ltr;text-align:right">'+esc(fmtPhone(oPhone(o)))+'</td>'
+      +'<td style="font-size:11px">'+esc(oEmail(o)||'')+'</td>'
+      +'<td style="text-align:center">'+esc(stripEmoji(pm.l))+'</td>'
+      +'<td style="text-align:center;font-weight:800;color:#2d7a2d">₪'+tot.toFixed(0)+'</td>'
+      +'<td style="white-space:nowrap;text-align:center" x:str>'+esc(dateStr)+'</td>'
+      +'<td style="text-align:center">'+esc(timeStr)+'</td>'
+      +'<td style="font-size:11px;max-width:240px">'+esc(items)+'</td>'
+      +'<td style="text-align:center">'+esc(delivType)+'</td>'
+      +'<td style="'+paidStyle+'">'+esc(isPaid?'✓ שולם':'ממתין')+'</td>'
+      +'<td style="font-size:10px;color:#9a7060">'+esc(o.id||'')+'</td>'
+      +'</tr>';
+  }).join('');
+
+  var html='<html xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:o="urn:schemas-microsoft-com:office:office" dir="rtl">'
+    +'<head><meta charset="UTF-8">'
+    +'<!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
+    +'<x:Name>קבלות</x:Name><x:WorksheetOptions><x:DisplayRightToLeft/></x:WorksheetOptions>'
+    +'</x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->'
+    +'<style>body{font-family:Arial,"Arial Hebrew",sans-serif;direction:rtl}'
+    +'table{border-collapse:collapse;width:100%;font-size:12px}'
+    +'td,th{border:1px solid #e0d0c0;padding:6px 10px;vertical-align:middle}'
+    +'</style></head><body>'
+    +'<table>'
+    // Header info rows
+    +'<tr><td colspan="14" style="background:#2d1005;color:#fff;font-size:16px;font-weight:900;padding:12px 14px;border:none">שרה חברוני — מאפייה ביתית</td></tr>'
+    +'<tr><td colspan="14" style="background:#5a2a10;color:#f1c165;font-size:12px;font-weight:700;padding:6px 14px;border:none">קבלות: '+esc(rangeLabel)+' &nbsp;|&nbsp; הופק: '+esc(todayFmt)+' &nbsp;|&nbsp; עוסק זעיר פטור ממע״מ | מס׳ עוסק: 308080290</td></tr>'
+    +'<tr><td colspan="14" style="background:#fff8f3;color:#c8704a;font-size:12px;font-weight:800;padding:6px 14px;border:none">סה״כ הכנסות: ₪'+totalRev.toFixed(0)+' &nbsp;|&nbsp; '+sorted.length+' קבלות</td></tr>'
+    +'<tr><td colspan="14" style="height:6px;border:none;background:#fff"></td></tr>'
+    // Column headers
+    +'<tr style="background:#c8704a;color:#fff">'
+    +'<th style="width:80px">מספר קבלה</th>'
+    +'<th style="width:70px">שם פרטי</th>'
+    +'<th style="width:80px">שם משפחה</th>'
+    +'<th style="width:120px">שם מלא</th>'
+    +'<th style="width:110px">טלפון</th>'
+    +'<th style="width:140px">אימייל</th>'
+    +'<th style="width:80px">תשלום</th>'
+    +'<th style="width:70px">סכום (₪)</th>'
+    +'<th style="width:85px">תאריך</th>'
+    +'<th style="width:55px">שעה</th>'
+    +'<th style="width:200px">פריטים</th>'
+    +'<th style="width:80px">סוג</th>'
+    +'<th style="width:65px">סטטוס</th>'
+    +'<th style="width:110px">מזהה</th>'
+    +'</tr>'
+    +dataRows
+    // Totals row
+    +'<tr style="background:#fdf5ef">'
+    +'<td colspan="7" style="font-weight:900;text-align:left;color:#2d1005">סה״כ</td>'
+    +'<td style="font-weight:900;color:#2d7a2d;text-align:center">₪'+totalRev.toFixed(0)+'</td>'
+    +'<td colspan="6"></td>'
+    +'</tr>'
+    +'</table></body></html>';
+
+  var blob=new Blob(['﻿'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
   var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;a.download='קבלות_שרה_חברוני_'+todayKey()+'.csv';
+  var a=document.createElement('a');a.href=url;a.download='קבלות_שרה_חברוני_'+todayKey()+'.xls';
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   URL.revokeObjectURL(url);
   localStorage.setItem('sara_last_export_ts',Date.now().toString());
@@ -1686,13 +1780,16 @@ window.openReceipt=function(orderId){
   var isDelivery=oIsDelivery(o);
   var payIcon=pm.k==='bit'?'💳':pm.k==='paybox'?'💙':pm.k==='cash'?'💵':'🏦';
   var payNameClean=pm.l.replace(/[^֐-׾\w\s]/g,'').trim();
+  var bankDetailsHtml=pm.k==='transfer'&&settings.bankDetails
+    ?`<div style="background:#f3e5f5;border:1.5px solid #d8c8f0;border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:13px;color:#4a1a7a"><strong>🏦 פרטי העברה בנקאית:</strong><br><div style="margin-top:6px;white-space:pre-wrap;font-family:inherit">${escapeHtml(settings.bankDetails)}</div></div>`
+    :'';
 
   var itemsHtml=items.length?items.map(it=>{
     var qty=+(it.qty||1),price=+(it.price||0),lineTotal=(price*qty).toFixed(0);
     return `<tr><td style="padding:8px 0 8px 12px;border-bottom:1px solid #f0e0d0">${escapeHtml(it.name||it.item||'פריט')}</td><td style="text-align:center;padding:8px;border-bottom:1px solid #f0e0d0">${qty}</td><td style="text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid #f0e0d0">₪${price.toFixed(0)}</td><td style="text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid #f0e0d0;font-weight:800">₪${lineTotal}</td></tr>`;
   }).join(''):`<tr><td colspan="4" style="padding:12px;color:#9a7060;text-align:center">אין פרטי פריטים</td></tr>`;
 
-  var html=`<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>קבלה ${rcNum}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI','Arial Hebrew',Arial,sans-serif;background:#f5f0eb;display:flex;justify-content:center;padding:30px 20px;min-height:100vh}.receipt{background:#fff;max-width:580px;width:100%;border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.16);overflow:hidden}.rh{background:linear-gradient(135deg,#2d1a0e,#5a2a10);padding:28px 28px 22px;text-align:center;color:#fff}.rh-logo-img{width:90px;height:90px;object-fit:contain;border-radius:50%;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto}.rh-logo-fallback{font-size:52px;margin-bottom:10px}.rh-brand{font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:4px}.rh-sub{font-size:12px;color:rgba(241,193,101,.75);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}.rh-biz{font-size:11px;color:rgba(241,193,101,.6);letter-spacing:.5px}.rh-num{display:inline-block;background:rgba(255,255,255,.15);border:1px solid rgba(241,193,101,.4);border-radius:999px;padding:6px 20px;font-size:13px;font-weight:800;color:#f1c165;margin-top:14px}.rb{padding:26px 28px}.sec-title{font-size:10px;font-weight:900;color:#c8704a;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f5ece5}.cr{display:flex;gap:10px;margin-bottom:7px;font-size:14px}.cl{font-weight:800;color:#7a5040;min-width:75px;flex-shrink:0}.items-table{width:100%;border-collapse:collapse;font-size:14px}.items-table th{font-size:10px;font-weight:900;color:#9a7060;padding:6px 0;border-bottom:2px solid #ecd8c8;text-align:right}.items-table th:not(:first-child){text-align:center}.items-table th:last-child{text-align:left}.total-box{background:linear-gradient(135deg,#fff8f3,#fff);border:2px solid #f0d8c8;border-radius:14px;padding:16px 20px;margin:18px 0;display:flex;justify-content:space-between;align-items:center}.tl{font-size:13px;font-weight:800;color:#7a5040}.ta{font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:900;color:#c8704a}.pay-box{display:flex;align-items:center;gap:10px;background:#f9f6ff;border:1.5px solid #d8c8f0;border-radius:12px;padding:12px 16px;margin-bottom:18px}.pay-icon{font-size:24px}.pay-txt{font-size:14px;font-weight:800;color:#4a1a7a}.rfoot{background:#fff8f3;border-top:2px dashed #ecd8c8;padding:20px 28px;text-align:center}.rfoot-main{font-size:14px;font-weight:700;color:#7a5040;line-height:1.8}.rfoot-note{font-size:11px;color:#b09080;margin-top:8px;line-height:1.8}.rfoot-biz{font-size:12px;font-weight:800;color:#7a5040;margin-bottom:6px}.print-btn{display:block;width:calc(100% - 56px);margin:0 28px 22px;background:linear-gradient(135deg,#c8704a,#9f4f2f);color:#fff;border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:800;font-family:'Segoe UI','Arial Hebrew',Arial,sans-serif;cursor:pointer;letter-spacing:.3px}@media print{.print-btn{display:none}body{background:#fff;padding:0}.receipt{box-shadow:none;border-radius:0;max-width:100%}}</style></head><body><div class="receipt"><div class="rh"><img class="rh-logo-img" src="logo.png" alt="שרה חברוני" onerror="this.style.display='none';document.getElementById('rhLogoFallback').style.display='block'"><div id="rhLogoFallback" style="display:none" class="rh-logo-fallback">🍰</div><div class="rh-brand">שרה חברוני</div><div class="rh-sub">Home Made Bakery · מאפייה ביתית · חריש</div><div class="rh-biz">עוסק זעיר פטור ממע״מ | מס׳ עוסק: 308080290</div><div class="rh-num">קבלה מס׳ ${rcNum}</div></div><div class="rb"><div class="sec-title">פרטי לקוח</div><div class="cr"><span class="cl">שם:</span><span>${escapeHtml(name)}</span></div>${phone?`<div class="cr"><span class="cl">טלפון:</span><span>${escapeHtml(phone)}</span></div>`:''} ${email?`<div class="cr"><span class="cl">אימייל:</span><span>${escapeHtml(email)}</span></div>`:''} ${isDelivery&&addr?`<div class="cr"><span class="cl">כתובת:</span><span>${escapeHtml([addr,city].filter(Boolean).join(', '))}</span></div>`:''}<div class="cr"><span class="cl">תאריך:</span><span>${escapeHtml(dateStr)}</span></div><div style="margin:20px 0 14px"><div class="sec-title">פרטי הזמנה</div><table class="items-table"><thead><tr><th>פריט</th><th style="text-align:center">כמות</th><th style="text-align:left">מחיר ליח'</th><th style="text-align:left">סה"כ</th></tr></thead><tbody>${itemsHtml}</tbody></table></div><div class="total-box"><span class="tl">סה"כ לתשלום</span><span class="ta">₪${tot.toFixed(0)}</span></div><div class="pay-box"><span class="pay-icon">${payIcon}</span><span class="pay-txt">שולם ב${payNameClean||'תשלום'}</span></div></div><button class="print-btn" onclick="window.print()">🖨️ הדפס / שמור כ-PDF</button><div class="rfoot"><div class="rfoot-biz">עוסק זעיר פטור ממע״מ | מס׳ עוסק: 308080290</div><div class="rfoot-main">תודה שבחרת בשרה חברוני! 🍰<br>נשמח לשרת אותך שוב בקרוב ❤️</div><div class="rfoot-note">פטור ממע״מ לפי סעיף 31(1) לחוק מע"מ, התשל"ו-1975${settings.whatsapp?'<br>📱 '+settings.whatsapp:''}</div></div></div></body></html>`;
+  var html=`<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>קבלה ${rcNum}</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI','Arial Hebrew',Arial,sans-serif;background:#f5f0eb;display:flex;justify-content:center;padding:30px 20px;min-height:100vh}.receipt{background:#fff;max-width:580px;width:100%;border-radius:22px;box-shadow:0 24px 70px rgba(0,0,0,.16);overflow:hidden}.rh{background:linear-gradient(160deg,#fff8f4,#fce8f0);border-bottom:2px solid #f0d0d8;padding:28px 28px 20px;text-align:center}.rh-logo-img{width:150px;height:150px;object-fit:contain;display:block;margin:0 auto 6px}.rh-logo-fallback{font-size:52px;margin-bottom:10px}.rh-brand{font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:900;color:#7a3a1a;margin-bottom:2px}.rh-sub{font-size:11px;color:#c8904a;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}.rh-biz{font-size:10px;color:#b09080;letter-spacing:.5px}.rh-num{display:inline-block;background:#fff;border:1.5px solid #f0c8a8;border-radius:999px;padding:6px 20px;font-size:13px;font-weight:800;color:#c8704a;margin-top:12px}.rb{padding:26px 28px}.sec-title{font-size:10px;font-weight:900;color:#c8704a;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #f5ece5}.cr{display:flex;gap:10px;margin-bottom:7px;font-size:14px}.cl{font-weight:800;color:#7a5040;min-width:75px;flex-shrink:0}.items-table{width:100%;border-collapse:collapse;font-size:14px}.items-table th{font-size:10px;font-weight:900;color:#9a7060;padding:6px 0;border-bottom:2px solid #ecd8c8;text-align:right}.items-table th:not(:first-child){text-align:center}.items-table th:last-child{text-align:left}.total-box{background:linear-gradient(135deg,#fff8f3,#fff);border:2px solid #f0d8c8;border-radius:14px;padding:16px 20px;margin:18px 0;display:flex;justify-content:space-between;align-items:center}.tl{font-size:13px;font-weight:800;color:#7a5040}.ta{font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:900;color:#c8704a}.pay-box{display:flex;align-items:center;gap:10px;background:#f9f6ff;border:1.5px solid #d8c8f0;border-radius:12px;padding:12px 16px;margin-bottom:18px}.pay-icon{font-size:24px}.pay-txt{font-size:14px;font-weight:800;color:#4a1a7a}.rfoot{background:#fff8f3;border-top:2px dashed #ecd8c8;padding:20px 28px;text-align:center}.rfoot-main{font-size:14px;font-weight:700;color:#7a5040;line-height:1.8}.rfoot-note{font-size:11px;color:#b09080;margin-top:8px;line-height:1.8}.rfoot-biz{font-size:12px;font-weight:800;color:#7a5040;margin-bottom:6px}.print-btn{display:block;width:calc(100% - 56px);margin:0 28px 22px;background:linear-gradient(135deg,#c8704a,#9f4f2f);color:#fff;border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:800;font-family:'Segoe UI','Arial Hebrew',Arial,sans-serif;cursor:pointer;letter-spacing:.3px}@media print{.print-btn{display:none}body{background:#fff;padding:0}.receipt{box-shadow:none;border-radius:0;max-width:100%}}</style></head><body><div class="receipt"><div class="rh"><img class="rh-logo-img" src="logo.svg" alt="שרה חברוני" onerror="this.style.display='none';document.getElementById('rhLogoFallback').style.display='block'"><div id="rhLogoFallback" style="display:none" class="rh-logo-fallback">🍰</div><div class="rh-brand">שרה חברוני</div><div class="rh-sub">Home Made Bakery · מאפייה ביתית · חריש</div><div class="rh-biz">עוסק זעיר פטור ממע״מ | מס׳ עוסק: 308080290</div><div class="rh-num">קבלה מס׳ ${rcNum}</div></div><div class="rb"><div class="sec-title">פרטי לקוח</div><div class="cr"><span class="cl">שם:</span><span>${escapeHtml(name)}</span></div>${phone?`<div class="cr"><span class="cl">טלפון:</span><span>${escapeHtml(phone)}</span></div>`:''} ${email?`<div class="cr"><span class="cl">אימייל:</span><span>${escapeHtml(email)}</span></div>`:''} ${isDelivery&&addr?`<div class="cr"><span class="cl">כתובת:</span><span>${escapeHtml([addr,city].filter(Boolean).join(', '))}</span></div>`:''}<div class="cr"><span class="cl">תאריך:</span><span>${escapeHtml(dateStr)}</span></div><div style="margin:20px 0 14px"><div class="sec-title">פרטי הזמנה</div><table class="items-table"><thead><tr><th>פריט</th><th style="text-align:center">כמות</th><th style="text-align:left">מחיר ליח'</th><th style="text-align:left">סה"כ</th></tr></thead><tbody>${itemsHtml}</tbody></table></div><div class="total-box"><span class="tl">סה"כ לתשלום</span><span class="ta">₪${tot.toFixed(0)}</span></div><div class="pay-box"><span class="pay-icon">${payIcon}</span><span class="pay-txt">שולם ב${payNameClean||'תשלום'}</span></div>${bankDetailsHtml}</div><button class="print-btn" onclick="window.print()">🖨️ הדפסה</button><button class="print-btn" onclick="window.print()" style="margin-top:10px;background:linear-gradient(135deg,#2a6038,#1a4526)">💾 שמור כ-PDF</button><div class="rfoot"><div class="rfoot-biz">עוסק זעיר פטור ממע״מ | מס׳ עוסק: 308080290</div><div class="rfoot-main">תודה שבחרת בשרה חברוני! 🍰<br>נשמח לשרת אותך שוב בקרוב ❤️</div><div class="rfoot-note">פטור ממע״מ לפי סעיף 31(1) לחוק מע"מ, התשל"ו-1975${settings.whatsapp?'<br>📱 '+settings.whatsapp:''}</div></div></div></body></html>`;
   var win=window.open('','_blank','width=660,height=860');
   if(!win){toast('אפשרי פתיחת חלונות לאתר זה','warn');return;}
   win.document.write(html);win.document.close();
