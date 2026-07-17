@@ -1532,34 +1532,39 @@
         if(noteEl) noteEl.style.display='none';
     }
 
-    function applyBuilderBlocks(){
+    function fmtBlockDate(s){
+      if(!s) return '';
+      var m = String(s).match(/(\d{4})-(\d{2})-(\d{2})/);
+      return m ? m[3]+'/'+m[2] : s;
+    }
+
+    function getItemBlocks(itemName){
       var blocks = window._productBlocks || [];
       var todayStr = new Date().toISOString().split('T')[0];
+      return blocks.filter(function(b){
+        return b.productName === itemName && b.to >= todayStr;
+      });
+    }
+
+    function applyBuilderBlocks(){
       document.querySelectorAll('#customBuilderStep .builder-qty').forEach(function(inp){
         var itemName = inp.getAttribute('data-item') || '';
-        var blocked = blocks.some(function(b){
-          return b.productName === itemName && b.from <= todayStr && todayStr <= b.to;
-        });
+        var activeBlocks = getItemBlocks(itemName);
         var row = inp.closest('.builder-row');
         if(!row) return;
         var existingTag = row.querySelector('.blocked-tag');
-        if(blocked){
-          inp.value = '0';
-          inp.setAttribute('disabled','disabled');
-          var wrap = inp.closest('.builder-qty-wrap');
-          if(wrap){ wrap.querySelectorAll('.builder-step').forEach(function(btn){ btn.disabled=true; }); }
-          if(!existingTag){
-            var tag = document.createElement('span');
-            tag.className = 'blocked-tag';
-            tag.style.cssText = 'font-size:11px;background:#ffeaea;color:#c03030;border-radius:6px;padding:2px 7px;font-weight:700;margin-right:4px';
-            tag.textContent = '⛔ לא זמין';
-            row.appendChild(tag);
-          }
+        if(existingTag) existingTag.remove();
+        if(activeBlocks.length){
+          var ranges = activeBlocks.map(function(b){ return fmtBlockDate(b.from)+'-'+fmtBlockDate(b.to); }).join(', ');
+          var tag = document.createElement('span');
+          tag.className = 'blocked-tag';
+          tag.style.cssText = 'font-size:11px;background:#fff3cd;color:#856404;border-radius:6px;padding:2px 7px;font-weight:700;margin-right:6px;cursor:help';
+          tag.title = 'אזל המלאי בתאריכים: ' + ranges;
+          tag.textContent = '⚠️ ' + ranges;
+          row.appendChild(tag);
+          inp.setAttribute('data-blocked-ranges', ranges);
         } else {
-          inp.removeAttribute('disabled');
-          var wrap2 = inp.closest('.builder-qty-wrap');
-          if(wrap2){ wrap2.querySelectorAll('.builder-step').forEach(function(btn){ btn.disabled=false; }); }
-          if(existingTag) existingTag.remove();
+          inp.removeAttribute('data-blocked-ranges');
         }
       });
     }
@@ -1608,6 +1613,13 @@
         var max=maxAttr? (parseInt(maxAttr,10)||9999) : 9999;
         var curr=parseInt(inp.value||'0',10)||0;
         var next=Math.max(min, Math.min(max, curr + delta));
+        if(delta > 0 && next > curr){
+          var ranges = inp.getAttribute('data-blocked-ranges');
+          if(ranges){
+            var itemName = inp.getAttribute('data-item') || 'פריט זה';
+            toast('⚠️ ' + itemName + ' — אזל המלאי בתאריכים: ' + ranges + '. ניתן להזמין לתאריך אחר.');
+          }
+        }
         inp.value=String(next);
         updateCustomTotal();
     }
