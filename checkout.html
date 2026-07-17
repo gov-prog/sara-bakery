@@ -67,8 +67,7 @@
   .co-toggle-btn.active{background:#fff;color:var(--copper);box-shadow:0 2px 8px rgba(200,112,74,.15)}
 
   /* PAYMENT */
-  .pay-opts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:6px}
-  @media(max-width:400px){.pay-opts{grid-template-columns:1fr 1fr}}
+  .pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
   .pay-opt{border:2px solid var(--warm2);border-radius:14px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s;background:#fff}
   .pay-opt.selected{border-color:var(--copper);background:rgba(200,112,74,.06)}
   .pay-opt-icon{font-size:22px;margin-bottom:4px}
@@ -264,11 +263,20 @@
           <div class="pay-opt-icon">💵</div>
           <div class="pay-opt-name">מזומן</div>
         </div>
+        <div class="pay-opt" id="payBank" onclick="selectPay('bank')">
+          <div class="pay-opt-icon">🏦</div>
+          <div class="pay-opt-name">העברה בנקאית</div>
+        </div>
       </div>
       <div class="pay-bit-info" id="payBitInfo">
         שלחו תשלום דרך ביט / פייבוקס למספר:
         <span class="pay-bit-num" id="payBitNum">052-3394838</span>
         שרה חברוני
+      </div>
+      <div class="pay-bit-info" id="payBankInfo" style="display:none">
+        <div style="font-weight:900;margin-bottom:6px">🏦 פרטי העברה בנקאית</div>
+        <div>מזרחי טפחות — סניף חריש (593)</div>
+        <div>חשבון: <strong>102145</strong> | שרה חברוני</div>
       </div>
       <div class="pay-confirm-row" id="payConfirmRow">
         <input type="checkbox" id="payConfirmCheck" onchange="updateSubmit()">
@@ -574,15 +582,25 @@ window.checkDateBlocks = function(){
 // ── Payment ──────────────────────────────────────────────────────
 window.selectPay = function(code){
   selectedPay = code;
-  ['bit','paybox','cash'].forEach(c => document.getElementById('pay'+c.charAt(0).toUpperCase()+c.slice(1)).classList.toggle('selected', c === code));
+  ['bit','paybox','cash','bank'].forEach(c => {
+    var el = document.getElementById('pay'+c.charAt(0).toUpperCase()+c.slice(1));
+    if(el) el.classList.toggle('selected', c === code);
+  });
   const info = document.getElementById('payBitInfo');
+  const bankInfo = document.getElementById('payBankInfo');
   const confirm = document.getElementById('payConfirmRow');
   if(code === 'bit' || code === 'paybox'){
-    info.style.display = 'block';
-    confirm.style.display = 'flex';
+    if(info) info.style.display = 'block';
+    if(bankInfo) bankInfo.style.display = 'none';
+    if(confirm) confirm.style.display = 'flex';
+  } else if(code === 'bank'){
+    if(info) info.style.display = 'none';
+    if(bankInfo) bankInfo.style.display = 'block';
+    if(confirm) confirm.style.display = 'none';
   } else {
-    info.style.display = 'none';
-    confirm.style.display = 'none';
+    if(info) info.style.display = 'none';
+    if(bankInfo) bankInfo.style.display = 'none';
+    if(confirm) confirm.style.display = 'none';
   }
   updateSubmit();
 };
@@ -615,7 +633,7 @@ window.submitOrder = async function(){
 
   const orderNum = 'SB' + Date.now().toString().slice(-7);
   const total = getTotal();
-  const payLabel = selectedPay === 'bit' ? 'ביט' : selectedPay === 'paybox' ? 'פייבוקס' : 'מזומן';
+  const payLabel = selectedPay === 'bit' ? 'ביט' : selectedPay === 'paybox' ? 'פייבוקס' : selectedPay === 'bank' ? 'העברה בנקאית' : 'מזומן';
 
   const orderData = {
     orderNum,

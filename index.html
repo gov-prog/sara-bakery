@@ -861,7 +861,7 @@
     <div class="trust-item">🌿 מרכיבים איכותיים</div>
     <div class="trust-item">✨ התאמה אישית</div>
     <div class="trust-item">🚚 משלוחים לפי אזור</div>
-    <div class="trust-item">💳 ביט / מזומן</div>
+    <div class="trust-item">💳 ביט / פייבוקס / מזומן / העברה</div>
 </div>
 
 <section class="catalog page-section" id="catalog">
@@ -1205,7 +1205,7 @@
         <div class="info-card">
             <span class="info-icon">📍</span>
             <div class="info-title">תשלום</div>
-            <div class="info-text">💳 ביט<br>💙 פייבוקס<br>💵 מזומן<br>בקבלת ההזמנה</div>
+            <div class="info-text">💳 ביט<br>💙 פייבוקס<br>💵 מזומן<br>🏦 העברה בנקאית</div>
         </div>
         <div class="info-card">
             <span class="info-icon">📍</span>
@@ -1242,7 +1242,7 @@
             </details>
             <details class="faq-item">
                 <summary>איך אפשר לשלם?</summary>
-                <div class="faq-answer">אפשר לשלם בביט, מזומן או אמצעי אחר לפי מה שמופיע במסך התשלום בעת ההזמנה.</div>
+                <div class="faq-answer">אפשר לשלם בביט, פייבוקס, מזומן או העברה בנקאית — לפי מה שנוח לך. הפרטים מופיעים במסך התשלום.</div>
             </details>
             <details class="faq-item">
                 <summary>אפשר לבצע שינויים אחרי ששלחתי הזמנה?</summary>
@@ -3262,7 +3262,7 @@ function ensureUI(){
       '.payment-title{font-size:18px;font-weight:900;color:#2d1a0e}',
       '.payment-sub{font-size:12px;color:#7a5040;font-weight:700}',
       '.payment-close{border:none;background:#fff;border:1px solid #e5d0be;border-radius:999px;padding:6px 12px;font-weight:800;color:#6b4433;cursor:pointer}',
-      '.payment-methods{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}',
+      '.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}',
       '.pay-method{border:1px solid #e4d2c2;background:#fff;border-radius:12px;padding:10px;font-weight:800;font-size:12px;cursor:pointer}',
       '.pay-method.active{background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border-color:transparent}',
       '.payment-details{font-size:12px;color:#7a5040;line-height:1.6;background:#fff8f1;border:1px dashed #f0d0ae;border-radius:12px;padding:8px 10px;margin-bottom:10px}',
@@ -6413,6 +6413,12 @@ function ensureUI(){
 
     if(cartItems.length === 0 && !selectedRewardLevel){
       toast('סל ריק');
+      return;
+    }
+
+    var nonRewardItems = cartItems.filter(function(it){ return it && !it.isReward; });
+    if(nonRewardItems.length === 0 && (selectedRewardLevel || cartItems.some(function(it){ return it && it.isReward; }))){
+      toast('🎁 הפתעה ניתן לממש רק יחד עם הזמנה — הוסיפי מוצר לסל');
       return;
     }
 
