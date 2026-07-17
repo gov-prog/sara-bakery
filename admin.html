@@ -291,6 +291,7 @@ input[type="date"]#datePicker.on{display:block}
     <button class="tb" onclick="showTab('messages',this)">💬 הודעות</button>
     <button class="tb" onclick="showTab('settings',this)">⚙️ הגדרות</button>
     <button class="tb" onclick="showTab('coupons',this)">🏷️ קופונים</button>
+    <button class="tb" onclick="showTab('availability',this)">🚫 זמינות</button>
     <button class="tb" onclick="showTab('deliveries',this)">🚗 משלוחים <span class="nb" id="deliveryBadge" style="display:none">0</span></button>
     <button class="tb" onclick="showTab('receipts',this)">🧾 קבלות</button>
   </div>
@@ -436,7 +437,10 @@ input[type="date"]#datePicker.on{display:block}
           <div class="form-label" style="font-size:11px">בתוקף עד (הפופאפ לא יופיע אחרי תאריך זה)</div>
           <input type="date" class="form-input" id="sCpPopupExpiry" style="max-width:200px">
         </div>
-        <button class="form-btn sec" onclick="previewCpPopup()" style="font-size:12px;padding:8px 16px;margin-top:4px">👁️ תצוגה מקדימה</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+          <button class="form-btn sec" onclick="previewCpPopup()" style="font-size:12px;padding:8px 16px">👁️ תצוגה מקדימה</button>
+          <a href="./index.html?showCoupon=1" target="_blank" class="form-btn sec" style="font-size:12px;padding:8px 16px;text-decoration:none">🔗 בדיקה באתר</a>
+        </div>
       </div>
     </div>
 
@@ -458,30 +462,40 @@ input[type="date"]#datePicker.on{display:block}
       <div style="font-size:11px;color:#9a7060;margin-top:-6px">הפרטים ישלחו אוטומטית ב-WhatsApp בעת אישור הזמנה לפי שיטת התשלום שנבחרה</div>
     </div>
 
-    <!-- PRODUCT AVAILABILITY BLOCKS -->
-    <div style="border:1.5px solid #f0d8a8;border-radius:16px;padding:18px;margin-bottom:16px;background:#fffbf3">
-      <div style="font-size:15px;font-weight:800;color:#b07820;margin-bottom:8px">🚫 זמינות מוצרים — חסימת תאריכים</div>
-      <div style="font-size:12px;color:#7a5040;margin-bottom:12px;line-height:1.6">מוצר לא זמין בתאריכים מסוימים? הוסיפי כאן — הלקוח יראה אזהרה עם תאריכים זמינים ולא יוכל לבחור את התאריך החסום.</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-bottom:10px">
-        <div style="flex:1;min-width:160px">
+    <button class="form-btn" id="saveSettingsBtn" onclick="saveSettings()">💾 שמור הגדרות</button>
+    <div class="set-msg" id="setMsg"></div>
+  </div>
+
+  <!-- AVAILABILITY PANE -->
+  <div class="pane" id="pAvailability" style="display:none">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+      <div style="flex:1">
+        <div style="font-size:18px;font-weight:900;color:#b07820">🚫 זמינות מוצרים — חסימת תאריכים</div>
+        <div style="font-size:12px;color:#7a5040;margin-top:4px;line-height:1.6">מוצר לא זמין בתאריכים מסוימים? הוסיפי כאן — הלקוחה תראה אזהרה עם תאריכים זמינים ולא תוכל לבחור את התאריך החסום.</div>
+      </div>
+    </div>
+    <div style="background:#fffbf3;border:1.5px solid #f0d8a8;border-radius:16px;padding:18px;margin-bottom:18px">
+      <div style="font-size:14px;font-weight:800;color:#b07820;margin-bottom:12px">➕ הוסף חסימה חדשה</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
+        <div style="flex:1;min-width:180px">
           <div class="form-label">מוצר</div>
           <select class="form-input" id="pbProduct" style="width:100%"><option>טוען מוצרים...</option></select>
         </div>
         <div>
           <div class="form-label">מ-תאריך</div>
-          <input type="date" class="form-input" id="pbFrom" style="min-width:130px">
+          <input type="date" class="form-input" id="pbFrom" style="min-width:140px">
         </div>
         <div>
           <div class="form-label">עד תאריך</div>
-          <input type="date" class="form-input" id="pbTo" style="min-width:130px">
+          <input type="date" class="form-input" id="pbTo" style="min-width:140px">
         </div>
-        <button class="form-btn" onclick="window.addProductBlock()" style="white-space:nowrap;align-self:flex-end">➕ הוסף חסימה</button>
+        <button class="form-btn" onclick="window.addProductBlock()" style="white-space:nowrap;align-self:flex-end;height:42px">➕ הוסף חסימה</button>
       </div>
+    </div>
+    <div style="background:#fff;border:1.5px solid #ecd8c8;border-radius:16px;padding:18px">
+      <div style="font-size:14px;font-weight:800;color:#2d1005;margin-bottom:12px">📋 חסימות פעילות</div>
       <div id="productBlocksList"><div style="color:#9a7060;font-size:12px">אין חסימות פעילות</div></div>
     </div>
-
-    <button class="form-btn" id="saveSettingsBtn" onclick="saveSettings()">💾 שמור הגדרות</button>
-    <div class="set-msg" id="setMsg"></div>
   </div>
 
   <!-- REVIEWS PANE -->
@@ -605,6 +619,26 @@ input[type="date"]#datePicker.on{display:block}
     <div style="padding:14px 20px;display:flex;gap:8px;flex-wrap:wrap">
       <a class="act act-wa" id="cmWaBtn" href="#" target="_blank">💬 WhatsApp</a>
       <a class="act act-mail" id="cmMailBtn" href="#">📧 מייל</a>
+    </div>
+  </div>
+</div>
+
+<!-- COUPON POPUP PREVIEW OVERLAY -->
+<div id="cpPreviewOverlay" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(5,20,5,.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;direction:rtl" onclick="if(event.target===this)closeCpPreview()">
+  <div style="background:linear-gradient(160deg,#f0fff0,#e8f8e8 60%,#d8f0d8);border-radius:28px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,80,0,.4);position:relative">
+    <button onclick="closeCpPreview()" style="position:absolute;top:12px;left:14px;background:rgba(255,255,255,.25);border:none;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px;color:#fff;font-weight:900;line-height:1;z-index:2">✕</button>
+    <div style="background:linear-gradient(135deg,#2e7d32,#43a047,#66bb6a);padding:28px 24px 24px;text-align:center">
+      <span style="font-size:44px;display:block;margin-bottom:10px">🌸</span>
+      <div id="cpPreviewTitle" style="font-size:22px;font-weight:900;color:#fff;line-height:1.2">מבצע מיוחד!</div>
+    </div>
+    <div style="padding:22px 24px 28px;text-align:center">
+      <div id="cpPreviewDesc" style="font-size:15px;color:#2d5a2d;margin-bottom:16px;line-height:1.6"></div>
+      <div style="background:#fff;border:2.5px dashed #5cb85c;border-radius:14px;padding:14px 20px;display:inline-flex;flex-direction:column;align-items:center;gap:6px">
+        <div style="font-size:11px;font-weight:800;color:#5cb85c;letter-spacing:1px">קוד הקופון שלך</div>
+        <div id="cpPreviewCode" style="font-size:26px;font-weight:900;color:#2e7d32;letter-spacing:3px;font-family:monospace"></div>
+        <div style="font-size:12px;color:#7a9a7a">👆 לחצי להעתקה</div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#7a9a7a">(תצוגה מקדימה בלבד — כך יראה הפופאפ ללקוחות)</div>
     </div>
   </div>
 </div>
@@ -1135,7 +1169,7 @@ window.toggleAll=()=>{showAll=!showAll;renderDateNav();renderOrders();renderKpis
 window.toggleDatePicker=()=>{var p=$('datePicker');p.classList.toggle('on');if(p.classList.contains('on'))p.value=fmtKey(curDate);};
 window.pickDate=v=>{if(!v)return;showAll=false;curDate=new Date(v+'T00:00:00');$('datePicker').classList.remove('on');renderDateNav();renderOrders();renderKpis();};
 window.setFilter=function(f,btn){curFilter=f;document.querySelectorAll('.sf').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');renderOrders();};
-window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons','pDeliveries','pReceipts'].forEach(p=>$(p).style.display='none');document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();if(tab==='deliveries')renderDeliveries();if(tab==='receipts'){renderReceipts();updateExportNote();}};
+window.showTab=function(tab,btn){['pOrders','pProducts','pMessages','pSettings','pReviews','pCoupons','pDeliveries','pReceipts','pAvailability'].forEach(p=>$(p)&&($(p).style.display='none'));document.querySelectorAll('.tb').forEach(b=>b.classList.remove('on'));$('p'+tab[0].toUpperCase()+tab.slice(1)).style.display='';if(btn)btn.classList.add('on');if(tab==='reviews')loadReviews('pending');if(tab==='coupons')loadCoupons();if(tab==='deliveries')renderDeliveries();if(tab==='receipts'){renderReceipts();updateExportNote();}if(tab==='availability'){renderProductBlocks(settings.productBlocks||[]);updatePbProductSelect();}};
 
 // ── Coupons ─────────────────────────────────────────────────────
 async function loadCoupons(){
@@ -1323,12 +1357,17 @@ window.removeProductBlock=async function(idx){
 };
 window.toggleCpPopupFields=function(){$('cpPopupFields').style.display=$('sCpPopupActive').checked?'':'none';};
 window.previewCpPopup=function(){
-  var cp={title:$('sCpPopupTitle').value||'מבצע מיוחד!',code:($('sCpPopupCode').value||'SARA10').toUpperCase(),desc:$('sCpPopupDesc').value||'',active:true};
-  var win=window.open('','_blank','width=460,height=620');
-  if(!win)return;
-  var style='*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,"Arial Hebrew",sans-serif}body{background:rgba(5,20,5,.85);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;direction:rtl}.box{background:linear-gradient(160deg,#f0fff0,#e8f8e8 60%,#d8f0d8);border-radius:28px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,80,0,.35)}.hdr{background:linear-gradient(135deg,#2e7d32,#43a047,#66bb6a);padding:28px 24px 24px;text-align:center}.emoji{font-size:44px;display:block;margin-bottom:10px}.title{font-size:22px;font-weight:900;color:#fff;line-height:1.2}.body{padding:22px 24px 28px;text-align:center}.desc{font-size:15px;color:#2d5a2d;margin-bottom:16px;line-height:1.6}.code-box{background:#fff;border:2.5px dashed #5cb85c;border-radius:14px;padding:14px 20px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s}.code-label{font-size:11px;font-weight:800;color:#5cb85c;text-transform:uppercase;letter-spacing:1px}.code{font-size:24px;font-weight:900;color:#2e7d32;letter-spacing:3px;font-family:monospace}.copy-btn{background:#5cb85c;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer}';
-  win.document.write('<!DOCTYPE html><html lang="he" dir="rtl"><head><meta charset="UTF-8"><title>תצוגה מקדימה — פופאפ קופון</title><style>'+style+'</style></head><body><div class="box"><div class="hdr"><span class="emoji">🌸</span><div class="title">'+cp.title+'</div></div><div class="body"><p class="desc">'+cp.desc+'</p><div class="code-box"><div><div class="code-label">קוד קופון</div><div class="code">'+cp.code+'</div></div><button class="copy-btn">העתק</button></div></div></div></body></html>');
-  win.document.close();
+  var title=$('sCpPopupTitle').value||'מבצע מיוחד!';
+  var code=($('sCpPopupCode').value||'SARA10').toUpperCase();
+  var desc=$('sCpPopupDesc').value||'';
+  $('cpPreviewTitle').textContent=title;
+  $('cpPreviewCode').textContent=code;
+  $('cpPreviewDesc').textContent=desc;
+  var ov=$('cpPreviewOverlay');
+  ov.style.display='flex';
+};
+window.closeCpPreview=function(){
+  $('cpPreviewOverlay').style.display='none';
 };
 window.toggleSaleFields=function(){$('saleFields').style.display=$('sSaleActive').checked?'':'none';};
 window.setSaleType=function(type,btn){
