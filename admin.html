@@ -360,7 +360,8 @@ input[type="date"]#datePicker.on{display:block}
         <input type="text" class="form-input" id="custSearch" placeholder="חפש לפי שם / טלפון / מייל...">
         <div class="cust-drop" id="custDrop"></div>
       </div>
-      <div class="sel-cust-card" id="selCustCard">
+      <div class="sel-cust-card" id="selCustCard" style="position:relative">
+        <button onclick="window.clearSelCust()" title="בטל בחירה" style="position:absolute;top:8px;left:10px;background:rgba(200,112,74,.1);border:none;border-radius:7px;width:26px;height:26px;font-size:14px;color:#c8704a;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700">✕</button>
         <div style="font-size:15px;font-weight:800" id="scName"></div>
         <div style="font-size:13px;color:#9a7060;margin-top:3px" id="scSub"></div>
       </div>
@@ -1460,14 +1461,21 @@ window.sendBulkMail=()=>{
   openMailPreview('כל הלקוחות ('+allCustomers.filter(c=>c.email).length+' נמענים)',subject,body,href);
 };
 window.copyEmails=()=>{var em=allCustomers.map(c=>c.email).filter(Boolean).join(', ');if(!em){toast('אין מיילים','warn');return;}navigator.clipboard.writeText(em).then(()=>toast('הועתק ✓')).catch(()=>prompt('העתק:',em));};
-$('custSearch').addEventListener('input',function(){
-  var q=this.value.trim().toLowerCase();if(!q){$('custDrop').classList.remove('on');return;}
-  var r=allCustomers.filter(c=>(c.fullName||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q));
-  if(!r.length){$('custDrop').classList.remove('on');return;}
-  $('custDrop').innerHTML=r.slice(0,6).map(c=>`<div class="cust-row" onclick="window._selCust('${escapeHtml(c.id)}')"><div class="cust-row-name">${escapeHtml(c.fullName||c.email||'לקוח')}</div><div class="cust-row-sub">${escapeHtml([c.phone,c.email].filter(Boolean).join(' · '))}</div></div>`).join('');
+function _custDropRender(list){
+  if(!list.length){$('custDrop').classList.remove('on');return;}
+  $('custDrop').innerHTML=list.slice(0,20).map(c=>`<div class="cust-row" onclick="window._selCust('${escapeHtml(c.id)}')"><div class="cust-row-name">${escapeHtml(c.fullName||c.email||'לקוח')}</div><div class="cust-row-sub">${escapeHtml([c.phone,c.email].filter(Boolean).join(' · '))}</div></div>`).join('')+(list.length>20?`<div style="padding:8px 14px;font-size:12px;color:#9a7060;text-align:center">+ ${list.length-20} נוספים — צמצמ/י את החיפוש</div>`:'');
   $('custDrop').classList.add('on');
+}
+$('custSearch').addEventListener('input',function(){
+  var q=this.value.trim().toLowerCase();
+  var list=q?allCustomers.filter(c=>(c.fullName||'').toLowerCase().includes(q)||(c.phone||'').includes(q)||(c.email||'').toLowerCase().includes(q)):allCustomers;
+  _custDropRender(list);
+});
+$('custSearch').addEventListener('focus',function(){
+  if(!this.value.trim()&&allCustomers.length) _custDropRender(allCustomers);
 });
 document.addEventListener('click',e=>{if(!e.target.closest('.cust-wrap'))$('custDrop').classList.remove('on');});
+window.clearSelCust=function(){selCust=null;$('selCustCard').style.display='none';$('custSearch').value='';$('custMsg').value='';setTimeout(function(){$('custSearch').focus();},50);};
 window._selCust=function(id){selCust=allCustomers.find(c=>c.id===id);if(!selCust)return;$('custSearch').value='';$('custDrop').classList.remove('on');$('selCustCard').style.display='block';$('scName').textContent=selCust.fullName||'לקוח';$('scSub').textContent=[selCust.phone,selCust.email].filter(Boolean).join(' · ');var name=selCust.fullName||'';$('custMsg').value='שלום '+(name?name+' ':'')+'😊\n\n';$('custMsg').focus();};
 const CUST_TMPLS={greeting:(n)=>'שלום '+(n?n+' ':'')+'😊\nכאן שרה ממאפיית שרה 🍰\n\n',reminder:(n)=>'שלום '+(n?n+' ':'')+'⏰\nרצינו להזכיר שיש לך הזמנה אצלנו בקרוב.\nלפרטים נוספים אנחנו כאן! 🍰\n\nשרה',thanks:(n)=>'שלום '+(n?n+' ':'')+'🙏\nתודה שהזמנת אצלנו!\nנשמח לראות אותך שוב 🍰\n\nשרה',ready:(n)=>'שלום '+(n?n+' ':'')+'🍰\nההזמנה שלך מוכנה לאיסוף!\nנשמח לראותך! ❤️\n\nשרה',promo:(n)=>'שלום '+(n?n+' ':'')+'🎉\n\nיש לנו מבצע מיוחד עבורך!\n[פרטי המבצע]\n\nשרה 🍰'};
 window.insertCustTpl=function(key){if(!CUST_TMPLS[key])return;var name=selCust?selCust.fullName||'':'';$('custMsg').value=CUST_TMPLS[key](name);$('custMsg').focus();};
