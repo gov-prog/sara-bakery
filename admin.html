@@ -416,37 +416,6 @@ input[type="date"]#datePicker.on{display:block}
       </div>
     </div>
 
-    <!-- COUPON POPUP SECTION -->
-    <div style="border:1.5px solid #b0d8b0;border-radius:16px;padding:18px;margin-bottom:16px;background:#f5fff5">
-      <div style="font-size:15px;font-weight:800;color:#2e7d32;margin-bottom:14px">🏷️ פופאפ קוד קופון</div>
-      <div class="sale-toggle-row">
-        <input type="checkbox" id="sCpPopupActive" style="width:20px;height:20px;accent-color:#5cb85c" onchange="toggleCpPopupFields()">
-        <label for="sCpPopupActive" style="font-size:14px;font-weight:700;cursor:pointer">הצג פופאפ קוד קופון בכניסה לאתר</label>
-      </div>
-      <div id="cpPopupFields" style="display:none;margin-top:12px">
-        <div class="form-group">
-          <div class="form-label" style="font-size:11px">כותרת (לדוגמה: חג שבועות! 🌸)</div>
-          <input type="text" class="form-input" id="sCpPopupTitle" placeholder="חג שבועות! 🌸">
-        </div>
-        <div class="form-group">
-          <div class="form-label" style="font-size:11px">קוד קופון (מה יוצג לגולשות)</div>
-          <input type="text" class="form-input" id="sCpPopupCode" placeholder="חגשמח" style="text-transform:uppercase;font-weight:900;letter-spacing:2px">
-        </div>
-        <div class="form-group">
-          <div class="form-label" style="font-size:11px">תיאור (לדוגמה: 10% הנחה על כל ההזמנה!)</div>
-          <input type="text" class="form-input" id="sCpPopupDesc" placeholder="10% הנחה על כל ההזמנה!">
-        </div>
-        <div class="form-group">
-          <div class="form-label" style="font-size:11px">בתוקף עד (הפופאפ לא יופיע אחרי תאריך זה)</div>
-          <input type="date" class="form-input" id="sCpPopupExpiry" style="max-width:200px" onchange="var w=$('cpExpiryWarn');if(w){var t=new Date().toISOString().split('T')[0];w.style.display=(this.value&&this.value<t)?'':'none';}">
-          <div id="cpExpiryWarn" style="display:none;color:#c03030;font-size:12px;font-weight:800;margin-top:6px">⚠️ תאריך התפוגה עבר — הפופאפ לא יוצג! עדכני לתאריך עתידי או רוקני את השדה.</div>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
-          <button class="form-btn sec" onclick="previewCpPopup()" style="font-size:12px;padding:8px 16px">👁️ תצוגה מקדימה</button>
-          <a href="./index.html?showCoupon=1" target="_blank" class="form-btn sec" style="font-size:12px;padding:8px 16px;text-decoration:none">🔗 בדיקה באתר</a>
-        </div>
-      </div>
-    </div>
 
     <!-- PAYMENT DETAILS SECTION -->
     <div style="border:1.5px solid #d8c8f0;border-radius:16px;padding:18px;margin-bottom:16px;background:#faf8ff">
@@ -483,7 +452,7 @@ input[type="date"]#datePicker.on{display:block}
       <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end">
         <div style="flex:1;min-width:180px">
           <div class="form-label">מוצר</div>
-          <select class="form-input" id="pbProduct" style="width:100%"><option>טוען מוצרים...</option></select>
+          <select class="form-input" id="pbProduct" style="width:100%"><option value="" disabled selected>-- בחר מוצר / רכיב --</option></select>
         </div>
         <div>
           <div class="form-label">מ-תאריך</div>
@@ -575,6 +544,46 @@ input[type="date"]#datePicker.on{display:block}
   <!-- COUPONS PANE -->
   <div class="pane" id="pCoupons" style="display:none">
     <div style="font-size:16px;font-weight:800;color:#2d1005;margin-bottom:16px">🏷️ ניהול קופונים</div>
+
+    <!-- COUPON POPUP SECTION -->
+    <div style="border:1.5px solid #b0d8b0;border-radius:16px;padding:18px;margin-bottom:18px;background:#f5fff5">
+      <div style="font-size:15px;font-weight:800;color:#2e7d32;margin-bottom:14px">🎁 פופאפ קוד קופון באתר</div>
+      <div style="font-size:12px;color:#5a8a5a;margin-bottom:12px">הגדרי קופון שיוצג אוטומטית ללקוחות בכניסה לאתר</div>
+      <div class="sale-toggle-row">
+        <input type="checkbox" id="sCpPopupActive" style="width:20px;height:20px;accent-color:#5cb85c" onchange="toggleCpPopupFields()">
+        <label for="sCpPopupActive" style="font-size:14px;font-weight:700;cursor:pointer">הצג פופאפ קוד קופון בכניסה לאתר</label>
+      </div>
+      <div id="cpPopupFields" style="display:none;margin-top:14px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div class="form-group" style="margin:0">
+            <div class="form-label" style="font-size:11px">כותרת הפופאפ</div>
+            <input type="text" class="form-input" id="sCpPopupTitle" placeholder="חג שבועות! 🌸">
+          </div>
+          <div class="form-group" style="margin:0">
+            <div class="form-label" style="font-size:11px">קוד קופון (מה יוצג לגולשות)</div>
+            <input type="text" class="form-input" id="sCpPopupCode" placeholder="חגשמח" style="text-transform:uppercase;font-weight:900;letter-spacing:2px">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:12px">
+          <div class="form-group" style="margin:0">
+            <div class="form-label" style="font-size:11px">תיאור (לדוגמה: 10% הנחה על כל ההזמנה!)</div>
+            <input type="text" class="form-input" id="sCpPopupDesc" placeholder="10% הנחה על כל ההזמנה!">
+          </div>
+          <div class="form-group" style="margin:0">
+            <div class="form-label" style="font-size:11px">בתוקף עד</div>
+            <input type="date" class="form-input" id="sCpPopupExpiry" style="min-width:160px" onchange="var w=$('cpExpiryWarn');if(w){var t=new Date().toISOString().split('T')[0];w.style.display=(this.value&&this.value<t)?'':'none';}">
+          </div>
+        </div>
+        <div id="cpExpiryWarn" style="display:none;color:#c03030;font-size:12px;font-weight:800;margin-bottom:10px">⚠️ תאריך התפוגה עבר — הפופאפ לא יוצג! עדכני לתאריך עתידי או רוקני את השדה.</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <button class="form-btn" onclick="saveCpPopup()" id="saveCpPopupBtn">💾 שמור</button>
+          <button class="form-btn sec" onclick="previewCpPopup()" style="font-size:12px;padding:8px 16px">👁️ תצוגה מקדימה</button>
+          <a href="./index.html?showCoupon=1" target="_blank" class="form-btn sec" style="font-size:12px;padding:8px 16px;text-decoration:none">🔗 בדיקה באתר</a>
+          <div id="cpPopupSaveMsg" class="set-msg" style="margin:0;font-size:12px"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Add new coupon -->
     <div style="background:#fff8f3;border:1.5px solid #ecd8c8;border-radius:16px;padding:16px;margin-bottom:18px">
       <div style="font-size:14px;font-weight:800;color:#c8704a;margin-bottom:12px">➕ הוספת קופון חדש</div>
@@ -967,7 +976,7 @@ var BUILDER_ITEMS = [
 
 function updatePbProductSelect(){
   var sel=$('pbProduct');if(!sel)return;
-  var html='<optgroup label="━━ מארז כולו ━━"><option value="מארז מותאם אישית">מארז מותאם אישית (כל המארז)</option></optgroup>';
+  var html='<option value="" disabled selected>-- בחר מוצר / רכיב --</option><optgroup label="━━ מארז כולו ━━"><option value="מארז מותאם אישית">מארז מותאם אישית (כל המארז)</option></optgroup>';
   BUILDER_ITEMS.forEach(function(g){
     html+='<optgroup label="'+g.group+'">';
     g.items.forEach(function(item){
@@ -1387,6 +1396,20 @@ window.removeProductBlock=async function(idx){
   }catch(e){toast('שגיאה: '+e.message,'err');}
 };
 window.toggleCpPopupFields=function(){$('cpPopupFields').style.display=$('sCpPopupActive').checked?'':'none';};
+window.saveCpPopup=async function(){
+  var btn=$('saveCpPopupBtn'),msg=$('cpPopupSaveMsg');
+  if(btn){btn.disabled=true;btn.textContent='⏳...';}
+  if(msg){msg.textContent='';msg.className='set-msg';}
+  try{
+    var cp={active:$('sCpPopupActive').checked,title:($('sCpPopupTitle').value||'').trim(),code:($('sCpPopupCode').value||'').trim().toUpperCase(),desc:($('sCpPopupDesc').value||'').trim(),expiry:$('sCpPopupExpiry').value||''};
+    await setDoc(doc(db,'settings','main'),{couponPopup:cp,updatedAt:serverTimestamp()},{merge:true});
+    settings.couponPopup=cp;
+    if(msg){msg.textContent='✅ נשמר';msg.className='set-msg ok';}
+    toast('הגדרות פופאפ נשמרו ✅');
+  }catch(e){if(msg){msg.textContent='שגיאה: '+e.message;msg.className='set-msg err';}}
+  if(btn){btn.disabled=false;btn.textContent='💾 שמור';}
+  setTimeout(function(){if(msg)msg.textContent='';},3000);
+};
 window.previewCpPopup=function(){
   var title=$('sCpPopupTitle').value||'מבצע מיוחד!';
   var code=($('sCpPopupCode').value||'SARA10').toUpperCase();
@@ -1411,8 +1434,7 @@ window.saveSettings=async function(){
   try{
     var saleType=document.querySelector('.sale-type-btn.on')?document.querySelector('.sale-type-btn.on').dataset.type:'percent';
     var sale={active:$('sSaleActive').checked,type:saleType,value:+$('sSaleValue').value||0,text:$('sSaleText').value.trim()};
-    var couponPopup={active:$('sCpPopupActive').checked,title:$('sCpPopupTitle').value.trim(),code:($('sCpPopupCode').value||'').trim().toUpperCase(),desc:$('sCpPopupDesc').value.trim(),expiry:$('sCpPopupExpiry').value||''};
-    var data={address:$('sAddr').value.trim(),whatsapp:$('sWa').value.trim(),hours:$('sHours').value.trim(),banner:$('sBanner').value.trim(),ordersClosed:!$('sOrdersOpen').checked,sale:sale,couponPopup:couponPopup,bitPhone:$('sBitPhone').value.trim(),payboxPhone:$('sPayboxPhone').value.trim(),bankDetails:$('sBankDetails').value.trim(),updatedAt:serverTimestamp()};
+    var data={address:$('sAddr').value.trim(),whatsapp:$('sWa').value.trim(),hours:$('sHours').value.trim(),banner:$('sBanner').value.trim(),ordersClosed:!$('sOrdersOpen').checked,sale:sale,bitPhone:$('sBitPhone').value.trim(),payboxPhone:$('sPayboxPhone').value.trim(),bankDetails:$('sBankDetails').value.trim(),updatedAt:serverTimestamp()};
     await setDoc(doc(db,'settings','main'),data,{merge:true});settings={...settings,...data};msg.textContent='✅ נשמר — רענן את האתר הראשי לראות שינויים';msg.className='set-msg ok';toast('הגדרות נשמרו ✅');
   }catch(e){msg.textContent='שגיאה: '+e.message;msg.className='set-msg err';}
   btn.disabled=false;btn.textContent='💾 שמור הגדרות';setTimeout(()=>msg.textContent='',4000);
