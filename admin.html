@@ -330,6 +330,7 @@ input[type="date"]#datePicker.on{display:block}
       <div class="prod-mgmt-title">🛍️ ניהול מוצרים</div>
       <div class="prod-mgmt-btns">
         <button class="form-btn sec" onclick="seedDefaultProducts()" style="font-size:12px;padding:8px 14px">📦 ייבא ברירת מחדל</button>
+        <button class="form-btn sec" onclick="window.removeDuplicateProducts()" style="font-size:12px;padding:8px 14px;background:#fff0f0;color:#c03030;border-color:#f0c8c8" id="dedupBtn">🧹 נקה כפילויות</button>
         <button class="form-btn" onclick="openProdModal()" style="font-size:12px;padding:8px 14px">+ מוצר חדש</button>
       </div>
     </div>
@@ -1108,21 +1109,48 @@ window.deleteProd=async function(){
 
 window.seedDefaultProducts=async function(){
   var snap=await getDocs(collection(db,'products'));
-  if(snap.size>0){
-    if(!confirm('כבר קיימים '+snap.size+' מוצרים. להוסיף גם את ברירת המחדל?'))return;
-  }
+  var existingNames=new Set(snap.docs.map(d=>(d.data().name||'').trim().toLowerCase()));
+  var toAdd=DEFAULT_PRODUCTS.filter(p=>!existingNames.has((p.name||'').trim().toLowerCase()));
+  if(!toAdd.length){toast('כל המוצרים כבר קיימים ✓');return;}
+  if(snap.size>0&&!confirm('יתווספו '+toAdd.length+' מוצרים חדשים ('+existingNames.size+' כבר קיימים). להמשיך?'))return;
   try{
-    var batch=DEFAULT_PRODUCTS.map(p=>addDoc(collection(db,'products'),{...p,createdAt:serverTimestamp(),updatedAt:serverTimestamp()}));
-    await Promise.all(batch);
-    toast('יובאו '+DEFAULT_PRODUCTS.length+' מוצרים ✓');
+    await Promise.all(toAdd.map(p=>addDoc(collection(db,'products'),{...p,createdAt:serverTimestamp(),updatedAt:serverTimestamp()})));
+    toast('יובאו '+toAdd.length+' מוצרים ✓');
   }catch(e){
-    console.error('seedDefaultProducts error:',e);
     if(e.code==='permission-denied'||String(e.message).includes('permission')){
-      toast('⚠️ שגיאת הרשאות Firestore — עדכן את Rules בקונסולת Firebase','err');
+      toast('⚠️ שגיאת הרשאות Firestore','err');
     }else{
       toast('שגיאה: '+e.message,'err');
     }
   }
+};
+
+window.removeDuplicateProducts=async function(){
+  var snap=await getDocs(collection(db,'products'));
+  var byName={};
+  snap.docs.forEach(function(d){
+    var name=(d.data().name||'').trim().toLowerCase();
+    if(!byName[name])byName[name]=[];
+    byName[name].push({id:d.id,data:d.data()});
+  });
+  var toDelete=[];
+  Object.values(byName).forEach(function(group){
+    if(group.length>1){
+      // keep first (lowest order or first added), delete the rest
+      group.sort(function(a,b){return (a.data.order||99)-(b.data.order||99);});
+      group.slice(1).forEach(function(d){toDelete.push(d.id);});
+    }
+  });
+  if(!toDelete.length){toast('אין כפילויות — הכל תקין ✓');return;}
+  if(!confirm('נמצאו '+toDelete.length+' כפילויות. למחוק אותן?'))return;
+  var btn=$('dedupBtn');if(btn){btn.disabled=true;btn.textContent='⏳...';}
+  try{
+    await Promise.all(toDelete.map(function(id){return deleteDoc(doc(db,'products',id));}));
+    toast('נמחקו '+toDelete.length+' כפילויות ✓');
+  }catch(e){
+    toast('שגיאה: '+e.message,'err');
+  }
+  if(btn){btn.disabled=false;btn.textContent='🧹 נקה כפילויות';}
 };
 
 /* ── ORDERS ── */
