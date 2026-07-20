@@ -5711,17 +5711,28 @@ function ensureUI(){
   function playCouponBell(){
     try {
       var ctx = new (window.AudioContext || window.webkitAudioContext)();
-      [[1046.5,0],[1318.5,0.18],[1567.98,0.36]].forEach(function(n){
+      var t = ctx.currentTime;
+      // "Pop" sweep: quick frequency glide 280→900Hz
+      var popOsc = ctx.createOscillator();
+      var popGain = ctx.createGain();
+      popOsc.type = 'sine';
+      popOsc.frequency.setValueAtTime(280, t);
+      popOsc.frequency.exponentialRampToValueAtTime(900, t + 0.07);
+      popGain.gain.setValueAtTime(0.32, t);
+      popGain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+      popOsc.connect(popGain); popGain.connect(ctx.destination);
+      popOsc.start(t); popOsc.stop(t + 0.12);
+      // Bright bell tones after the pop
+      [[1046.5,0.09],[1318.5,0.24],[1567.98,0.39]].forEach(function(n){
         var osc = ctx.createOscillator();
         var gain = ctx.createGain();
         osc.type = 'sine';
         osc.frequency.value = n[0];
-        gain.gain.setValueAtTime(0, ctx.currentTime + n[1]);
-        gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + n[1] + 0.01);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + n[1] + 0.7);
+        gain.gain.setValueAtTime(0, t + n[1]);
+        gain.gain.linearRampToValueAtTime(0.2, t + n[1] + 0.008);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + n[1] + 0.65);
         osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(ctx.currentTime + n[1]);
-        osc.stop(ctx.currentTime + n[1] + 0.75);
+        osc.start(t + n[1]); osc.stop(t + n[1] + 0.7);
       });
     } catch(e){}
   }
