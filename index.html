@@ -857,12 +857,17 @@
 
 <!-- Product Blocked Popup -->
 <div id="productBlockedPopup" style="display:none;position:fixed;inset:0;z-index:10002;background:rgba(0,0,0,.6);align-items:center;justify-content:center;padding:20px" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:#fff;border-radius:22px;max-width:380px;width:100%;padding:28px 24px;text-align:center;direction:rtl;font-family:Arial,'Arial Hebrew',sans-serif;box-shadow:0 24px 60px rgba(0,0,0,.25)">
+  <div style="background:#fff;border-radius:22px;max-width:390px;width:100%;padding:28px 24px;text-align:center;direction:rtl;font-family:'Rubik',Arial,'Arial Hebrew',sans-serif;box-shadow:0 24px 60px rgba(0,0,0,.25)">
     <div style="font-size:44px;margin-bottom:14px">⚠️</div>
     <div id="pbPopupTitle" style="font-size:18px;font-weight:900;color:#2d1005;margin-bottom:10px"></div>
     <div id="pbPopupMsg" style="font-size:14px;color:#c03030;line-height:1.6;margin-bottom:10px"></div>
-    <div id="pbPopupAvail" style="font-size:13px;color:#3a7a50;font-weight:700;margin-bottom:22px;line-height:1.6"></div>
-    <button onclick="document.getElementById('productBlockedPopup').style.display='none'" style="background:linear-gradient(135deg,#c8704a,#e8905a);color:#fff;border:none;border-radius:13px;padding:14px 28px;font-size:14px;font-weight:800;cursor:pointer;font-family:Arial,'Arial Hebrew',sans-serif;width:100%">הבנתי</button>
+    <div id="pbPopupAvail" style="font-size:13px;color:#3a7a50;font-weight:700;margin-bottom:18px;line-height:1.6"></div>
+    <div style="background:linear-gradient(135deg,#fff8f0,#ffeedd);border:1.5px dashed #c8704a;border-radius:14px;padding:14px 16px;margin-bottom:18px;text-align:right">
+      <div style="font-size:13px;font-weight:800;color:#7a4020;margin-bottom:6px">💡 רוצה בכל זאת לקבל משהו טעים?</div>
+      <div style="font-size:12px;color:#9a6040;line-height:1.6">ניתן לבנות מארז אישי מותאם במיוחד עבורך — בחרי את הפריטים שאת רוצה ושרה תכין הכל!</div>
+    </div>
+    <button onclick="window._pbGoToBuilder()" style="background:linear-gradient(135deg,#c8704a,#e8905a);color:#fff;border:none;border-radius:13px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Rubik',Arial,sans-serif;width:100%;margin-bottom:10px;box-shadow:0 6px 18px rgba(200,112,74,.35)">✨ נמשיך לבניה של מארז אישי</button>
+    <button onclick="document.getElementById('productBlockedPopup').style.display='none'" style="background:none;border:none;color:#9a7060;font-size:13px;font-weight:700;cursor:pointer;font-family:'Rubik',Arial,sans-serif;padding:4px">לא עכשיו</button>
   </div>
 </div>
 
@@ -6876,6 +6881,15 @@ function ensureUI(){
     }
     popup.style.display='flex';
   }
+
+  window._pbGoToBuilder = function(){
+    document.getElementById('productBlockedPopup').style.display='none';
+    var customCard = document.querySelector('.prod-card[data-cat="custom"]');
+    if(customCard){
+      customCard.scrollIntoView({behavior:'smooth', block:'center'});
+      setTimeout(function(){ customCard.click(); }, 420);
+    }
+  };
 
   var originalOpenModal = window.openModal;
   if(typeof originalOpenModal === 'function'){
