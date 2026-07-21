@@ -374,23 +374,14 @@
     .rv-score-right{text-align:right}
     .rv-score-stars{color:#f1c165;font-size:17px;letter-spacing:2px;margin-bottom:2px}
     .rv-score-label{color:rgba(255,255,255,.35);font-size:11px;font-weight:700}
-    /* reviews stack — leaning cards */
-    .rv-grid{display:flex;flex-direction:column;align-items:center;max-width:480px;margin:0 auto;padding:0 5%}
-    .rv-gitem{width:94%;border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.08);position:relative;opacity:0;transition:opacity .6s ease,transform .65s cubic-bezier(.25,.8,.25,1),box-shadow .3s,z-index 0s}
-    .rv-gitem:not(:first-child){margin-top:-28px}
-    .rv-gitem:nth-child(1){transform:translateX(90px) rotate(2deg);z-index:1}
-    .rv-gitem:nth-child(2){transform:translateX(-90px) rotate(-1.5deg);z-index:2}
-    .rv-gitem:nth-child(3){transform:translateX(90px) rotate(1deg);z-index:3}
-    .rv-gitem:nth-child(4){transform:translateX(-90px) rotate(-2deg);z-index:4}
-    .rv-gitem:nth-child(5){transform:translateX(90px) rotate(1.5deg);z-index:5}
-    .rv-gitem:nth-child(6){transform:translateX(-90px) rotate(-1deg);z-index:6}
-    .rv-gitem:nth-child(1).rv-visible{opacity:1;transform:rotate(2deg)}
-    .rv-gitem:nth-child(2).rv-visible{opacity:1;transform:rotate(-1.5deg)}
-    .rv-gitem:nth-child(3).rv-visible{opacity:1;transform:rotate(1deg)}
-    .rv-gitem:nth-child(4).rv-visible{opacity:1;transform:rotate(-2deg)}
-    .rv-gitem:nth-child(5).rv-visible{opacity:1;transform:rotate(1.5deg)}
-    .rv-gitem:nth-child(6).rv-visible{opacity:1;transform:rotate(-1deg)}
-    .rv-gitem:hover{transform:rotate(0deg) translateY(-12px) scale(1.02)!important;box-shadow:0 18px 50px rgba(0,0,0,.7);z-index:10}
+    /* reviews — 2-col grid, slides from sides */
+    .rv-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:900px;margin:0 auto;padding:0 5%}
+    @media(max-width:560px){.rv-grid{grid-template-columns:1fr;gap:14px}}
+    .rv-gitem{border-radius:18px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.08);position:relative;opacity:0;transition:opacity .6s ease,transform .65s cubic-bezier(.25,.8,.25,1),box-shadow .3s}
+    .rv-gitem:nth-child(odd){transform:translateX(-120px)}
+    .rv-gitem:nth-child(even){transform:translateX(120px)}
+    .rv-gitem.rv-visible{opacity:1;transform:translateX(0) !important}
+    .rv-gitem:hover{transform:translateY(-8px) scale(1.02)!important;box-shadow:0 18px 50px rgba(0,0,0,.7);z-index:10}
     .rv-gimg{width:100%;height:auto;display:block}
 
     /* INFO */
@@ -1321,12 +1312,18 @@
 
   <!-- WhatsApp review screenshots grid -->
   <div class="rv-grid">
-    <div class="rv-gitem"><img class="rv-gimg" src="review1.jpg" alt="ביקורת לקוח" style="aspect-ratio:auto;height:auto"></div>
-    <div class="rv-gitem"><img class="rv-gimg" src="review2.jpg" alt="ביקורת לקוח" style="aspect-ratio:auto;height:auto"></div>
-    <div class="rv-gitem"><img class="rv-gimg" src="review3.jpg" alt="ביקורת לקוח" style="aspect-ratio:auto;height:auto"></div>
-    <div class="rv-gitem"><img class="rv-gimg" src="review4.jpg" alt="ביקורת לקוח" style="aspect-ratio:auto;height:auto"></div>
-    <div class="rv-gitem"><img class="rv-gimg" src="review5.jpg" alt="ביקורת לקוח" style="aspect-ratio:auto;height:auto"></div>
-    <div class="rv-gitem"><img class="rv-gimg" src="review6.jpg" alt="ביקורת לקוח" style="aspect-ratio:auto;height:auto"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review1.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review2.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review3.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review4.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review5.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review6.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review7.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review8.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review9.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review10.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review11.jpg" alt="ביקורת לקוח"></div>
+    <div class="rv-gitem"><img class="rv-gimg" src="review12.jpg" alt="ביקורת לקוח"></div>
   </div>
   <script>
   (function(){
@@ -6619,6 +6616,10 @@ function ensureUI(){
     window.toggleCart(true);
   };
 
+  window._isFullUser = function(){ return !!(currentUser && !currentUser.__soft); };
+  window._nudgeAuth = function(msg){ nudgeAuth(msg); };
+  window._toast = function(msg, type){ toast(msg, type); };
+
   window.cancelEditCartItem = function(){
     cartEditId = null;
     renderCart();
@@ -11145,8 +11146,8 @@ function ensureUI(){
       }
 
       window.addEventItem = function addEventItem(btn, name, price, details){
-        if(!currentUser || currentUser.__soft){
-          if(typeof nudgeAuth === 'function') nudgeAuth('כדי להוסיף לעגלה צריך להתחבר');
+        if(!window._isFullUser || !window._isFullUser()){
+          if(typeof window._nudgeAuth === 'function') window._nudgeAuth('כדי להוסיף לעגלה צריך להתחבר');
           return;
         }
         if(typeof window.addCartItem === 'function'){
@@ -11170,8 +11171,8 @@ function ensureUI(){
 
       // ── Number cake modal ──────────────────────────────────────────────────
       window.openNumberCakeModal = function(btn, name, price, details, digits){
-        if(!currentUser || currentUser.__soft){
-          if(typeof nudgeAuth === 'function') nudgeAuth('כדי להזמין צריך להתחבר');
+        if(!window._isFullUser || !window._isFullUser()){
+          if(typeof window._nudgeAuth === 'function') window._nudgeAuth('כדי להזמין צריך להתחבר');
           return;
         }
         var modal = document.getElementById('eventModal');
@@ -11208,8 +11209,8 @@ function ensureUI(){
 
       // ── Special cake (inscription) modal ──────────────────────────────────
       window.openSpecialCakeModal = function(btn, name, price, details){
-        if(!currentUser || currentUser.__soft){
-          if(typeof nudgeAuth === 'function') nudgeAuth('כדי להזמין צריך להתחבר');
+        if(!window._isFullUser || !window._isFullUser()){
+          if(typeof window._nudgeAuth === 'function') window._nudgeAuth('כדי להזמין צריך להתחבר');
           return;
         }
         var modal = document.getElementById('eventModal');
