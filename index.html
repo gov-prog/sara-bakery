@@ -137,11 +137,13 @@
     .nav-login-btn{background:linear-gradient(135deg,#c8704a,#9f4f2f);color:#fff;padding:8px 16px;border-radius:22px;font-weight:800;font-size:13px;text-decoration:none;display:flex;align-items:center;gap:5px;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 12px rgba(200,112,74,.3);white-space:nowrap}
     .nav-login-btn:hover{transform:scale(1.05);box-shadow:0 6px 16px rgba(200,112,74,.45)}
     body.is-logged-in .nav-login-btn{display:none}
-    .nav-profile-btn{background:rgba(200,112,74,0.14);border:1.5px solid rgba(200,112,74,0.35);color:#5a3424;padding:7px 14px;border-radius:22px;font-weight:800;font-size:13px;cursor:pointer;font-family:'Rubik',sans-serif;display:none;align-items:center;gap:6px;transition:all .2s}
-    .nav-profile-btn:hover{background:rgba(200,112,74,0.22)}
+    .nav-profile-btn{background:rgba(200,112,74,0.14);border:1.5px solid rgba(200,112,74,0.35);color:#5a3424;padding:5px;border-radius:50%;width:40px;height:40px;font-size:13px;cursor:pointer;font-family:'Rubik',sans-serif;display:none;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;overflow:hidden}
+    .nav-profile-btn:hover{background:rgba(200,112,74,0.28);transform:scale(1.06)}
     body.is-logged-in .nav-profile-btn{display:flex}
-    body.warm-theme .nav-profile-btn{background:rgba(255,255,255,0.1);border-color:rgba(255,200,150,0.3);color:#f7e7d9}
-    body.warm-theme .nav-profile-btn:hover{background:rgba(255,255,255,0.16)}
+    body.warm-theme .nav-profile-btn{background:rgba(255,255,255,0.12);border-color:rgba(255,200,150,0.35)}
+    body.warm-theme .nav-profile-btn:hover{background:rgba(255,255,255,0.2)}
+    .nav-profile-btn img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .nav-profile-avatar{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1}
     body.warm-theme .nav-login-btn{box-shadow:0 4px 14px rgba(200,112,74,.5)}
     body.warm-theme{background:linear-gradient(to bottom,#120a06 0%,#1b0f0a 50%,#2d1810 100%)}
     body.warm-theme::before{background:
@@ -562,6 +564,10 @@
         .hero-stat-val{font-size:18px}
         .hero-stat-lbl{font-size:9px}
         .hero-ornament{display:none}
+        .hero-welcome{margin:0 auto 20px;text-align:center}
+        .hero-welcome-card{text-align:center}
+        .welcome-actions{justify-content:center}
+        .hpb-meter{text-align:right}
     }
     @media(max-width:900px){
         .info-grid{grid-template-columns:1fr 1fr}
@@ -581,7 +587,7 @@
         nav .nav-links::-webkit-scrollbar{display:none}
         .nav-link{font-size:11px;padding:5px 10px;white-space:nowrap;flex-shrink:0}
         .nav-login-btn{padding:7px 12px;font-size:12px}
-        .nav-profile-btn{padding:6px 10px;font-size:12px}
+        .nav-profile-btn{padding:0;width:36px;height:36px;font-size:12px}
         .cart-fab{top:110px!important}
         .auth-fab{top:110px!important}
         body.is-logged-in .cart-fab{top:174px!important}
@@ -942,7 +948,7 @@
 
     <div class="nav-actions">
         <a href="https://wa.me/972523394838" target="_blank" class="nav-wa">💬 וואטסאפ</a>
-        <button type="button" class="nav-profile-btn" id="navProfileBtn" onclick="if(typeof toggleProfile==='function')toggleProfile(true)">👤 <span id="navProfileName">האזור האישי</span></button>
+        <button type="button" class="nav-profile-btn" id="navProfileBtn" onclick="if(typeof toggleProfile==='function')toggleProfile(true)" title="האזור האישי" aria-label="האזור האישי"><span class="nav-profile-avatar" id="navProfileAvatar">👤</span></button>
     </div>
 </nav>
 <section class="hero page-section">
@@ -2578,11 +2584,16 @@ function applySaleToProducts(sale){
   var profileOrdersLoading = false;
 
   var GIFT_TIERS = [
-    { level: 300, name: 'מתנה קטנה חינם', value: 10, emoji: '🎁' },
-    { level: 600, name: '2 כדורי לוטוס', value: 12, emoji: '🍪' },
-    { level: 900, name: 'עוגיית אמסטרדם', value: 10, emoji: '🍪' },
-    { level: 1200, name: 'מיני מגנום', value: 15, emoji: '🍦' },
-    { level: 1500, name: 'קינוח כוס', value: 15, emoji: '🧁' }
+    { level: 300,  name: 'מתנה קטנה חינם',   value: 10, emoji: '🎁' },
+    { level: 600,  name: '2 כדורי לוטוס',    value: 12, emoji: '🍪' },
+    { level: 900,  name: 'עוגיית אמסטרדם',   value: 10, emoji: '🍪' },
+    { level: 1200, name: 'מיני מגנום',        value: 15, emoji: '🍦' },
+    { level: 1500, name: 'קינוח כוס',         value: 15, emoji: '🧁' },
+    { level: 1800, name: 'מארז 6 מאפינס',    value: 30, emoji: '🧁' },
+    { level: 2100, name: 'כדורי שוקולד',      value: 25, emoji: '🍫' },
+    { level: 2400, name: 'עוגיות גורמה',      value: 35, emoji: '🍪' },
+    { level: 2700, name: 'מגש קטן',          value: 50, emoji: '🍽️' },
+    { level: 3000, name: 'הנחה מיוחדת 10%',  value: 0,  emoji: '⭐', discount: 10 }
   ];
   var PICKUP_ADDRESS = 'אתרוג 3 דירה 16, חריש';
   var DREAM_PACK_TARGET = 300;
@@ -3367,25 +3378,38 @@ function ensureUI(){
       '.pauth-msg.ok{color:#1a7a3c}',
       '.pauth-msg.err{color:#a83535}',
       '.profile-user-card{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid #f2d9c0;border-radius:16px;padding:14px;margin-bottom:12px}',
-      '.puc-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;flex-shrink:0}',
+      '.puc-avatar{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;overflow:hidden}',
+      '.puc-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}',
       '.puc-info{flex:1;min-width:0}',
       '.puc-name{font-weight:900;font-size:17px;color:#2d1a0e}',
       '.puc-email{font-size:11px;color:#7a5040;margin-top:2px}',
       '.puc-logout{background:none;border:1px solid #e5d0be;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#7a5040;cursor:pointer;flex-shrink:0;font-family:Rubik,sans-serif}',
       '.puc-admin-btn{display:block;width:100%;margin-top:10px;background:linear-gradient(135deg,#2d1a0e,#5a3020);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:Rubik,sans-serif;text-align:center}',
-      '.profile-pts-card{background:#fff;border:1.5px solid #f2d9c0;border-radius:16px;padding:14px;margin-bottom:12px}',
-      '.ppc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}',
-      '.ppc-title{font-weight:900;font-size:14px;color:#2d1a0e}',
-      '.ppc-total{background:#fff3e6;border:1px solid #f2d9c0;border-radius:999px;padding:3px 12px;font-weight:900;color:#c8704a;font-size:14px}',
-      '.ppc-bar{height:10px;background:#f0ddcf;border-radius:999px;overflow:hidden;margin-bottom:8px}',
-      '.ppc-fill{height:100%;background:linear-gradient(90deg,#27ae60,#c8704a,#f1c165);border-radius:999px;transition:width .8s ease}',
-      '.ppc-next{font-size:12px;color:#7a5040;font-weight:700;margin-bottom:10px}',
-      '.ppc-chips{display:flex;gap:4px;justify-content:space-between}',
-      '.ppc-chip{flex:1;text-align:center;background:#f9f1e8;border:1px solid #f2d9c0;border-radius:10px;padding:5px 2px}',
-      '.ppc-chip.hit{background:#f0faf4;border-color:#27ae60}',
-      '.ppc-chip-emoji{display:block;font-size:15px;line-height:1;margin-bottom:2px}',
-      '.ppc-chip-num{display:block;font-size:10px;font-weight:900;color:#5a3424}',
-      '.ppc-chip.hit .ppc-chip-num{color:#1a7a3c}',
+      '.profile-pts-card{background:linear-gradient(160deg,#1a0e06 0%,#2e1408 50%,#3d1e0e 100%);border:none;border-radius:22px;padding:20px 18px 16px;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(200,112,74,.25)}',
+      '.profile-pts-card::before{content:"";position:absolute;top:-50%;right:-20%;width:80%;height:140%;background:radial-gradient(ellipse,rgba(200,112,74,.18) 0%,transparent 65%);pointer-events:none}',
+      '.ppc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;position:relative}',
+      '.ppc-title{font-weight:900;font-size:11px;color:rgba(255,255,255,.6);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}',
+      '.ppc-big-pts{font-size:44px;font-weight:900;color:#fff;line-height:1;font-family:"Playfair Display",serif;text-shadow:0 2px 12px rgba(200,112,74,.4)}',
+      '.ppc-big-label{font-size:12px;color:rgba(255,200,140,.75);font-weight:700;margin-top:2px}',
+      '.ppc-level-badge{background:rgba(200,112,74,.25);border:1.5px solid rgba(200,112,74,.5);border-radius:12px;padding:6px 12px;text-align:center;flex-shrink:0}',
+      '.ppc-level-emoji{font-size:22px;display:block;line-height:1;margin-bottom:2px}',
+      '.ppc-level-name{font-size:10px;color:rgba(255,200,140,.85);font-weight:800;white-space:nowrap}',
+      '.ppc-bar{height:8px;background:rgba(255,255,255,.1);border-radius:999px;overflow:hidden;margin-bottom:6px;position:relative}',
+      '.ppc-fill{height:100%;background:linear-gradient(90deg,#27ae60,#f1c165,#c8704a);border-radius:999px;transition:width 1s cubic-bezier(.22,1,.36,1);position:relative}',
+      '.ppc-fill::after{content:"";position:absolute;top:0;left:0;right:0;height:50%;background:rgba(255,255,255,.25);border-radius:999px}',
+      '.ppc-next{font-size:12px;color:rgba(255,200,140,.8);font-weight:700;margin-bottom:14px;text-align:right}',
+      '.ppc-next strong{color:#f1c165}',
+      '.ppc-tiers{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-ms-overflow-style:none}',
+      '.ppc-tiers::-webkit-scrollbar{display:none}',
+      '.ppc-chip{flex-shrink:0;text-align:center;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;padding:8px 6px;min-width:52px;transition:all .2s;cursor:default}',
+      '.ppc-chip.hit{background:rgba(39,174,96,.18);border-color:rgba(39,174,96,.5);box-shadow:0 4px 14px rgba(39,174,96,.2)}',
+      '.ppc-chip.next{background:rgba(241,193,101,.15);border-color:rgba(241,193,101,.5);box-shadow:0 4px 14px rgba(241,193,101,.15);animation:ppcPulse 2s ease-in-out infinite}',
+      '@keyframes ppcPulse{0%,100%{box-shadow:0 4px 14px rgba(241,193,101,.15)}50%{box-shadow:0 4px 24px rgba(241,193,101,.35)}}',
+      '.ppc-chip-emoji{display:block;font-size:18px;line-height:1;margin-bottom:3px}',
+      '.ppc-chip-num{display:block;font-size:9px;font-weight:900;color:rgba(255,255,255,.5)}',
+      '.ppc-chip.hit .ppc-chip-num{color:#4caf50}',
+      '.ppc-chip.next .ppc-chip-num{color:#f1c165}',
+      '.ppc-chip-check{display:block;font-size:10px;line-height:1;margin-top:2px}',
       '.profile-orders-title{font-weight:900;font-size:14px;color:#2d1a0e;margin:0 0 10px;padding:0 2px;display:flex;align-items:center;gap:6px}',
       '.profile-actions-row{display:flex;gap:8px;margin-bottom:12px}',
       '.profile-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}',
@@ -3848,33 +3872,30 @@ function ensureUI(){
       };
 
       if(isLoggedIn){
-        // מחובר: הצג ראשית שם המשתמש כאווטאר
-        var initLetter = '';
-        try {
-          var dn = (typeof getProfileDisplayName === 'function') ? getProfileDisplayName() : (currentUser.displayName || currentUser.email || '');
-          initLetter = String(dn || '').trim().charAt(0).toUpperCase() || '👤';
-        } catch(e){ initLetter = '👤'; }
-        fab.innerHTML = '<span style="width:36px;height:36px;background:linear-gradient(135deg,#c8704a,#9f4f2f);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:17px;letter-spacing:0">' + initLetter + '</span>';
+        var userPhoto = (currentUser && currentUser.photoURL) ? currentUser.photoURL : '';
+        var photoHtml = userPhoto
+          ? '<img src="'+userPhoto+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover" alt="" onerror="this.parentNode.innerHTML=\'👤\'">'
+          : '<span style="font-size:22px;line-height:1">👤</span>';
+        fab.innerHTML = '<span style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;overflow:hidden">' + photoHtml + '</span>';
         fab.title = 'האזור האישי';
         fab.style.borderColor = '#27ae60';
         fab.style.display = '';
-        // עדכן שם בנאב
         try {
-          var navName = document.getElementById('navProfileName');
-          if(navName){
-            var firstName = String(dn||'').trim().split(/\s+/)[0] || 'האזור האישי';
-            navName.textContent = firstName;
+          var navAvatar = document.getElementById('navProfileAvatar');
+          if(navAvatar){
+            navAvatar.innerHTML = userPhoto
+              ? '<img src="'+userPhoto+'" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.parentNode.innerHTML=\'👤\'">'
+              : '👤';
           }
         } catch(e){}
       } else {
-        // לא מחובר: הסתר לחלוטין
-        fab.textContent = '👤';
+        fab.innerHTML = '👤';
         fab.title = 'התחברות';
         fab.style.borderColor = '#f2d9c0';
         fab.style.display = 'none';
         try {
-          var navName2 = document.getElementById('navProfileName');
-          if(navName2) navName2.textContent = 'האזור האישי';
+          var navAvatar2 = document.getElementById('navProfileAvatar');
+          if(navAvatar2) navAvatar2.innerHTML = '👤';
         } catch(e){}
       }
     }
@@ -4321,6 +4342,7 @@ function ensureUI(){
     var displayEmail = (email && email.indexOf('@sara.local') === -1) ? email : '';
     var displayName = getProfileDisplayName();
     var firstName = String(displayName||'').trim().split(/\s+/)[0] || displayName;
+    var photoURL = (currentUser && currentUser.photoURL) ? currentUser.photoURL : '';
     var milestones = getGiftLevels ? getGiftLevels() : [300,600,900,1200,1500];
     if(!milestones||!milestones.length) milestones=[300,600,900,1200,1500];
     var maxPts = milestones[milestones.length-1];
@@ -4331,7 +4353,7 @@ function ensureUI(){
     // User card
     wrap.innerHTML =
       '<div class="profile-user-card">' +
-        '<div class="puc-avatar">' + escapeHtml(String(displayName||'?').charAt(0).toUpperCase()) + '</div>' +
+        '<div class="puc-avatar">' + (photoURL ? '<img src="'+escapeHtml(photoURL)+'" alt="" onerror="this.parentNode.innerHTML=\'👤\'">' : '👤') + '</div>' +
         '<div class="puc-info">' +
           '<div class="puc-name">' + escapeHtml(firstName) + '</div>' +
           (displayEmail ? '<div class="puc-email">' + escapeHtml(displayEmail) + '</div>' : '') +
@@ -4343,23 +4365,35 @@ function ensureUI(){
     // Points section
     if(ptsSection){
       var nextGift = getGiftForLevel ? getGiftForLevel(nextInfo.nextLevel) : { emoji:'🎁', name:'מתנה' };
+      var curLevelGift = null;
+      try {
+        var passedLevels = milestones.filter(function(l){ return points >= l; });
+        if(passedLevels.length) curLevelGift = getGiftForLevel ? getGiftForLevel(passedLevels[passedLevels.length-1]) : null;
+      }catch(e){}
+      var nextIdx = milestones.findIndex ? milestones.findIndex(function(l){ return points < l; }) : -1;
       ptsSection.innerHTML =
         '<div class="profile-pts-card">' +
           '<div class="ppc-head">' +
-            '<div class="ppc-title">מד מתנות</div>' +
-            '<div class="ppc-total">' + points + ' נק׳</div>' +
+            '<div>' +
+              '<div class="ppc-title">מד מתנות ונאמנות</div>' +
+              '<div class="ppc-big-pts">' + points.toLocaleString() + '</div>' +
+              '<div class="ppc-big-label">נקודות שצברת</div>' +
+            '</div>' +
+            (curLevelGift ? '<div class="ppc-level-badge"><span class="ppc-level-emoji">' + curLevelGift.emoji + '</span><div class="ppc-level-name">' + escapeHtml(curLevelGift.name) + '</div></div>' : '') +
           '</div>' +
-          '<div class="ppc-bar-wrap">' +
-            '<div class="ppc-bar"><div class="ppc-fill" style="width:' + pct + '%"></div></div>' +
-          '</div>' +
-          (points >= maxPts ? '<div class="ppc-next">🎉 פתחת את כל המתנות!</div>' : '') +
-          '<div class="ppc-chips">' +
-            milestones.map(function(lvl){
+          '<div class="ppc-bar"><div class="ppc-fill" style="width:' + pct + '%"></div></div>' +
+          (points >= maxPts
+            ? '<div class="ppc-next">כל המתנות נפתחו! את בדרגת VIP !</div>'
+            : '<div class="ppc-next">עוד <strong>' + nextInfo.missing + ' נק׳</strong> ל' + escapeHtml(nextGift.name || 'מתנה הבאה') + ' ' + (nextGift.emoji||'🎁') + '</div>') +
+          '<div class="ppc-tiers">' +
+            milestones.map(function(lvl, i){
               var g = getGiftForLevel ? getGiftForLevel(lvl) : {emoji:'🎁',name:''};
               var hit = points >= lvl;
-              return '<div class="ppc-chip' + (hit?' hit':'') + '">' +
-                '<span class="ppc-chip-emoji">' + (hit ? g.emoji : '❓') + '</span>' +
-                '<span class="ppc-chip-num">' + lvl + '</span>' +
+              var isNext = (i === nextIdx);
+              return '<div class="ppc-chip' + (hit?' hit':isNext?' next':'') + '" title="' + (g.name||'') + '">' +
+                '<span class="ppc-chip-emoji">' + (g.emoji||'🎁') + '</span>' +
+                '<span class="ppc-chip-num">' + (lvl >= 1000 ? (lvl/1000).toFixed(lvl%1000===0?0:1)+'k' : lvl) + '</span>' +
+                (hit ? '<span class="ppc-chip-check">✓</span>' : '') +
               '</div>';
             }).join('') +
           '</div>' +
@@ -11874,6 +11908,41 @@ window.closeLegal = function(){
     } else {
       timer = setTimeout(function(){ clicks = 0; }, 2000);
     }
+  };
+})();
+</script>
+
+<!-- COOKIE CONSENT BANNER -->
+<div id="cookieBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9998;background:linear-gradient(135deg,#1a0e06,#2e1408);border-top:2px solid #c8704a;padding:16px 20px;direction:rtl;box-shadow:0 -8px 32px rgba(0,0,0,.35)">
+  <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="flex:1;min-width:200px">
+      <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:4px">🍪 שימוש בעוגיות</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.5">האתר משתמש בעוגיות (Cookies) לשיפור חוויית הגלישה, שמירת הסל, וניתוח תנועה. המשך שימוש באתר מהווה הסכמה למדיניות זו. <span onclick="openLegal('privacy')" style="color:#c8704a;cursor:pointer;text-decoration:underline">מדיניות פרטיות</span></div>
+    </div>
+    <div style="display:flex;gap:10px;flex-shrink:0">
+      <button onclick="acceptCookies()" style="background:linear-gradient(135deg,#c8704a,#9f4f2f);color:#fff;border:none;border-radius:10px;padding:10px 22px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Rubik',sans-serif;white-space:nowrap">קבלי הכל</button>
+      <button onclick="dismissCookies()" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Rubik',sans-serif;white-space:nowrap">הכרחיים בלבד</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var key='sara_cookie_consent';
+  if(!localStorage.getItem(key)){
+    setTimeout(function(){
+      var b=document.getElementById('cookieBanner');
+      if(b)b.style.display='block';
+    },800);
+  }
+  window.acceptCookies=function(){
+    localStorage.setItem(key,'all');
+    var b=document.getElementById('cookieBanner');
+    if(b){b.style.transition='opacity .3s';b.style.opacity='0';setTimeout(function(){b.style.display='none';},300);}
+  };
+  window.dismissCookies=function(){
+    localStorage.setItem(key,'essential');
+    var b=document.getElementById('cookieBanner');
+    if(b){b.style.transition='opacity .3s';b.style.opacity='0';setTimeout(function(){b.style.display='none';},300);}
   };
 })();
 </script>
