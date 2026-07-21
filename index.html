@@ -361,23 +361,31 @@
     /* ── REVIEWS ── */
     .reviews{background:linear-gradient(165deg,#0c0704 0%,#160d06 55%,#0c0704 100%);padding:90px 0 80px;position:relative;overflow:hidden}
     .reviews-inner{max-width:1100px;margin:0 auto;padding:0 5%}
-    /* scattered photo cluster */
-    .rv-cluster{position:relative;width:100%;height:280px;margin:0 auto 64px;direction:ltr}
-    .rv-cluster-inner{position:relative;width:580px;height:260px;margin:0 auto}
-    .rv-photo{position:absolute;object-fit:cover;border-radius:14px;border:3px solid rgba(255,255,255,.12);box-shadow:0 16px 48px rgba(0,0,0,.7),0 4px 12px rgba(0,0,0,.4);transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .4s;will-change:transform}
-    .rv-photo:nth-child(1){width:170px;height:170px;top:40px;left:0;transform:rotate(-14deg);z-index:1;animation:rvPop1 .7s .1s cubic-bezier(.34,1.56,.64,1) both}
-    .rv-photo:nth-child(2){width:200px;height:200px;top:10px;left:110px;transform:rotate(-3deg);z-index:4;animation:rvPop1 .7s .25s cubic-bezier(.34,1.56,.64,1) both}
-    .rv-photo:nth-child(3){width:160px;height:160px;top:55px;left:260px;transform:rotate(9deg);z-index:2;animation:rvPop1 .7s .15s cubic-bezier(.34,1.56,.64,1) both}
-    .rv-photo:nth-child(4){width:145px;height:145px;top:95px;left:30px;transform:rotate(5deg);z-index:3;animation:rvPop1 .7s .35s cubic-bezier(.34,1.56,.64,1) both}
-    .rv-photo:nth-child(5){width:155px;height:155px;top:80px;left:220px;transform:rotate(-10deg);z-index:5;animation:rvPop1 .7s .2s cubic-bezier(.34,1.56,.64,1) both}
-    .rv-photo:nth-child(6){width:140px;height:140px;top:100px;left:410px;transform:rotate(14deg);z-index:2;animation:rvPop1 .7s .3s cubic-bezier(.34,1.56,.64,1) both}
-    @keyframes rvPop1{0%{opacity:0;transform:scale(.5) rotate(inherit) translateY(60px)}100%{opacity:1}}
-    .rv-cluster-inner:hover .rv-photo:nth-child(1){transform:rotate(-22deg) translate(-40px,15px) scale(1.07);box-shadow:0 24px 60px rgba(0,0,0,.8)}
-    .rv-cluster-inner:hover .rv-photo:nth-child(2){transform:rotate(0deg) translateY(-25px) scale(1.12);box-shadow:0 28px 70px rgba(0,0,0,.8)}
-    .rv-cluster-inner:hover .rv-photo:nth-child(3){transform:rotate(20deg) translate(40px,15px) scale(1.07);box-shadow:0 24px 60px rgba(0,0,0,.8)}
-    .rv-cluster-inner:hover .rv-photo:nth-child(4){transform:rotate(-8deg) translate(-25px,35px) scale(1.06);box-shadow:0 20px 50px rgba(0,0,0,.7)}
-    .rv-cluster-inner:hover .rv-photo:nth-child(5){transform:rotate(5deg) translate(10px,35px) scale(1.06);box-shadow:0 20px 50px rgba(0,0,0,.7)}
-    .rv-cluster-inner:hover .rv-photo:nth-child(6){transform:rotate(22deg) translate(50px,35px) scale(1.06);box-shadow:0 20px 50px rgba(0,0,0,.7)}
+    /* scattered photo cluster — centered, subtle individual hover only */
+    .rv-cluster{width:100%;height:300px;display:flex;align-items:center;justify-content:center;margin:0 auto 60px;direction:ltr}
+    .rv-cluster-inner{position:relative;width:580px;height:280px;flex-shrink:0}
+    .rv-photo{position:absolute;object-fit:cover;border-radius:14px;border:3px solid rgba(255,255,255,.1);box-shadow:0 14px 44px rgba(0,0,0,.65),0 4px 10px rgba(0,0,0,.35);transition:transform .3s ease,box-shadow .3s,z-index 0s}
+    .rv-photo:nth-child(1){width:182px;height:182px;top:48px;left:8px;transform:rotate(-13deg);z-index:1}
+    .rv-photo:nth-child(2){width:212px;height:212px;top:14px;left:118px;transform:rotate(-3deg);z-index:4}
+    .rv-photo:nth-child(3){width:192px;height:192px;top:35px;left:278px;transform:rotate(8deg);z-index:3}
+    .rv-photo:nth-child(4){width:172px;height:172px;top:86px;left:52px;transform:rotate(6deg);z-index:2}
+    .rv-photo:nth-child(5){width:180px;height:180px;top:76px;left:228px;transform:rotate(-10deg);z-index:5}
+    .rv-photo:nth-child(6){width:166px;height:166px;top:82px;left:402px;transform:rotate(13deg);z-index:2}
+    /* individual hover — just a gentle lift, no spreading */
+    .rv-photo:nth-child(1):hover{transform:rotate(-13deg) translateY(-8px) scale(1.04);z-index:10;box-shadow:0 22px 55px rgba(0,0,0,.8)}
+    .rv-photo:nth-child(2):hover{transform:rotate(-3deg) translateY(-10px) scale(1.05);z-index:10;box-shadow:0 26px 60px rgba(0,0,0,.8)}
+    .rv-photo:nth-child(3):hover{transform:rotate(8deg) translateY(-8px) scale(1.04);z-index:10;box-shadow:0 22px 55px rgba(0,0,0,.8)}
+    .rv-photo:nth-child(4):hover{transform:rotate(6deg) translateY(-7px) scale(1.04);z-index:10;box-shadow:0 20px 50px rgba(0,0,0,.75)}
+    .rv-photo:nth-child(5):hover{transform:rotate(-10deg) translateY(-8px) scale(1.04);z-index:10;box-shadow:0 20px 50px rgba(0,0,0,.75)}
+    .rv-photo:nth-child(6):hover{transform:rotate(13deg) translateY(-7px) scale(1.04);z-index:10;box-shadow:0 20px 50px rgba(0,0,0,.75)}
+    /* pop-in on load */
+    @keyframes rvPop1{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1}}
+    .rv-photo:nth-child(1){animation:rvPop1 .5s .05s ease both}
+    .rv-photo:nth-child(2){animation:rvPop1 .5s .15s ease both}
+    .rv-photo:nth-child(3){animation:rvPop1 .5s .1s ease both}
+    .rv-photo:nth-child(4){animation:rvPop1 .5s .22s ease both}
+    .rv-photo:nth-child(5){animation:rvPop1 .5s .12s ease both}
+    .rv-photo:nth-child(6){animation:rvPop1 .5s .18s ease both}
     /* marquee */
     .rv-marquee-wrap{overflow:hidden;position:relative;padding:8px 0}
     .rv-marquee-wrap::before,.rv-marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
@@ -394,13 +402,13 @@
     .rv-text{color:rgba(255,255,255,.82);font-size:13.5px;line-height:1.78;font-weight:500}
     /* mobile */
     @media(max-width:600px){
-      .rv-cluster{height:220px}
-      .rv-cluster-inner{width:340px;height:210px}
-      .rv-photo:nth-child(1){width:120px;height:120px;top:30px;left:0}
-      .rv-photo:nth-child(2){width:140px;height:140px;top:8px;left:65px}
-      .rv-photo:nth-child(3){width:115px;height:115px;top:40px;left:160px}
-      .rv-photo:nth-child(4){width:100px;height:100px;top:70px;left:18px}
-      .rv-photo:nth-child(5){width:108px;height:108px;top:60px;left:138px}
+      .rv-cluster{height:230px}
+      .rv-cluster-inner{width:340px;height:215px}
+      .rv-photo:nth-child(1){width:122px;height:122px;top:32px;left:5px}
+      .rv-photo:nth-child(2){width:142px;height:142px;top:10px;left:70px}
+      .rv-photo:nth-child(3){width:120px;height:120px;top:38px;left:168px}
+      .rv-photo:nth-child(4){width:106px;height:106px;top:78px;left:20px}
+      .rv-photo:nth-child(5){width:112px;height:112px;top:68px;left:140px}
       .rv-photo:nth-child(6){display:none}
       .rv-card{width:240px}
     }
