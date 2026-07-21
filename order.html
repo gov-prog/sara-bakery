@@ -160,6 +160,7 @@ a{text-decoration:none;color:inherit}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js';
 import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js';
+import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDUiu7JxAzdjmZS3Dp1A_TESM6fvxdPPaw",
@@ -172,6 +173,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+try { await signInAnonymously(auth); } catch(e) {}
 
 const params = new URLSearchParams(location.search);
 const orderId = (params.get('id') || '').trim().toUpperCase();
