@@ -589,8 +589,13 @@
         .nav-login-btn{padding:7px 12px;font-size:12px}
         .nav-profile-btn{padding:0;width:36px;height:36px;font-size:12px}
         .cart-fab{top:110px!important}
-        .auth-fab{top:110px!important}
-        body.is-logged-in .cart-fab{top:174px!important}
+        /* profile already in nav on mobile — hide duplicate floating auth fab */
+        body.is-logged-in .auth-fab{display:none!important}
+        body.is-logged-in .cart-fab{top:110px!important}
+        /* cat tabs: single scrollable row */
+        .cat-tabs{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;gap:8px;scrollbar-width:none;-ms-overflow-style:none;padding-left:5%;padding-right:5%;margin-left:-5%;margin-right:-5%;padding-bottom:10px}
+        .cat-tabs::-webkit-scrollbar{display:none}
+        .cat-tab{flex-shrink:0;padding:9px 16px;font-size:12px;white-space:nowrap}
         .prod-card{flex-basis:200px}
         .prod-img{height:150px}
         .prod-body{padding:14px}
@@ -3594,15 +3599,14 @@ function ensureUI(){
       '.pm-phase-badge.done{background:rgba(39,174,96,.2);color:#4caf50;border:1px solid rgba(39,174,96,.3)}',
       '.pm-phase-badge.lock{background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);border:1px solid rgba(255,255,255,.1)}',
       '.pm-phase-badge.active{background:rgba(241,193,101,.15);color:#f1c165;border:1px solid rgba(241,193,101,.3)}',
-      '.pm-bar-wrap{position:relative;margin-bottom:8px;padding-bottom:10px}',
+      '.pm-bar-wrap{position:relative;margin-bottom:8px;padding-bottom:10px;direction:ltr}',
       '.pm-bar-track{height:7px;background:rgba(255,255,255,.09);border-radius:999px;overflow:hidden;position:relative;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}',
       '.pm-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#27ae60,#f1c165);border-radius:999px;transition:width 1s cubic-bezier(.4,0,.2,1);box-shadow:0 0 8px rgba(241,193,101,.4)}',
       '.pm-dots{position:absolute;bottom:0;left:0;right:0}',
       '.pm-dot{position:absolute;bottom:0;width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.15);transform:translateX(-50%);transition:all .4s}',
       '.pm-dot.hit{background:linear-gradient(135deg,#f1c165,#27ae60);border-color:#27ae60;box-shadow:0 0 8px rgba(39,174,96,.5);width:12px;height:12px}',
-      '.pm-chips{display:flex;gap:5px;direction:ltr;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding-bottom:2px}',
-      '.pm-chips::-webkit-scrollbar{display:none}',
-      '.pm-chip{flex:0 0 54px;direction:rtl;border-radius:12px;padding:9px 4px 7px;text-align:center;position:relative;overflow:hidden;animation:pmChipIn .35s ease both;cursor:default}',
+      '.pm-chips{display:flex;gap:4px;direction:ltr;padding-bottom:2px}',
+      '.pm-chip{flex:1;min-width:0;direction:rtl;border-radius:12px;padding:9px 4px 7px;text-align:center;position:relative;overflow:hidden;animation:pmChipIn .35s ease both;cursor:default}',
       '.pm-chip.locked{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}',
       '.pm-chip.locked.dim{opacity:.3;filter:grayscale(.7)}',
       '.pm-chip.unlocked{background:linear-gradient(160deg,rgba(39,174,96,.22),rgba(241,193,101,.12));border:1px solid rgba(241,193,101,.4);box-shadow:0 4px 16px rgba(39,174,96,.18);animation:pmUnlock .5s cubic-bezier(.34,1.56,.64,1) both}',
@@ -4309,8 +4313,25 @@ function ensureUI(){
     var chips1Html = phase1.map(function(l, i){ return makeChip(l, i, true); }).join('');
     var chips2Html = phase2.map(function(l, i){ return makeChip(l, i, phase1Complete); }).join('');
 
-    var p1Pct = PHASE1_CAP > 0 ? Math.min(100, Math.max(0, (points / PHASE1_CAP) * 100)) : 0;
-    var p2Pct = phase1Complete ? Math.min(100, Math.max(0, ((points - PHASE1_CAP) / (3000 - PHASE1_CAP)) * 100)) : 0;
+    // bar fill: goes to the center of the NEXT chip to unlock (index-based so it aligns with chips)
+    function barPct(pts, milestoneArr, minPts, maxPts){
+      if(!milestoneArr.length) return 0;
+      var total = milestoneArr.length;
+      var unlockedCount = milestoneArr.filter(function(l){ return pts >= l; }).length;
+      if(unlockedCount >= total) return 100;
+      if(unlockedCount === 0){
+        var firstPos = 0.5/total*100;
+        var segPct = pts/milestoneArr[0];
+        return Math.max(0, segPct * firstPos);
+      }
+      var curPos = (unlockedCount - 0.5)/total*100;
+      var nextPos = (unlockedCount + 0.5)/total*100;
+      var cur = milestoneArr[unlockedCount-1], next = milestoneArr[unlockedCount];
+      var segPct = (pts - cur) / (next - cur);
+      return Math.min(100, curPos + segPct*(nextPos - curPos));
+    }
+    var p1Pct = isGuest ? 0 : barPct(points, phase1, 0, PHASE1_CAP);
+    var p2Pct = (isGuest||!phase1Complete) ? 0 : barPct(points - PHASE1_CAP, phase2.map(function(l){ return l - PHASE1_CAP; }), 0, 3000 - PHASE1_CAP);
 
     var nextLine = '';
     if(isGuest){
@@ -4338,7 +4359,7 @@ function ensureUI(){
         '<div class="pm-bar-wrap">' +
           '<div class="pm-bar-track"><div class="pm-bar-fill" id="pmFill1" style="width:0%"></div></div>' +
           '<div class="pm-dots">' +
-            phase1.map(function(l){ var pos=(l/PHASE1_CAP)*100; var hit=!isGuest&&points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos+'%"></div>'; }).join('') +
+            phase1.map(function(l,i){ var pos=(i+0.5)/phase1.length*100; var hit=!isGuest&&points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos.toFixed(1)+'%"></div>'; }).join('') +
           '</div>' +
         '</div>' +
         '<div class="pm-chips">' + chips1Html + '</div>' +
@@ -4353,7 +4374,7 @@ function ensureUI(){
             '<div class="pm-bar-wrap">' +
               '<div class="pm-bar-track"><div class="pm-bar-fill" id="pmFill2" style="width:0%"></div></div>' +
               '<div class="pm-dots">' +
-                phase2.map(function(l){ var pos=((l-PHASE1_CAP)/(3000-PHASE1_CAP))*100; var hit=points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos+'%"></div>'; }).join('') +
+                phase2.map(function(l,i){ var pos=(i+0.5)/phase2.length*100; var hit=points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos.toFixed(1)+'%"></div>'; }).join('') +
               '</div>' +
             '</div>' +
             '<div class="pm-chips">' + chips2Html + '</div>' +
