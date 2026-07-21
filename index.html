@@ -358,48 +358,52 @@
     .eitem-add:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(200,112,74,.5)}
     .eitem-add:active{transform:scale(.95)}
 
-    .reviews{background:linear-gradient(160deg,#fff9f4,var(--warm1));padding:90px 5%;position:relative}
-    .reviews-layout{max-width:1020px;margin:0 auto;display:grid;grid-template-columns:280px 1fr;gap:50px;align-items:start}
-    .reviews-summary{background:linear-gradient(145deg,var(--brown),#4a2510);border-radius:26px;padding:36px 28px;text-align:center;position:sticky;top:80px;color:#fff}
-    .rs-score{font-family:'Playfair Display',serif;font-size:76px;font-weight:900;color:#fff;line-height:1}
-    .rs-stars{color:var(--gold-light);font-size:26px;margin:10px 0;letter-spacing:3px}
-    .rs-count{color:rgba(255,255,255,0.65);font-size:13px;margin-bottom:26px;font-weight:600}
-    .rs-bars{text-align:right}
-    .rs-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-    .rs-bar-label{font-size:13px;color:rgba(255,255,255,0.8);font-weight:700;white-space:nowrap;min-width:48px}
-    .rs-bar-track{flex:1;background:rgba(255,255,255,0.15);border-radius:6px;height:8px;overflow:hidden}
-    .rs-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--gold-light),var(--copper-light))}
-    .rs-bar-num{font-size:12px;color:rgba(255,255,255,0.5);min-width:18px}
-    .reviews-list{display:flex;flex-direction:column;gap:16px}
-    .review-card{background:#fff;border:1.5px solid var(--warm2);border-radius:18px;padding:22px;transition:all .3s;box-shadow:0 3px 12px rgba(0,0,0,0.04)}
-    .review-card:hover{border-color:var(--copper);box-shadow:0 8px 24px rgba(200,112,74,0.1)}
-    .rc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-    .rc-author{display:flex;align-items:center;gap:10px}
-    .rc-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--copper),var(--copper-dark));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;flex-shrink:0}
-    .rc-name{font-weight:800;font-size:15px;color:var(--brown)}
-    .rc-loc{color:#bbb;font-size:11px;font-weight:600}
-    .rc-stars{color:var(--gold);font-size:15px;letter-spacing:1px}
-    .rc-text{color:#5a3a28;font-size:14px;line-height:1.8;font-style:italic;font-weight:600}
-    .review-media{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:12px}
-    .review-media img{width:100%;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--warm2)}
-    .review-add-wrap{max-width:1020px;margin:28px auto 0}
-    .review-add-card{background:#fff;border:1.5px solid var(--warm2);border-radius:18px;padding:20px;box-shadow:0 3px 12px rgba(0,0,0,0.04)}
-    .review-add-card h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--brown);margin-bottom:8px}
-    .review-add-card p{color:var(--brown-mid);font-size:14px;line-height:1.6;margin-bottom:12px}
-    .review-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;border-radius:999px;padding:3px 8px;margin-right:8px}
-    .review-status.pending{background:#fff3e6;color:#a85535;border:1px solid #f2d9c0}
-    .review-status.approved{background:#e6f8ec;color:#1a7a3c;border:1px solid #b8e3c8}
-    .review-status.rejected{background:#fdecea;color:#b23b2a;border:1px solid #f2c9c3}
-    .review-form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
-    .review-input{width:100%;border:2px solid var(--warm2);border-radius:12px;padding:10px 12px;font-family:'Rubik',sans-serif;font-size:14px}
-    .review-input:focus{outline:none;border-color:var(--copper)}
-    .review-textarea{width:100%;border:2px solid var(--warm2);border-radius:12px;padding:10px 12px;min-height:90px;resize:vertical;font-family:'Rubik',sans-serif;font-size:14px}
-    .review-upload-row{display:flex;align-items:center;gap:10px;margin:10px 0}
-    .review-upload-label{font-size:13px;color:var(--brown-mid);font-weight:700}
-    .review-images-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px;margin:8px 0 12px}
-    .review-images-preview img{width:100%;height:72px;object-fit:cover;border-radius:10px;border:1px solid var(--warm2)}
-    .review-submit-btn{padding:12px 22px;font-size:14px}
-    .review-inline-msg{font-size:12px;color:var(--brown-light);margin-top:8px}
+    /* ── REVIEWS ── */
+    .reviews{background:linear-gradient(165deg,#0c0704 0%,#160d06 55%,#0c0704 100%);padding:90px 0 80px;position:relative;overflow:hidden}
+    .reviews-inner{max-width:1100px;margin:0 auto;padding:0 5%}
+    /* scattered photo cluster */
+    .rv-cluster{position:relative;width:100%;height:280px;margin:0 auto 64px;direction:ltr}
+    .rv-cluster-inner{position:relative;width:580px;height:260px;margin:0 auto}
+    .rv-photo{position:absolute;object-fit:cover;border-radius:14px;border:3px solid rgba(255,255,255,.12);box-shadow:0 16px 48px rgba(0,0,0,.7),0 4px 12px rgba(0,0,0,.4);transition:transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .4s;will-change:transform}
+    .rv-photo:nth-child(1){width:170px;height:170px;top:40px;left:0;transform:rotate(-14deg);z-index:1;animation:rvPop1 .7s .1s cubic-bezier(.34,1.56,.64,1) both}
+    .rv-photo:nth-child(2){width:200px;height:200px;top:10px;left:110px;transform:rotate(-3deg);z-index:4;animation:rvPop1 .7s .25s cubic-bezier(.34,1.56,.64,1) both}
+    .rv-photo:nth-child(3){width:160px;height:160px;top:55px;left:260px;transform:rotate(9deg);z-index:2;animation:rvPop1 .7s .15s cubic-bezier(.34,1.56,.64,1) both}
+    .rv-photo:nth-child(4){width:145px;height:145px;top:95px;left:30px;transform:rotate(5deg);z-index:3;animation:rvPop1 .7s .35s cubic-bezier(.34,1.56,.64,1) both}
+    .rv-photo:nth-child(5){width:155px;height:155px;top:80px;left:220px;transform:rotate(-10deg);z-index:5;animation:rvPop1 .7s .2s cubic-bezier(.34,1.56,.64,1) both}
+    .rv-photo:nth-child(6){width:140px;height:140px;top:100px;left:410px;transform:rotate(14deg);z-index:2;animation:rvPop1 .7s .3s cubic-bezier(.34,1.56,.64,1) both}
+    @keyframes rvPop1{0%{opacity:0;transform:scale(.5) rotate(inherit) translateY(60px)}100%{opacity:1}}
+    .rv-cluster-inner:hover .rv-photo:nth-child(1){transform:rotate(-22deg) translate(-40px,15px) scale(1.07);box-shadow:0 24px 60px rgba(0,0,0,.8)}
+    .rv-cluster-inner:hover .rv-photo:nth-child(2){transform:rotate(0deg) translateY(-25px) scale(1.12);box-shadow:0 28px 70px rgba(0,0,0,.8)}
+    .rv-cluster-inner:hover .rv-photo:nth-child(3){transform:rotate(20deg) translate(40px,15px) scale(1.07);box-shadow:0 24px 60px rgba(0,0,0,.8)}
+    .rv-cluster-inner:hover .rv-photo:nth-child(4){transform:rotate(-8deg) translate(-25px,35px) scale(1.06);box-shadow:0 20px 50px rgba(0,0,0,.7)}
+    .rv-cluster-inner:hover .rv-photo:nth-child(5){transform:rotate(5deg) translate(10px,35px) scale(1.06);box-shadow:0 20px 50px rgba(0,0,0,.7)}
+    .rv-cluster-inner:hover .rv-photo:nth-child(6){transform:rotate(22deg) translate(50px,35px) scale(1.06);box-shadow:0 20px 50px rgba(0,0,0,.7)}
+    /* marquee */
+    .rv-marquee-wrap{overflow:hidden;position:relative;padding:8px 0}
+    .rv-marquee-wrap::before,.rv-marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+    .rv-marquee-wrap::before{right:0;background:linear-gradient(to left,#0c0704,transparent)}
+    .rv-marquee-wrap::after{left:0;background:linear-gradient(to right,#0c0704,transparent)}
+    .rv-marquee-track{display:flex;gap:16px;margin-bottom:16px;width:max-content;animation:rvScroll 38s linear infinite}
+    .rv-marquee-track.rev{animation-name:rvScrollRev;animation-duration:42s}
+    @keyframes rvScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    @keyframes rvScrollRev{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+    .rv-card{flex-shrink:0;width:290px;background:rgba(255,255,255,.04);border:1px solid rgba(200,112,74,.18);border-radius:20px;padding:20px 22px;direction:rtl;position:relative;overflow:hidden;transition:background .3s,border-color .3s}
+    .rv-card::before{content:'"';position:absolute;top:8px;left:14px;font-size:60px;color:rgba(241,193,101,.1);font-family:'Playfair Display',serif;line-height:1;pointer-events:none}
+    .rv-card:hover{background:rgba(255,255,255,.07);border-color:rgba(200,112,74,.4)}
+    .rv-stars{color:#f1c165;font-size:13px;letter-spacing:3px;margin-bottom:10px}
+    .rv-text{color:rgba(255,255,255,.82);font-size:13.5px;line-height:1.78;font-weight:500}
+    /* mobile */
+    @media(max-width:600px){
+      .rv-cluster{height:220px}
+      .rv-cluster-inner{width:340px;height:210px}
+      .rv-photo:nth-child(1){width:120px;height:120px;top:30px;left:0}
+      .rv-photo:nth-child(2){width:140px;height:140px;top:8px;left:65px}
+      .rv-photo:nth-child(3){width:115px;height:115px;top:40px;left:160px}
+      .rv-photo:nth-child(4){width:100px;height:100px;top:70px;left:18px}
+      .rv-photo:nth-child(5){width:108px;height:108px;top:60px;left:138px}
+      .rv-photo:nth-child(6){display:none}
+      .rv-card{width:240px}
+    }
 
     /* INFO */
     .info-section{background:linear-gradient(135deg,var(--brown) 0%,#3d1f10 50%,#5a2d16 100%);padding:80px 5%;position:relative;overflow:hidden}
@@ -1314,31 +1318,79 @@
     <p class="section-anim delay-3" style="text-align:center;color:rgba(255,200,150,.45);font-size:12px;font-weight:700;margin-top:28px;letter-spacing:.5px">תוספת הקדשה – 2 מילים · 10 ש"ח · מטבח כשר * חלבי * מוצרים מהדרין</p>
 </section>
 <section class="reviews page-section" id="reviews">
-    <div class="section-header section-anim delay-1">
-        <span class="sec-tag">⭐ ביקורות</span>
-        <h2>מה אומרות הלקוחות</h2>
+  <div class="reviews-inner">
+    <div class="section-header section-anim delay-1" style="margin-bottom:52px">
+      <span class="sec-tag" style="color:#f1c165;border-color:rgba(241,193,101,.3);background:rgba(241,193,101,.08)">❤️ לקוחות מרוצים</span>
+      <h2 style="color:#fff">מה הלקוחות אומרים עלינו</h2>
+      <p style="color:rgba(255,255,255,.5);max-width:480px;margin:0 auto">ביקורות אמיתיות שקיבלנו ישירות בוואטסאפ — כי אין כמו מילה טובה מלב</p>
     </div>
-    <div class="reviews-layout section-anim delay-2">
-        <div class="reviews-summary">
-            <div class="rs-score">4.9</div>
-            <div class="rs-stars">★★★★★</div>
-            <div class="rs-count">מבוסס על 47 ביקורות</div>
-            <div class="rs-bars">
-                <div class="rs-bar-row"><div class="rs-bar-label">5 ★</div><div class="rs-bar-track"><div class="rs-bar-fill" style="width:92%"></div></div><div class="rs-bar-num">43</div></div>
-                <div class="rs-bar-row"><div class="rs-bar-label">4 ★</div><div class="rs-bar-track"><div class="rs-bar-fill" style="width:8%"></div></div><div class="rs-bar-num">4</div></div>
-                <div class="rs-bar-row"><div class="rs-bar-label">3 ★</div><div class="rs-bar-track"><div class="rs-bar-fill" style="width:0%"></div></div><div class="rs-bar-num">0</div></div>
-            </div>
-        </div>
-        <div>
-            <div class="reviews-list" id="reviewsStaticList" data-stagger>
-                <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">מ</div><div><div class="rc-name">מיכל כ.</div><div class="rc-loc">חריש</div></div></div><div class="rc-stars">★★★★★</div></div><div class="rc-text">"הזמנתי מארז ליום הולדת של הבת שלי ויצא פשוט מדהים! כולם שאלו מאיפה. הכיתוב היה מושלם, הטעם מעולה. שרה אלופה!"</div></div>
-                <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">ר</div><div><div class="rc-name">רחל ל.</div><div class="rc-loc">חריש</div></div></div><div class="rc-stars">★★★★★</div></div><div class="rc-text">"הזמנתי מארז לאמא שלי ל-60. היא לא רצתה לאכול כי זה היה יפה מדי! שרה עושה עבודה ברמה הכי גבוהה, ממליצה בחום!"</div></div>
-                <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">ד</div><div><div class="rc-name">דנה א.</div><div class="rc-loc">פרדס חנה</div></div></div><div class="rc-stars">★★★★★</div></div><div class="rc-text">"עוגת המספרים לבן שלי ליום הולדת שנתיים יצאה כל כך יפה! בדיוק כמו שביקשתי. שרה קשובה ומקצועית!"</div></div>
-                <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">נ</div><div><div class="rc-name">נטע ב.</div><div class="rc-loc">חריש</div></div></div><div class="rc-stars">★★★★★</div></div><div class="rc-text">"קניתי מארז לחברה שלי ליום הולדת והיא בכתה מרוב שמחה! המארז היה מיוחד ואישי. תודה שרה!"</div></div>
-                <div class="review-card"><div class="rc-top"><div class="rc-author"><div class="rc-av">ש</div><div><div class="rc-name">שירה מ.</div><div class="rc-loc">זכרון יעקב</div></div></div><div class="rc-stars">★★★★★</div></div><div class="rc-text">"הזמנתי מגש לאירוע משפחתי. כולם שאלו מאיפה. שרה עונה מהר בוואטסאפ ומאוד נחמדה. בהחלט אזמין שוב!"</div></div>
-            </div>
-        </div>
+
+    <!-- stacked photo cluster -->
+    <div class="rv-cluster section-anim delay-2">
+      <div class="rv-cluster-inner">
+        <img class="rv-photo" src="box1.jpg" alt="מארז מתוק">
+        <img class="rv-photo" src="box2.jpg" alt="מארז מתוק">
+        <img class="rv-photo" src="sweet_tray1.jpg" alt="מגש מתוקים">
+        <img class="rv-photo" src="box4.jpg" alt="מארז מתוק">
+        <img class="rv-photo" src="sweet_tray3.jpg" alt="מגש מתוקים">
+        <img class="rv-photo" src="box5.jpg" alt="מארז מתוק">
+      </div>
     </div>
+  </div>
+
+  <!-- marquee row 1 -->
+  <div class="rv-marquee-wrap">
+    <div class="rv-marquee-track">
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פינקו אותי לכבוד שבת בקינוחים שלך לא מזמן, התמכרתי. לא הסכמתי להתבשר והתעוררתי באמצע הלילה כדי להמשיך להתפנק. היה ממש טעים ומאז אני לא מפסיקה לחשוב על זה. את מדהימה! תודה רבה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">וואו וואו וואו נראה ממש ממש מדהים ובטוח טעים 🙏 תודה רבה רבה תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת!</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שבוע טוב — פשוט שלמות! נהנו מכל ביס, וגיסתי לא נתנה לילדים חחח. מוחבא לה ולבעלה במקרר 😄</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שלום שרה 🙏 רציתי רק להגיד תודה — עשו לי משלוח ליומולדת 30 וזה המשלוח הכי טעים שהיה לי!!!!! פשוט מושלם, טעים ומושקע! ממש תודה רבה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואווו כמה שזה היה טעים!! איזה עיצוב והכל נקי ומסודר בצורה מדהימה!!</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">אמאלה אכלתי את זה!!! טעים ברמות על!! כמה שיפה ככה טעים! 💗💗💗</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואייי שרה את אלופה ממש! היה טעים מאוד. והכל נקי, מזמין ויפה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ערב טוב שרה 🙏 היום בעלי הפתיע אותי עם מארז ממך לכבוד יום ההולדת. היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נראה ממש ממש מדהים 🎊🙌🙏</div></div>
+      <!-- duplicate for seamless loop -->
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פינקו אותי לכבוד שבת בקינוחים שלך לא מזמן, התמכרתי. לא הסכמתי להתבשר והתעוררתי באמצע הלילה כדי להמשיך להתפנק. היה ממש טעים ומאז אני לא מפסיקה לחשוב על זה. את מדהימה! תודה רבה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">וואו וואו וואו נראה ממש ממש מדהים ובטוח טעים 🙏 תודה רבה רבה תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת!</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שבוע טוב — פשוט שלמות! נהנו מכל ביס, וגיסתי לא נתנה לילדים חחח. מוחבא לה ולבעלה במקרר 😄</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שלום שרה 🙏 רציתי רק להגיד תודה — עשו לי משלוח ליומולדת 30 וזה המשלוח הכי טעים שהיה לי!!!!! פשוט מושלם, טעים ומושקע! ממש תודה רבה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואווו כמה שזה היה טעים!! איזה עיצוב והכל נקי ומסודר בצורה מדהימה!!</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">אמאלה אכלתי את זה!!! טעים ברמות על!! כמה שיפה ככה טעים! 💗💗💗</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואייי שרה את אלופה ממש! היה טעים מאוד. והכל נקי, מזמין ויפה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ערב טוב שרה 🙏 היום בעלי הפתיע אותי עם מארז ממך לכבוד יום ההולדת. היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נראה ממש ממש מדהים 🎊🙌🙏</div></div>
+    </div>
+  </div>
+
+  <!-- marquee row 2 (reverse) -->
+  <div class="rv-marquee-wrap" style="margin-top:0">
+    <div class="rv-marquee-track rev">
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ניסיתי מאז לא מעט מתכונים ואף אחד מהם לא דומה לשלך. את מדהימה! ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊🙏</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">כמה שיפה ככה טעים! שרה את אלופה ממש! 💗💗💗</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פשוט מושלם, טעים ומושקע! המשלוח הכי טעים שהיה לי!!!!! ממש תודה רבה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נהנו מכל ביס — פשוט שלמות! מוחבא לה ולבעלה במקרר 😄</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">איזה עיצוב והכל נקי ומסודר בצורה מדהימה!! ואווו כמה שזה היה טעים!!</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת — וואו וואו וואו מדהים! 🙏🤲</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">והכל נקי, מזמין ויפה ❤️ שרה את אלופה ממש! היה טעים מאוד.</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">התעוררתי באמצע הלילה כדי להמשיך להתפנק — ממש מדהים! תודה רבה ❤️</div></div>
+      <!-- duplicate -->
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ניסיתי מאז לא מעט מתכונים ואף אחד מהם לא דומה לשלך. את מדהימה! ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊🙏</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">כמה שיפה ככה טעים! שרה את אלופה ממש! 💗💗💗</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פשוט מושלם, טעים ומושקע! המשלוח הכי טעים שהיה לי!!!!! ממש תודה רבה ❤️</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נהנו מכל ביס — פשוט שלמות! מוחבא לה ולבעלה במקרר 😄</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">איזה עיצוב והכל נקי ומסודר בצורה מדהימה!! ואווו כמה שזה היה טעים!!</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת — וואו וואו וואו מדהים! 🙏🤲</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">והכל נקי, מזמין ויפה ❤️ שרה את אלופה ממש! היה טעים מאוד.</div></div>
+      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">התעוררתי באמצע הלילה כדי להמשיך להתפנק — ממש מדהים! תודה רבה ❤️</div></div>
+    </div>
+  </div>
 </section>
 
 <!-- INFO -->
