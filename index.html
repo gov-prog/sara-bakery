@@ -11004,6 +11004,10 @@ function ensureUI(){
       }
 
       window.addEventItem = function addEventItem(btn, name, price, details){
+        if(!currentUser || currentUser.__soft){
+          if(typeof nudgeAuth === 'function') nudgeAuth('כדי להוסיף לעגלה צריך להתחבר');
+          return;
+        }
         if(typeof window.addCartItem === 'function'){
           window.addCartItem(name, price, details||'', '', 'event');
         } else {
@@ -11025,6 +11029,10 @@ function ensureUI(){
 
       // ── Number cake modal ──────────────────────────────────────────────────
       window.openNumberCakeModal = function(btn, name, price, details, digits){
+        if(!currentUser || currentUser.__soft){
+          if(typeof nudgeAuth === 'function') nudgeAuth('כדי להזמין צריך להתחבר');
+          return;
+        }
         var modal = document.getElementById('eventModal');
         var content = document.getElementById('emodal-content');
         if(!modal || !content) return;
@@ -11059,6 +11067,10 @@ function ensureUI(){
 
       // ── Special cake (inscription) modal ──────────────────────────────────
       window.openSpecialCakeModal = function(btn, name, price, details){
+        if(!currentUser || currentUser.__soft){
+          if(typeof nudgeAuth === 'function') nudgeAuth('כדי להזמין צריך להתחבר');
+          return;
+        }
         var modal = document.getElementById('eventModal');
         var content = document.getElementById('emodal-content');
         if(!modal || !content) return;
