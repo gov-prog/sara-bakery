@@ -709,27 +709,31 @@
 @keyframes saleTicker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .sale-ticker-track:hover{animation-play-state:paused}
 /* Coupon popup */
-#cpPopupOverlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(5,20,5,.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px}
+#cpPopupOverlay{display:none;position:fixed;inset:0;z-index:10001;background:rgba(3,8,4,.85);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px}
 #cpPopupOverlay.on{display:flex;animation:fadeInOv .4s ease both}
-#cpPopupBox{background:linear-gradient(160deg,#f0fff0 0%,#e8f8e8 60%,#d8f0d8 100%);border-radius:28px;max-width:400px;width:100%;overflow:hidden;box-shadow:0 24px 60px rgba(0,80,0,.35),0 0 0 1.5px rgba(92,184,92,.3);position:relative}
-.cp-header{background:linear-gradient(135deg,#2e7d32,#43a047,#66bb6a);padding:28px 24px 24px;text-align:center;position:relative}
-.cp-emoji{font-size:44px;display:block;margin-bottom:10px;animation:popIn .5s cubic-bezier(.34,1.5,.64,1) both}
+#cpPopupBox{background:linear-gradient(170deg,#0e0a05 0%,#1a0f07 50%,#0e0a05 100%);border-radius:28px;max-width:390px;width:100%;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.8),0 0 0 1px rgba(200,112,74,.3),inset 0 1px 0 rgba(241,193,101,.12);position:relative;direction:rtl}
+.cp-header{background:linear-gradient(145deg,#1e0e05,#2e1608,#1e0e05);padding:32px 24px 26px;text-align:center;position:relative;overflow:hidden}
+.cp-header::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:280px;height:180px;background:radial-gradient(ellipse,rgba(241,193,101,.18) 0%,transparent 65%);pointer-events:none}
+.cp-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,112,74,.5),rgba(241,193,101,.7),rgba(200,112,74,.5),transparent)}
+.cp-emoji{font-size:50px;display:block;margin-bottom:12px;animation:popIn .5s cubic-bezier(.34,1.5,.64,1) both;filter:drop-shadow(0 4px 14px rgba(241,193,101,.4))}
 @keyframes popIn{from{transform:scale(0) rotate(-15deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
-.cp-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#fff;line-height:1.2}
-.cp-close2{position:absolute;top:10px;left:12px;background:rgba(255,255,255,.2);border:none;border-radius:50%;width:30px;height:30px;font-size:15px;cursor:pointer;color:#fff;line-height:30px;transition:background .2s}
-.cp-close2:hover{background:rgba(255,255,255,.35)}
-.cp-body{padding:24px}
-.cp-desc{font-size:14px;font-weight:700;color:#2e7d32;text-align:center;margin-bottom:18px}
-.cp-code-wrap{background:linear-gradient(135deg,#f9fff9,#e8f8e8);border:2.5px dashed #4caf50;border-radius:16px;padding:14px 18px;text-align:center;margin-bottom:18px;cursor:pointer;transition:all .2s}
-.cp-code-wrap:hover{background:#e0f5e0;border-color:#2e7d32}
-.cp-code-label{font-size:11px;font-weight:800;color:#5a8a5a;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.cp-code{font-family:monospace;font-size:26px;font-weight:900;color:#2e7d32;letter-spacing:3px}
-.cp-copy-hint{font-size:11px;color:#7aaa7a;font-weight:700;margin-top:4px}
+.cp-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#f5e0c0;line-height:1.2;text-shadow:0 2px 12px rgba(241,193,101,.3)}
+.cp-close2{position:absolute;top:12px;left:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:50%;width:30px;height:30px;font-size:14px;cursor:pointer;color:rgba(255,230,180,.6);line-height:30px;transition:all .2s;z-index:1}
+.cp-close2:hover{background:rgba(200,112,74,.25);color:#fff;border-color:rgba(200,112,74,.4)}
+.cp-body{padding:22px 22px 26px}
+.cp-desc{font-size:14px;font-weight:700;color:rgba(200,160,100,.85);text-align:center;margin-bottom:16px}
+.cp-code-wrap{background:linear-gradient(135deg,rgba(241,193,101,.08),rgba(200,112,74,.06));border:1.5px dashed rgba(241,193,101,.45);border-radius:18px;padding:16px 20px;text-align:center;margin-bottom:18px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.cp-code-wrap::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(241,193,101,.04),transparent);opacity:0;transition:opacity .25s}
+.cp-code-wrap:hover{border-color:rgba(241,193,101,.75);background:linear-gradient(135deg,rgba(241,193,101,.12),rgba(200,112,74,.1))}
+.cp-code-wrap:hover::before{opacity:1}
+.cp-code-label{font-size:10px;font-weight:800;color:rgba(200,140,70,.6);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.cp-code{font-family:'Playfair Display',monospace;font-size:28px;font-weight:900;color:#f1c165;letter-spacing:4px;text-shadow:0 0 20px rgba(241,193,101,.35)}
+.cp-copy-hint{font-size:11px;color:rgba(200,140,80,.5);font-weight:700;margin-top:5px}
 .cp-actions{display:flex;flex-direction:column;gap:10px}
-.cp-btn-main{background:linear-gradient(135deg,#2e7d32,#43a047);color:#fff;border:none;border-radius:999px;padding:14px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Rubik',sans-serif;box-shadow:0 6px 20px rgba(46,125,50,.35);transition:all .3s}
-.cp-btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(46,125,50,.45)}
-.cp-btn-skip{background:none;border:none;color:#7aaa7a;font-size:13px;font-weight:700;font-family:'Rubik',sans-serif;cursor:pointer;padding:4px}
-.cp-btn-skip:hover{color:#2e7d32}
+.cp-btn-main{background:linear-gradient(135deg,#c8704a,#e8905a);color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Rubik',sans-serif;box-shadow:0 8px 24px rgba(200,112,74,.4),inset 0 1px 0 rgba(255,255,255,.15);transition:all .25s;letter-spacing:.3px}
+.cp-btn-main:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,112,74,.55);filter:brightness(1.08)}
+.cp-btn-skip{background:none;border:none;color:rgba(180,120,70,.45);font-size:12px;font-weight:600;font-family:'Rubik',sans-serif;cursor:pointer;padding:4px;letter-spacing:.2px}
+.cp-btn-skip:hover{color:rgba(200,150,90,.7)}
 /* More reviews button */
 .more-reviews-btn{background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;border:none;border-radius:999px;padding:12px 30px;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 6px 20px rgba(200,112,74,.3);transition:all .3s;font-family:'Rubik',sans-serif;letter-spacing:.3px}
 .more-reviews-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(200,112,74,.4)}
@@ -863,8 +867,9 @@
   <div id="cpPopupBox">
     <div class="cp-header">
       <button class="cp-close2" onclick="closeCpPopup()">✕</button>
-      <span class="cp-emoji" id="cpEmoji">🌸</span>
+      <span class="cp-emoji" id="cpEmoji">🎁</span>
       <div class="cp-title" id="cpTitle">מבצע מיוחד!</div>
+      <div id="cpSubTitle" style="font-size:12px;color:rgba(241,193,101,.55);font-weight:700;margin-top:5px;letter-spacing:.3px">רק עכשיו — לזמן מוגבל</div>
     </div>
     <div class="cp-body">
       <div class="cp-desc" id="cpDesc">10% הנחה על כל ההזמנה!</div>
@@ -874,7 +879,7 @@
         <div class="cp-copy-hint" id="cpCopyHint">👆 לחצי להעתקה</div>
       </div>
       <div class="cp-actions">
-        <button class="cp-btn-main" onclick="closeCpPopup();document.getElementById('catalog')?.scrollIntoView({behavior:'smooth'})">🛍️ לקנייה עכשיו</button>
+        <button class="cp-btn-main" onclick="closeCpPopup();document.getElementById('catalog')?.scrollIntoView({behavior:'smooth'})">🧁 לקנייה עכשיו</button>
         <button class="cp-btn-skip" onclick="closeCpPopup()">אולי בפעם אחרת</button>
       </div>
     </div>
@@ -1853,6 +1858,28 @@
         updateCustomTotal();
     }
 
+    function showInscriptionUpsell(callback){
+        var ov=document.getElementById('inscUpsellOverlay');
+        if(!ov){
+            ov=document.createElement('div');
+            ov.id='inscUpsellOverlay';
+            ov.style.cssText='position:fixed;inset:0;z-index:10100;background:rgba(3,8,4,.82);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeInOv .3s ease both';
+            ov.innerHTML='<div style="background:linear-gradient(170deg,#0e0a05,#1a0f07,#0e0a05);border-radius:24px;max-width:360px;width:100%;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 0 1px rgba(200,112,74,.3);direction:rtl;text-align:center;animation:popupIn .4s cubic-bezier(.34,1.56,.64,1) both">' +
+              '<div style="padding:28px 24px 20px;border-bottom:1px solid rgba(200,112,74,.18)">' +
+                '<div style="font-size:48px;margin-bottom:10px;filter:drop-shadow(0 4px 12px rgba(241,193,101,.35))">✏️</div>' +
+                '<div style="font-family:\'Playfair Display\',serif;font-size:20px;font-weight:900;color:#f5e0c0;line-height:1.3">להוסיף כיתוב אישי?</div>' +
+                '<div style="font-size:12px;color:rgba(200,150,90,.65);margin-top:6px;font-weight:600">כיתוב על המארז — תוספת של ₪10 בלבד</div>' +
+              '</div>' +
+              '<div style="padding:20px 22px 24px;display:flex;flex-direction:column;gap:10px">' +
+                '<button onclick="document.getElementById(\'inscUpsellOverlay\').remove();window._inscUpsellCb&&window._inscUpsellCb(true)" style="background:linear-gradient(135deg,#c8704a,#e8905a);color:#fff;border:none;border-radius:13px;padding:14px;font-size:15px;font-weight:900;cursor:pointer;font-family:\'Rubik\',sans-serif;box-shadow:0 6px 20px rgba(200,112,74,.4)">כן, רוצה כיתוב (+₪10)</button>' +
+                '<button onclick="document.getElementById(\'inscUpsellOverlay\').remove();window._inscUpsellCb&&window._inscUpsellCb(false)" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(200,160,100,.7);border-radius:13px;padding:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:\'Rubik\',sans-serif">לא תודה, ללא כיתוב</button>' +
+              '</div>' +
+            '</div>';
+            document.body.appendChild(ov);
+        }
+        window._inscUpsellCb=callback;
+    }
+
     function goToOrderDetails(){
         var total=updateCustomTotal();
         var noteEl=document.getElementById('customBuilderNote');
@@ -1878,13 +1905,24 @@
             }
             return;
         }
-        if(typeof window.submitOrder==='function'){
-            window.submitOrder();
-            return;
-        }
-        document.getElementById('customBuilderStep').style.display='none';
-        document.getElementById('orderDetailsStep').style.display='block';
-        document.getElementById('backToBuilderBtn').style.display='block';
+        // Upsell: ask if they want inscription before submitting
+        showInscriptionUpsell(function(wantsInscription){
+            if(wantsInscription){
+                var dedInp=document.querySelector('#customBuilderStep .builder-qty[data-item="תוספת הקדשה"]');
+                if(dedInp){ dedInp.value='1'; updateCustomTotal(); }
+                document.getElementById('customBuilderStep').style.display='none';
+                document.getElementById('orderDetailsStep').style.display='block';
+                document.getElementById('backToBuilderBtn').style.display='block';
+                updateCustomInscriptionVisibility();
+                var ins=document.getElementById('inscriptionInput');
+                if(ins){ setTimeout(function(){ ins.focus(); ins.scrollIntoView&&ins.scrollIntoView({behavior:'smooth',block:'center'}); },0); }
+            } else {
+                if(typeof window.submitOrder==='function'){ window.submitOrder(); return; }
+                document.getElementById('customBuilderStep').style.display='none';
+                document.getElementById('orderDetailsStep').style.display='block';
+                document.getElementById('backToBuilderBtn').style.display='block';
+            }
+        });
     }
 
     function backToBuilder(){
@@ -2405,6 +2443,10 @@ window.toggleMoreReviews = function(){
     var todayStr = new Date().toISOString().split('T')[0];
     var forceShowCoupon = new URLSearchParams(window.location.search).has('showCoupon');
     if(forceShowCoupon){ try{ sessionStorage.removeItem('sara_cp_popup_seen'); }catch(e){} }
+    if(cp.active && cp.code){
+      // Cache coupon from settings so it works even if Firestore coupons collection fails
+      window._cpFromSettings = { code: String(cp.code||'').trim().toUpperCase().replace(/\s+/g,''), type: cp.type||'percent', value: Number(cp.value||0), label: cp.desc||'', active: true };
+    }
     if(cp.active && cp.code && !sessionStorage.getItem('sara_cp_popup_seen') && (!cp.expiry || cp.expiry >= todayStr)){
       var saleShown = sale.active && !sessionStorage.getItem('sara_sale_popup_seen');
       setTimeout(function(){ showCpPopup(cp); }, forceShowCoupon ? 300 : (saleShown ? 4000 : 1400));
@@ -3428,6 +3470,8 @@ function ensureUI(){
       '.profile-order-badge{font-size:11px;font-weight:700;border-radius:6px;padding:3px 8px}',
       '.profile-order-badge.pay{background:#f0f5ff;color:#3a5a9a;border:1px solid #c8d8f0}',
       '.profile-order-badge.mode{background:#f0fff5;color:#1a6a3a;border:1px solid #b8e8c8}',
+      '.profile-track-btn{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;color:#c8704a;border:1.5px solid rgba(200,112,74,.35);border-radius:8px;padding:3px 10px;background:rgba(200,112,74,.07);text-decoration:none;transition:all .2s;cursor:pointer}',
+      '.profile-track-btn:hover{background:rgba(200,112,74,.15);border-color:rgba(200,112,74,.6);color:#a85535}',
       '.profile-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800}',
       '.ps-pending{background:#fff8e6;color:#a07010;border:1px solid #f0d878}',
       '.ps-seen{background:#e8f0ff;color:#3050a0;border:1px solid #b8c8f0}',
@@ -4200,41 +4244,58 @@ function ensureUI(){
     var isGuest = !currentUser || currentUser.__soft;
     var points = isGuest ? 0 : Number(profile && profile.points ? profile.points : 0);
 
-    var milestones = (typeof getGiftLevels === 'function') ? getGiftLevels() : [];
-    if(!milestones || milestones.length === 0) milestones = [300,600,900,1200,1500];
-    var maxShown = milestones[milestones.length - 1];
-    var meterPct = maxShown > 0 ? Math.max(0, Math.min(100, (points / maxShown) * 100)) : 0;
+    var allMilestones = (typeof getGiftLevels === 'function') ? getGiftLevels() : [];
+    if(!allMilestones || allMilestones.length === 0) allMilestones = [300,600,900,1200,1500,1800,2100,2400,2700,3000];
 
-    var nextInfo = (typeof getNextGiftInfo === 'function') ? getNextGiftInfo(points) : { nextLevel: 300, missing: 300 };
+    var PHASE1_CAP = 1500;
+    var phase1 = allMilestones.filter(function(l){ return l <= PHASE1_CAP; });
+    var phase2 = allMilestones.filter(function(l){ return l > PHASE1_CAP; });
+    var phase1Complete = !isGuest && points >= PHASE1_CAP;
 
-    // Mystery gift chips — locked unless points reached
-    var chipsHtml = milestones.map(function(level, idx){
-      var unlocked = !isGuest && (points >= level);
-      var gift = (typeof getGiftForLevel === 'function') ? getGiftForLevel(level) : { emoji: '🎁', name: 'מתנה' };
+    function makeChip(level, idx, phaseActive){
+      var unlocked = !isGuest && points >= level;
       var delay = idx * 0.07;
       if(unlocked){
         return '<div class="pm-chip unlocked" style="animation-delay:' + delay + 's">' +
           '<div class="pm-chip-icon">🎉</div>' +
           '<div class="pm-chip-pts">' + level + '</div>' +
-          '<div class="pm-chip-label">הפתעה נפתחה!</div>' +
-          '<div class="pm-chip-badge">✓ פתוח</div>' +
+          '<div class="pm-chip-label">נפתח!</div>' +
+          '<div class="pm-chip-badge">✓</div>' +
+        '</div>';
+      }
+      if(!phaseActive){
+        return '<div class="pm-chip locked" style="animation-delay:' + delay + 's;opacity:.35;filter:grayscale(.8)">' +
+          '<div class="pm-chip-icon" style="font-size:20px;opacity:.5">🔒</div>' +
+          '<div class="pm-chip-pts" style="color:rgba(255,255,255,.3)">' + level + '</div>' +
+          '<div class="pm-chip-label" style="color:rgba(255,255,255,.25)">שלב 2</div>' +
         '</div>';
       }
       return '<div class="pm-chip locked" style="animation-delay:' + delay + 's">' +
         '<div class="pm-chip-icon" style="font-size:22px;filter:none;opacity:.7">❓</div>' +
         '<div class="pm-chip-pts">' + level + '</div>' +
-        '<div class="pm-chip-label">מתנה מסתורית</div>' +
+        '<div class="pm-chip-label">מתנה</div>' +
         '<div class="pm-chip-lock">🔒</div>' +
       '</div>';
-    }).join('');
+    }
+
+    var chips1Html = phase1.map(function(l, i){ return makeChip(l, i, true); }).join('');
+    var chips2Html = phase2.map(function(l, i){ return makeChip(l, i, phase1Complete); }).join('');
+
+    // Two progress bars
+    var p1Pct = PHASE1_CAP > 0 ? Math.min(100, Math.max(0, (points / PHASE1_CAP) * 100)) : 0;
+    var p2Pct = phase1Complete ? Math.min(100, Math.max(0, ((points - PHASE1_CAP) / (3000 - PHASE1_CAP)) * 100)) : 0;
 
     var nextLine = '';
     if(isGuest){
       nextLine = '<div class="pm-next-hint">✨ התחברי לצבור נקודות ולגלות את המתנות</div>';
-    } else if(points >= maxShown){
+    } else if(points >= 3000){
       nextLine = '<div class="pm-next-hint" style="color:#f1c165">🎉 פתחת את כל המתנות! ממשיכים לצבור</div>';
+    } else if(phase1Complete){
+      var missing2 = phase2.find(function(l){ return l > points; });
+      nextLine = '<div class="pm-next-hint">עוד <strong>' + ((missing2 || 3000) - points) + ' נק׳</strong> לשלב 2 הבאה 🔮</div>';
     } else {
-      nextLine = '<div class="pm-next-hint">עוד <strong>' + nextInfo.missing + ' נק׳</strong> לגילוי המתנה הבאה 🔮</div>';
+      var missing1 = phase1.find(function(l){ return l > points; });
+      nextLine = '<div class="pm-next-hint">עוד <strong>' + ((missing1 || 1500) - points) + ' נק׳</strong> לגילוי המתנה הבאה 🔮</div>';
     }
 
     el.innerHTML =
@@ -4242,25 +4303,34 @@ function ensureUI(){
         '<div class="pm-title">🎁 מד מתנות</div>' +
         '<div class="pm-pts-badge">' + points + ' נק׳</div>' +
       '</div>' +
-      '<div class="pm-bar-wrap">' +
-        '<div class="pm-bar-track">' +
-          '<div class="pm-bar-fill" id="pmFill" style="width:0%"></div>' +
-        '</div>' +
+      // Phase 1
+      '<div style="font-size:10px;font-weight:800;color:rgba(241,193,101,.6);text-transform:uppercase;letter-spacing:1px;margin:2px 0 5px">שלב 1 · 0 – 1500 נק׳</div>' +
+      '<div class="pm-bar-wrap" style="margin-bottom:6px">' +
+        '<div class="pm-bar-track"><div class="pm-bar-fill" id="pmFill1" style="width:0%"></div></div>' +
         '<div class="pm-dots">' +
-          milestones.map(function(level){
-            var pos = (level / maxShown) * 100;
-            var hit = !isGuest && (points >= level);
-            return '<div class="pm-dot ' + (hit ? 'hit' : '') + '" style="left:' + pos + '%"></div>';
-          }).join('') +
+          phase1.map(function(l){ var pos=(l/PHASE1_CAP)*100; var hit=!isGuest&&points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos+'%"></div>'; }).join('') +
         '</div>' +
       '</div>' +
-      '<div class="pm-chips">' + chipsHtml + '</div>' +
+      '<div class="pm-chips" style="margin-bottom:12px">' + chips1Html + '</div>' +
+      // Phase 2
+      '<div style="font-size:10px;font-weight:800;color:rgba(200,112,74,' + (phase1Complete ? '.7' : '.35') + ');text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">' +
+        (phase1Complete ? '⭐ ' : '🔒 ') + 'שלב 2 · 1500 – 3000 נק׳' + (phase1Complete ? '' : ' — יפתח ב-1500') +
+      '</div>' +
+      '<div class="pm-bar-wrap" style="margin-bottom:6px;' + (phase1Complete ? '' : 'opacity:.4') + '">' +
+        '<div class="pm-bar-track"><div class="pm-bar-fill" id="pmFill2" style="width:0%;' + (phase1Complete ? '' : 'background:rgba(150,150,150,.4)') + '"></div></div>' +
+        '<div class="pm-dots">' +
+          phase2.map(function(l){ var pos=((l-PHASE1_CAP)/(3000-PHASE1_CAP))*100; var hit=!isGuest&&points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos+'%"></div>'; }).join('') +
+        '</div>' +
+      '</div>' +
+      '<div class="pm-chips">' + chips2Html + '</div>' +
       nextLine;
 
-    // animate bar fill after paint
+    // animate both bars
     setTimeout(function(){
-      var fill = document.getElementById('pmFill');
-      if(fill) fill.style.width = meterPct + '%';
+      var f1 = document.getElementById('pmFill1');
+      var f2 = document.getElementById('pmFill2');
+      if(f1) f1.style.width = p1Pct + '%';
+      if(f2) f2.style.width = p2Pct + '%';
     }, 80);
   }
 
@@ -4508,6 +4578,7 @@ function ensureUI(){
           (payment ? '<span class="profile-order-badge pay">' + payLabel(payment) + '</span>' : '') +
           '<span class="profile-order-badge mode">' + modeLabel + '</span>' +
           (total > 0 ? '<span class="profile-order-total">₪' + total.toFixed(0) + '</span>' : '') +
+          (sCls !== 'ps-done' && sCls !== 'ps-cancelled' && entry.id ? '<a href="order.html?id=' + encodeURIComponent(entry.id) + '" target="_blank" class="profile-track-btn">🔍 מעקב</a>' : '') +
         '</div>' +
       '</div>';
     });
@@ -5360,6 +5431,14 @@ function ensureUI(){
             list.push(c);
           }
         });
+      }
+      // Merge in the coupon from settings popup (works even if Firestore fails)
+      if(window._cpFromSettings && window._cpFromSettings.code){
+        var cpKey = window._cpFromSettings.code;
+        var alreadyIn = list.some(function(c){
+          return String(c.code||c.codeLower||c.id||'').trim().toUpperCase().replace(/\s+/g,'') === cpKey;
+        });
+        if(!alreadyIn) list.push(window._cpFromSettings);
       }
       couponsCache = list;
       couponsLoadedAt = Date.now();
