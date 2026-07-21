@@ -112,6 +112,15 @@ input[type="date"]#datePicker.on{display:block}
 .act:hover{opacity:.8}
 .act-wa{background:#e8fde8;color:#1a7a28;border:1px solid #a8dca8}
 .act-mail{background:#e8eeff;color:#3050c0;border:1px solid #b0c0f0}
+.act-track{background:linear-gradient(135deg,#e8f8ee,#c8f0d8);color:#1a6a3a;border:1px solid #90d8a8}
+/* Admin Banner Marquee */
+#adminBanner{width:100%;overflow:hidden;background:linear-gradient(90deg,#fff3e0,#ffe0b2,#fff8e1,#ffe0b2,#fff3e0);border-bottom:1.5px solid #f0c88a;height:38px;display:flex;align-items:center;position:relative}
+.admin-banner-static{justify-content:center}
+.ab-brand{font-size:17px;font-weight:900;color:#c8704a;letter-spacing:3px;font-family:'Georgia',serif;text-shadow:0 1px 2px rgba(200,112,74,.15)}
+.ab-track{display:flex;align-items:center;white-space:nowrap;animation:abScroll 22s linear infinite}
+@keyframes abScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ab-item{font-size:13px;font-weight:800;color:#8a4500;padding:0 20px}
+.ab-sep{color:#c8a060;font-size:15px;padding:0 6px}
 .note-box{padding:10px 16px;background:#fffaf5;border-top:1px solid #f0e0d0;font-size:13px;color:#9a7060;font-style:italic}
 .followup-bar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f0fff4;border-top:2px solid #a8dca8;flex-wrap:wrap}
 .followup-lbl{font-size:12px;font-weight:800;color:#1a7a28;flex:1}
@@ -290,6 +299,7 @@ input[type="date"]#datePicker.on{display:block}
     <button class="hdr-btn hdr-back" onclick="window.location='index.html'">← אתר</button>
     <button class="hdr-btn hdr-out" onclick="doLogout()">יציאה</button>
   </div>
+  <div id="adminBanner" class="admin-banner-static"><span class="ab-brand">SaraBakery</span></div>
   <div class="tabs-bar">
     <button class="tb on" onclick="showTab('orders',this)">📋 הזמנות <span class="nb" id="pendingBadge">0</span></button>
     <button class="tb" onclick="showTab('products',this)">🛍️ מוצרים <span class="nb" id="prodBadge">0</span></button>
@@ -1193,15 +1203,19 @@ function renderCard(o){
   }else{
     var steps=SF.map((step,i)=>{var isDone=i<curIdx,isCur=i===curIdx,isNext=i===curIdx+1;var cls=isDone?'done':isCur?'current':isNext?'next':'future';var line=i<SF.length-1?`<div class="sl ${isDone?'done':''}"></div>`:'';return`<div class="ss ${cls}"><div class="sd">${isDone?'✓':step.i}</div><div class="slb">${step.l}</div></div>${line}`;}).join('');
     var nextStep=curIdx>=0&&curIdx<SF.length-1?SF[curIdx+1]:null;
-    var advBtn=nextStep?`<button class="adv-btn" onclick="window._adv('${o.id}')"><span style="font-size:20px">${nextStep.i}</span><span>קדם הזמנה ← ${nextStep.l}</span></button>`:`<div class="status-done">✅ הזמנה הושלמה</div>`;
+    var advBtn=nextStep?`<button class="adv-btn" onclick="window._adv('${o.id}')"><span style="font-size:20px">${nextStep.i}</span><span>לחצי ל${nextStep.l}</span></button>`:`<div class="status-done">✅ הזמנה הושלמה</div>`;
     stepperHtml=`<div class="stepper-wrap"><div class="stepper">${steps}</div>${advBtn}<div class="action-row">${s!=='completed'?`<button class="act-sm act-cancel" onclick="window._cancel('${o.id}')">⛔ ביטול הזמנה</button>`:''}<button class="act-sm act-delete" onclick="window._delete('${o.id}')">🗑️ מחק</button></div></div>`;
   }
   var itemsHtml='';
   if(items.length){var rows=items.map(it=>{if(!it)return'';var details=[it.size,it.flavor,it.color,it.filling,it.decoration,it.details,it.note,it.inscription].filter(Boolean).join(' · ');return`<div class="item-row"><div class="item-qty">${it.qty||1}x</div><div class="item-name">${it.name||'פריט'}<br>${details?`<span class="item-details">${details}</span>`:''}</div><div class="item-price">₪${((it.price||0)*(it.qty||1)).toFixed(0)}</div></div>`;}).join('');itemsHtml=`<div class="oc-items"><div class="items-toggle" onclick="this.classList.toggle('open');this.nextElementSibling.classList.toggle('on')"><span>🛒 ${items.length} פריטים — ₪${(+total).toFixed(0)}</span><span style="margin-right:auto;font-size:11px;color:#6a4030">לפרטים ▼</span></div><div class="items-list">${rows}</div></div>`;}
   var payMethod=o.paymentMethod||o.checkout?.payment||o.checkout?.paymentCode||'',isPaid=o.paid===true;
   var payHtml=`<div class="oc-pay"><span class="pay-label">💰 תשלום:</span><select class="pay-select" onchange="window._setPay('${o.id}',this.value)"><option value="" ${!payMethod?'selected':''}>— בחר —</option><option value="cash" ${'cash'===payMethod?'selected':''}>💵 מזומן</option><option value="bit" ${'bit'===payMethod||payMethod==='ביט'?'selected':''}>💳 ביט</option><option value="paybox" ${'paybox'===payMethod||payMethod==='פייבוקס'?'selected':''}>💙 פייבוקס</option><option value="transfer" ${'transfer'===payMethod||payMethod==='העברה'?'selected':''}>🏦 העברה בנקאית</option></select><div class="pay-toggle"><input type="checkbox" id="paid_${o.id}" ${isPaid?'checked':''} onchange="window._setPaid('${o.id}',this.checked)"><label for="paid_${o.id}">${isPaid?'✅ שילם':'⏳ לא שילם'}</label></div></div>`;
-  var waLink=phone?`<a class="act act-wa" href="https://wa.me/${normPhone(phone)}?text=${encodeURIComponent('שלום '+name+' 😊')}" target="_blank">💬 ${phone}</a>`:'';
+  var waLink=phone?`<a class="act act-wa" href="https://wa.me/${normPhone(phone)}?text=${encodeURIComponent('שלום '+name+', ')}" target="_blank">💬 ${phone}</a>`:'';
   var mailLink=email?`<a class="act act-mail" href="mailto:${email}">📧 ${email}</a>`:'';
+  // Tracking link button
+  var trackUrl=window.location.origin+window.location.pathname.replace('admin.html','')+'order.html?id='+(num||o.id||'');
+  var trackMsg='שלום '+name+',\nההזמנה שלך מספר '+(num||o.id||'')+' התקבלה.\nלמעקב אחר הסטטוס:\n'+trackUrl+'\nבשאלות נשמח לעזור,\nשרה';
+  var trackBtn=phone?`<a class="act act-track" href="https://wa.me/${normPhone(phone)}?text=${encodeURIComponent(trackMsg)}" target="_blank">📍 שלחי מעקב ללקוח</a>`:'';
   var addrHtml='';if(isDelivery){var addr=[oAddress(o),oCity(o)].filter(Boolean).join(', ');if(addr)addrHtml=`<div class="note-box"><strong>📍 משלוח:</strong> ${addr}</div>`;}
   var noteHtml=note?`<div class="note-box"><strong>📝 הערה:</strong> ${note}</div>`:'';
   // 24h follow-up
@@ -1210,11 +1224,11 @@ function renderCard(o){
     var ca=o.createdAt?.toDate?o.createdAt.toDate():(o.createdAt?new Date(o.createdAt):null);
     if(ca&&!isNaN(ca)&&(Date.now()-ca.getTime()>86400000)){
       var productNames=items.map(function(it){return it&&it.name?it.name:'';}).filter(Boolean).slice(0,2).join(' ו-');
-      var fuMsg='שלום '+name+'! 😊\nנשמח לדעת איך היה '+(productNames||'ההזמנה')+' שהכנתי לך 🎂\nפידבק שלך ממש מחמם את הלב! 🙏\n— שרה ❤️';
+      var fuMsg='שלום '+name+',\nנשמח לדעת איך היה '+(productNames||'ההזמנה')+' שהכנתי לך.\nפידבק שלך ממש חשוב לנו!\n— שרה';
       followUpHtml=`<div class="followup-bar"><span class="followup-lbl">📩 עבר יום — שלחי הודעת פידבק ל${name}?</span><a class="followup-btn" href="https://wa.me/${normPhone(phone)}?text=${encodeURIComponent(fuMsg)}" target="_blank">💬 שלחי WhatsApp</a></div>`;
     }
   }
-  return`<div class="oc ${s==='pending'?'urgent':''}${s==='completed'?' done-card':''}"><div class="oc-hdr"><div class="oc-avatar" onclick="window._profile('${o.id}')">${initials}</div><div class="oc-id"><div class="oc-name" onclick="window._profile('${o.id}')">${name} <span class="oc-name-hint">← פרופיל</span></div><div class="oc-meta">${phone?`<span class="oc-contact">📱 ${phone}</span>`:''}${num?`<span class="oc-num">#${num}</span>`:''}</div></div>${timingHtml}</div>${stepperHtml}${itemsHtml}${addrHtml}${noteHtml}${payHtml}${waLink||mailLink?`<div class="oc-acts">${waLink}${mailLink}</div>`:''} ${followUpHtml}</div>`;
+  return`<div class="oc ${s==='pending'?'urgent':''}${s==='completed'?' done-card':''}"><div class="oc-hdr"><div class="oc-avatar" onclick="window._profile('${o.id}')">${initials}</div><div class="oc-id"><div class="oc-name" onclick="window._profile('${o.id}')">${name} <span class="oc-name-hint">← פרופיל</span></div><div class="oc-meta">${phone?`<span class="oc-contact">📱 ${phone}</span>`:''}${num?`<span class="oc-num">#${num}</span>`:''}</div></div>${timingHtml}</div>${stepperHtml}${itemsHtml}${addrHtml}${noteHtml}${payHtml}${waLink||mailLink||trackBtn?`<div class="oc-acts">${waLink}${mailLink}${trackBtn}</div>`:''} ${followUpHtml}</div>`;
 }
 
 function renderKpis(){
@@ -1270,6 +1284,35 @@ async function loadCoupons(){
   }catch(e){el.innerHTML='<div class="empty-state"><div class="es-txt">❌ שגיאה: '+e.message+'</div></div>';}
 }
 
+async function renderAdminMarquee(){
+  var el=$('adminBanner');if(!el)return;
+  var items=[];
+  var sale=settings.sale||{};
+  if(sale.active&&sale.text)items.push(sale.text);
+  var cp=settings.couponPopup||{};
+  if(cp.active&&cp.code)items.push((cp.title||'מבצע מיוחד')+' — קוד: '+cp.code);
+  try{
+    var today=new Date().toISOString().split('T')[0];
+    var snap=await getDocs(collection(db,'coupons'));
+    snap.forEach(d=>{
+      var c=d.data();
+      var expired=c.expiry&&c.expiry<today;
+      if(c.active!==false&&!expired){
+        var lbl=c.type==='fixed'?'₪'+c.value+' הנחה':c.value+'% הנחה';
+        items.push('קוד '+c.code+' — '+lbl);
+      }
+    });
+  }catch(e){}
+  if(!items.length){
+    el.className='admin-banner-static';
+    el.innerHTML='<span class="ab-brand">SaraBakery</span>';
+  }else{
+    var content=items.map(t=>'<span class="ab-item">'+t+'</span>').join('<span class="ab-sep">·</span>');
+    el.className='';
+    el.innerHTML='<div class="ab-track">'+content+'<span class="ab-sep" style="padding:0 24px">·</span>'+content+'</div>';
+  }
+}
+
 window.addCoupon=async function(){
   var code=($('cpCode').value||'').trim().toUpperCase();
   var type=$('cpType').value;
@@ -1281,14 +1324,14 @@ window.addCoupon=async function(){
     await addDoc(collection(db,'coupons'),{code,type,value,expiry,active:true,createdAt:serverTimestamp()});
     $('cpCode').value='';$('cpValue').value='';$('cpExpiry').value='';
     toast('קופון נוסף ✅');
-    loadCoupons();
+    loadCoupons();renderAdminMarquee();
   }catch(e){toast('שגיאה: '+e.message,'err');}
 };
 
 window.toggleCoupon=async function(id,currentlyActive){
   try{
     await updateDoc(doc(db,'coupons',id),{active:!currentlyActive});
-    loadCoupons();
+    loadCoupons();renderAdminMarquee();
   }catch(e){toast('שגיאה: '+e.message,'err');}
 };
 
@@ -1297,7 +1340,7 @@ window.deleteCoupon=async function(id,code){
   try{
     await deleteDoc(doc(db,'coupons',id));
     toast('קופון נמחק');
-    loadCoupons();
+    loadCoupons();renderAdminMarquee();
   }catch(e){toast('שגיאה: '+e.message,'err');}
 };
 
@@ -1386,6 +1429,7 @@ async function loadSettings(){
     // Product blocks
     renderProductBlocks(settings.productBlocks||[]);
     updatePbProductSelect();
+    renderAdminMarquee();
   }catch(e){}
 }
 
@@ -1466,7 +1510,7 @@ window.saveSettings=async function(){
     var saleType=document.querySelector('.sale-type-btn.on')?document.querySelector('.sale-type-btn.on').dataset.type:'percent';
     var sale={active:$('sSaleActive').checked,type:saleType,value:+$('sSaleValue').value||0,text:$('sSaleText').value.trim()};
     var data={address:$('sAddr').value.trim(),whatsapp:$('sWa').value.trim(),hours:$('sHours').value.trim(),banner:$('sBanner').value.trim(),ordersClosed:!$('sOrdersOpen').checked,sale:sale,bitPhone:$('sBitPhone').value.trim(),payboxPhone:$('sPayboxPhone').value.trim(),bankDetails:$('sBankDetails').value.trim(),updatedAt:serverTimestamp()};
-    await setDoc(doc(db,'settings','main'),data,{merge:true});settings={...settings,...data};msg.textContent='✅ נשמר — רענן את האתר הראשי לראות שינויים';msg.className='set-msg ok';toast('הגדרות נשמרו ✅');
+    await setDoc(doc(db,'settings','main'),data,{merge:true});settings={...settings,...data};renderAdminMarquee();msg.textContent='✅ נשמר — רענן את האתר הראשי לראות שינויים';msg.className='set-msg ok';toast('הגדרות נשמרו ✅');
   }catch(e){msg.textContent='שגיאה: '+e.message;msg.className='set-msg err';}
   btn.disabled=false;btn.textContent='💾 שמור הגדרות';setTimeout(()=>msg.textContent='',4000);
 };

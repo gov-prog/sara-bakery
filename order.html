@@ -278,7 +278,7 @@ function buildItems(order){
   let totals = '<div class="totals-row"><span>סכום ביניים</span><span class="totals-val">'+shekel(order.subtotal)+'</span></div>';
   if(order.deliveryFee > 0) totals += '<div class="totals-row"><span>דמי משלוח</span><span class="totals-val">'+shekel(order.deliveryFee)+'</span></div>';
   if(order.saleDiscount > 0) totals += '<div class="totals-row" style="color:#1a7a3c"><span>🎉 הנחה</span><span class="totals-val" style="color:#1a7a3c">-'+shekel(order.saleDiscount)+'</span></div>';
-  if(order.couponDiscount > 0) totals += '<div class="totals-row" style="color:#1a7a3c"><span>🏷️ קופון'+(order.couponCode?' ('+order.couponCode+')'):'')+'</span><span class="totals-val" style="color:#1a7a3c">-'+shekel(order.couponDiscount)+'</span></div>';
+  if(order.couponDiscount > 0) totals += '<div class="totals-row" style="color:#1a7a3c"><span>🏷️ קופון'+(order.couponCode?' ('+order.couponCode+')':'')+'</span><span class="totals-val" style="color:#1a7a3c">-'+shekel(order.couponDiscount)+'</span></div>';
   if(order.total > 0) totals += '<div class="totals-row final"><span>סה"כ לתשלום</span><span class="totals-val">'+shekel(order.total)+'</span></div>';
 
   return rows + totals;
