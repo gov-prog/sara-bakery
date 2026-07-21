@@ -4321,13 +4321,8 @@ function ensureUI(){
       var missing2 = phase2.find(function(l){ return l > points; });
       nextLine = '<div class="pm-next-hint">עוד <strong>' + ((missing2 || 3000) - points) + ' נק׳</strong> למתנה הבאה 🎁</div>';
     } else {
-      var missing1 = phase1.find(function(l){ return l > points; });
-      nextLine = '<div class="pm-next-hint">עוד <strong>' + ((missing1 || 1500) - points) + ' נק׳</strong> למתנה הבאה 🔮</div>';
+      nextLine = ''; // phase2 placeholder shows inline hint
     }
-
-    var p2Badge = phase1Complete
-      ? '<span class="pm-phase-badge active">⭐ פעיל</span>'
-      : '<span class="pm-phase-badge lock">🔒 נפתח ב-1500</span>';
 
     el.innerHTML =
       '<div class="pm-header">' +
@@ -4348,20 +4343,22 @@ function ensureUI(){
         '</div>' +
         '<div class="pm-chips">' + chips1Html + '</div>' +
       '</div>' +
-      // Phase 2
-      '<div class="pm-phase" style="' + (phase1Complete ? '' : 'opacity:.55') + '">' +
-        '<div class="pm-phase-hdr">' +
-          '<span class="pm-phase-lbl p2' + (phase1Complete ? ' active' : '') + '">שלב 2 · 1500–3000</span>' +
-          p2Badge +
-        '</div>' +
-        '<div class="pm-bar-wrap">' +
-          '<div class="pm-bar-track"><div class="pm-bar-fill" id="pmFill2" style="width:0%;' + (phase1Complete ? '' : 'background:rgba(200,200,200,.25)') + '"></div></div>' +
-          '<div class="pm-dots">' +
-            phase2.map(function(l){ var pos=((l-PHASE1_CAP)/(3000-PHASE1_CAP))*100; var hit=!isGuest&&points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos+'%"></div>'; }).join('') +
-          '</div>' +
-        '</div>' +
-        '<div class="pm-chips">' + chips2Html + '</div>' +
-      '</div>' +
+      // Phase 2 — hidden until phase 1 complete
+      (phase1Complete
+        ? '<div class="pm-phase" style="animation:pmChipIn .4s ease both">' +
+            '<div class="pm-phase-hdr">' +
+              '<span class="pm-phase-lbl p2 active">שלב 2 · 1500–3000</span>' +
+              '<span class="pm-phase-badge active">⭐ פעיל</span>' +
+            '</div>' +
+            '<div class="pm-bar-wrap">' +
+              '<div class="pm-bar-track"><div class="pm-bar-fill" id="pmFill2" style="width:0%"></div></div>' +
+              '<div class="pm-dots">' +
+                phase2.map(function(l){ var pos=((l-PHASE1_CAP)/(3000-PHASE1_CAP))*100; var hit=points>=l; return '<div class="pm-dot '+(hit?'hit':'')+'" style="left:'+pos+'%"></div>'; }).join('') +
+              '</div>' +
+            '</div>' +
+            '<div class="pm-chips">' + chips2Html + '</div>' +
+          '</div>'
+        : (isGuest ? '' : '<div class="pm-next-hint" style="margin-top:4px">עוד <strong>' + (PHASE1_CAP - points) + ' נק׳</strong> לפתיחת שלב 2 ⭐</div>')) +
       nextLine;
 
     setTimeout(function(){
