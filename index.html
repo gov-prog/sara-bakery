@@ -12094,24 +12094,15 @@ window.closeLegal = function(){
 </div>
 <script>
 (function(){
-  var key='sara_cookie_consent';
   var b=document.getElementById('cookieBanner');
-  if(!localStorage.getItem(key)){
-    setTimeout(function(){ if(b) b.classList.add('cb-show'); }, 900);
-  }
+  setTimeout(function(){ if(b) b.classList.add('cb-show'); }, 900);
   function hideBanner(){
     if(!b) return;
     b.classList.remove('cb-show');
     b.classList.add('cb-hide');
   }
-  window.acceptCookies=function(){
-    localStorage.setItem(key,'all');
-    hideBanner();
-  };
-  window.dismissCookies=function(){
-    localStorage.setItem(key,'essential');
-    hideBanner();
-  };
+  window.acceptCookies=function(){ hideBanner(); };
+  window.dismissCookies=function(){ hideBanner(); };
 })();
 </script>
 </body>
