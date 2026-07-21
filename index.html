@@ -374,22 +374,17 @@
     .rv-score-right{text-align:right}
     .rv-score-stars{color:#f1c165;font-size:17px;letter-spacing:2px;margin-bottom:2px}
     .rv-score-label{color:rgba(255,255,255,.35);font-size:11px;font-weight:700}
-    /* marquee */
-    .rv-marquee-wrap{overflow:hidden;position:relative;padding:8px 0}
-    .rv-marquee-wrap::before,.rv-marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
-    .rv-marquee-wrap::before{right:0;background:linear-gradient(to left,#0c0704,transparent)}
-    .rv-marquee-wrap::after{left:0;background:linear-gradient(to right,#0c0704,transparent)}
-    .rv-marquee-track{display:flex;gap:16px;margin-bottom:16px;width:max-content;animation:rvScroll 38s linear infinite}
-    .rv-marquee-track.rev{animation-name:rvScrollRev;animation-duration:42s}
-    @keyframes rvScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    @keyframes rvScrollRev{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
-    .rv-card{flex-shrink:0;width:290px;background:rgba(255,255,255,.04);border:1px solid rgba(200,112,74,.18);border-radius:20px;padding:20px 22px;direction:rtl;position:relative;overflow:hidden;transition:background .3s,border-color .3s}
-    .rv-card::before{content:'"';position:absolute;top:8px;left:14px;font-size:60px;color:rgba(241,193,101,.1);font-family:'Playfair Display',serif;line-height:1;pointer-events:none}
-    .rv-card:hover{background:rgba(255,255,255,.07);border-color:rgba(200,112,74,.4)}
-    .rv-stars{color:#f1c165;font-size:13px;letter-spacing:3px;margin-bottom:10px}
-    .rv-text{color:rgba(255,255,255,.82);font-size:13.5px;line-height:1.78;font-weight:500}
-    @media(max-width:600px){
-      .rv-card{width:240px}
+    /* reviews grid */
+    .rv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto;padding:0 5%}
+    .rv-gitem{border-radius:20px;overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(200,112,74,.14);direction:rtl;opacity:0;transform:translateY(32px);transition:opacity .55s ease,transform .55s ease,border-color .3s}
+    .rv-gitem.rv-visible{opacity:1;transform:none}
+    .rv-gitem:hover{border-color:rgba(200,112,74,.4)}
+    .rv-gimg{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+    .rv-gbody{padding:16px 18px 18px}
+    .rv-gstars{color:#f1c165;font-size:13px;letter-spacing:3px;margin-bottom:8px}
+    .rv-gtext{color:rgba(255,255,255,.78);font-size:13px;line-height:1.75;font-weight:500}
+    @media(max-width:900px){.rv-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){.rv-grid{grid-template-columns:1fr;gap:14px}
       .rv-score-row{flex-direction:column;gap:8px;padding:14px 20px}
       .rv-score-right{text-align:center}
     }
@@ -1317,69 +1312,69 @@
       <span class="rv-head-quote">"</span>
       <h2>מה הלקוחות<br>אומרים עלינו</h2>
       <p class="rv-head-sub">ביקורות אמיתיות שקיבלנו ישירות בוואטסאפ<br>כי אין כמו מילה טובה שיוצאת מהלב</p>
-      <div class="rv-score-row">
-        <div class="rv-score-num">4.9</div>
-        <div class="rv-score-right">
-          <div class="rv-score-stars">★★★★★</div>
-          <div class="rv-score-label">מבוסס על עשרות לקוחות מרוצים</div>
-        </div>
-      </div>
     </div>
   </div>
 
-  <!-- marquee row 1 -->
-  <div class="rv-marquee-wrap">
-    <div class="rv-marquee-track">
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פינקו אותי לכבוד שבת בקינוחים שלך לא מזמן, התמכרתי. לא הסכמתי להתבשר והתעוררתי באמצע הלילה כדי להמשיך להתפנק. היה ממש טעים ומאז אני לא מפסיקה לחשוב על זה. את מדהימה! תודה רבה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">וואו וואו וואו נראה ממש ממש מדהים ובטוח טעים 🙏 תודה רבה רבה תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת!</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שבוע טוב — פשוט שלמות! נהנו מכל ביס, וגיסתי לא נתנה לילדים חחח. מוחבא לה ולבעלה במקרר 😄</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שלום שרה 🙏 רציתי רק להגיד תודה — עשו לי משלוח ליומולדת 30 וזה המשלוח הכי טעים שהיה לי!!!!! פשוט מושלם, טעים ומושקע! ממש תודה רבה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואווו כמה שזה היה טעים!! איזה עיצוב והכל נקי ומסודר בצורה מדהימה!!</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">אמאלה אכלתי את זה!!! טעים ברמות על!! כמה שיפה ככה טעים! 💗💗💗</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואייי שרה את אלופה ממש! היה טעים מאוד. והכל נקי, מזמין ויפה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ערב טוב שרה 🙏 היום בעלי הפתיע אותי עם מארז ממך לכבוד יום ההולדת. היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נראה ממש ממש מדהים 🎊🙌🙏</div></div>
-      <!-- duplicate for seamless loop -->
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פינקו אותי לכבוד שבת בקינוחים שלך לא מזמן, התמכרתי. לא הסכמתי להתבשר והתעוררתי באמצע הלילה כדי להמשיך להתפנק. היה ממש טעים ומאז אני לא מפסיקה לחשוב על זה. את מדהימה! תודה רבה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">וואו וואו וואו נראה ממש ממש מדהים ובטוח טעים 🙏 תודה רבה רבה תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת!</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שבוע טוב — פשוט שלמות! נהנו מכל ביס, וגיסתי לא נתנה לילדים חחח. מוחבא לה ולבעלה במקרר 😄</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">שלום שרה 🙏 רציתי רק להגיד תודה — עשו לי משלוח ליומולדת 30 וזה המשלוח הכי טעים שהיה לי!!!!! פשוט מושלם, טעים ומושקע! ממש תודה רבה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואווו כמה שזה היה טעים!! איזה עיצוב והכל נקי ומסודר בצורה מדהימה!!</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">אמאלה אכלתי את זה!!! טעים ברמות על!! כמה שיפה ככה טעים! 💗💗💗</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ואייי שרה את אלופה ממש! היה טעים מאוד. והכל נקי, מזמין ויפה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ערב טוב שרה 🙏 היום בעלי הפתיע אותי עם מארז ממך לכבוד יום ההולדת. היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נראה ממש ממש מדהים 🎊🙌🙏</div></div>
+  <!-- static photo + review grid -->
+  <div class="rv-grid">
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="box1.jpg" alt="מארז">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">פינקו אותי לכבוד שבת בקינוחים שלך לא מזמן, התמכרתי. התעוררתי באמצע הלילה כדי להמשיך להתפנק. היה ממש טעים! את מדהימה ❤️</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="box2.jpg" alt="מארז">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">וואו וואו וואו נראה ממש ממש מדהים ובטוח טעים! תודה רבה רבה תבורכו בכל מילי דמיטב בשמחות ובריאות 🙏🤲</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="sweet_tray1.jpg" alt="מגש מתוקים">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">שבוע טוב — פשוט שלמות! נהנו מכל ביס. גיסתי לא נתנה לילדים חחח, מוחבא לה ולבעלה במקרר 😄</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="box3.jpg" alt="מארז">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">שלום שרה 🙏 עשו לי משלוח ליומולדת 30 וזה המשלוח הכי טעים שהיה לי!!!!! פשוט מושלם, טעים ומושקע! ממש תודה רבה ❤️</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="sweet_tray2.jpg" alt="מגש מתוקים">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">ואווו כמה שזה היה טעים!! איזה עיצוב והכל נקי ומסודר בצורה מדהימה!!</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="box4.jpg" alt="מארז">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">אמאלה אכלתי את זה!!! טעים ברמות על!! כמה שיפה ככה טעים! 💗💗💗</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="sweet_tray3.jpg" alt="מגש מתוקים">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">ואייי שרה את אלופה ממש! היה טעים מאוד. והכל נקי, מזמין ויפה ❤️</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="box5.jpg" alt="מארז">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">ערב טוב שרה 🙏 היום בעלי הפתיע אותי עם מארז ממך לכבוד יום ההולדת. היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!!</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="mousse_box.jpg" alt="מארז מוס">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
+    </div>
+    <div class="rv-gitem">
+      <img class="rv-gimg" src="box6.jpg" alt="מארז">
+      <div class="rv-gbody"><div class="rv-gstars">★★★★★</div><div class="rv-gtext">נראה ממש ממש מדהים 🎊🙌🙏</div></div>
     </div>
   </div>
-
-  <!-- marquee row 2 (reverse) -->
-  <div class="rv-marquee-wrap" style="margin-top:0">
-    <div class="rv-marquee-track rev">
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ניסיתי מאז לא מעט מתכונים ואף אחד מהם לא דומה לשלך. את מדהימה! ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊🙏</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">כמה שיפה ככה טעים! שרה את אלופה ממש! 💗💗💗</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פשוט מושלם, טעים ומושקע! המשלוח הכי טעים שהיה לי!!!!! ממש תודה רבה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נהנו מכל ביס — פשוט שלמות! מוחבא לה ולבעלה במקרר 😄</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">איזה עיצוב והכל נקי ומסודר בצורה מדהימה!! ואווו כמה שזה היה טעים!!</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת — וואו וואו וואו מדהים! 🙏🤲</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">והכל נקי, מזמין ויפה ❤️ שרה את אלופה ממש! היה טעים מאוד.</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">התעוררתי באמצע הלילה כדי להמשיך להתפנק — ממש מדהים! תודה רבה ❤️</div></div>
-      <!-- duplicate -->
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">ניסיתי מאז לא מעט מתכונים ואף אחד מהם לא דומה לשלך. את מדהימה! ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">מושלם!!! ממש ממש טעים!! תודה רבה אלופה! 🙏🙏</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">היה מושלם!!! הכל מסודר, נקי וטעים מאוד.. אלופה!!! תודה רבה 😊🙏</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">כמה שיפה ככה טעים! שרה את אלופה ממש! 💗💗💗</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">פשוט מושלם, טעים ומושקע! המשלוח הכי טעים שהיה לי!!!!! ממש תודה רבה ❤️</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">נהנו מכל ביס — פשוט שלמות! מוחבא לה ולבעלה במקרר 😄</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">איזה עיצוב והכל נקי ומסודר בצורה מדהימה!! ואווו כמה שזה היה טעים!!</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">תבורכו בכל מילי דמיטב בשמחות בבריאות ונחת — וואו וואו וואו מדהים! 🙏🤲</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">והכל נקי, מזמין ויפה ❤️ שרה את אלופה ממש! היה טעים מאוד.</div></div>
-      <div class="rv-card"><div class="rv-stars">★★★★★</div><div class="rv-text">התעוררתי באמצע הלילה כדי להמשיך להתפנק — ממש מדהים! תודה רבה ❤️</div></div>
-    </div>
-  </div>
+  <script>
+  (function(){
+    var items = document.querySelectorAll('.rv-gitem');
+    if(!items.length) return;
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e,i){
+        if(e.isIntersecting){
+          var el = e.target;
+          var idx = Array.from(items).indexOf(el);
+          setTimeout(function(){ el.classList.add('rv-visible'); }, idx * 70);
+          io.unobserve(el);
+        }
+      });
+    },{threshold:0.12});
+    items.forEach(function(el){ io.observe(el); });
+  })();
+  </script>
 </section>
 
 <!-- INFO -->
