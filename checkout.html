@@ -169,7 +169,7 @@
         <div id="coCouponTagWrap" style="margin-top:6px;min-height:24px"></div>
       </div>
     </div>
-    <button class="co-submit" id="toStep2Btn" onclick="goToStep(2)">המשך לפרטים →</button>
+    <button class="co-submit" id="toStep2Btn" onclick="goToStep(2)">✅ קדמי לפרטים ←</button>
   </div>
 
   <!-- STEP 2: Delivery details -->
@@ -235,15 +235,15 @@
           </select>
         </div>
       </div>
-      <div id="dateBlockWarning" style="display:none;background:#fff3cd;border:1.5px solid #f0c050;border-radius:12px;padding:12px 14px;margin-top:8px;font-size:13px;color:#7a5010;direction:rtl;line-height:1.6"></div>
+      <div id="dateBlockWarning" style="display:none;background:#fff4e6;border:2px solid #f0a060;border-radius:14px;padding:14px 16px;margin-top:10px;font-size:13px;color:#7a3a10;direction:rtl;line-height:1.75;font-weight:700"></div>
       <div class="co-field">
         <label class="co-label" for="coNote">הערות (אופציונלי)</label>
         <textarea class="co-input" id="coNote" rows="2" placeholder="בקשות מיוחדות, אלרגיות, כיתוב להקדשה..."></textarea>
       </div>
     </div>
 
-    <button class="co-submit" id="step2NextBtn" onclick="goToStep(3)">המשך לתשלום →</button>
-    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(1)">← חזרה לסל</button>
+    <button class="co-submit" id="step2NextBtn" onclick="goToStep(3)">✅ קדמי לתשלום ←</button>
+    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(1)">→ חזרה לסל</button>
   </div>
 
   <!-- STEP 3: Payment -->
@@ -290,8 +290,8 @@
       <div class="co-total-row final" style="margin-top:10px"><span>סה"כ</span><span class="co-total-val" id="orderSummaryTotal">₪0</span></div>
     </div>
 
-    <button class="co-submit" id="submitBtn" disabled onclick="submitOrder()">שליחת הזמנה</button>
-    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(2)">← חזרה לפרטים</button>
+    <button class="co-submit" id="submitBtn" disabled onclick="submitOrder()">✅ שלחי הזמנה לשרה ←</button>
+    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(2)">→ חזרה לפרטים</button>
   </div>
 
 </div><!-- /co-wrap -->
@@ -555,10 +555,18 @@ window.checkDateBlocks = function(){
   const warn = document.getElementById('dateBlockWarning');
   const nextBtn = document.getElementById('step2NextBtn');
   if(!warn) return;
-  if(!dateVal){ warn.style.display='none'; return; }
+  if(!dateVal){ warn.style.display='none'; if(nextBtn) nextBtn.disabled=false; return; }
+  // Check Saturday
+  const d = new Date(dateVal + 'T12:00:00');
+  if(d.getDay() === 6){
+    warn.innerHTML = '<strong>⛔ שבת לא זמינה לאיסוף/משלוח</strong> — בחרי תאריך אחר.';
+    warn.style.display = 'block';
+    if(nextBtn) nextBtn.disabled = true;
+    return;
+  }
   const blocks = window._productBlocks || [];
-  if(!blocks.length){ warn.style.display='none'; return; }
-  // find cart items that are blocked on selected date
+  if(!blocks.length){ warn.style.display='none'; if(nextBtn) nextBtn.disabled=false; return; }
+  // find cart items blocked on selected date
   const blocked = [];
   cartItems.forEach(function(item){
     const b = blocks.filter(function(bl){
@@ -570,13 +578,15 @@ window.checkDateBlocks = function(){
   const msgs = blocked.map(function(b){
     const ranges = b.blocks.map(function(bl){
       function fmt(s){var m=String(s).match(/(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]+'/'+m[1]:s;}
-      return fmt(bl.from)+' עד '+fmt(bl.to);
+      return fmt(bl.from)+' — '+fmt(bl.to);
     }).join(', ');
-    return '⛔ '+b.name+' — לא זמין בתאריכים: '+ranges;
+    return '⛔ <strong>'+b.name+'</strong> — אין מלאי בתאריכים: '+ranges;
   });
-  warn.innerHTML = '<strong>שים לב!</strong> חלק מהמוצרים בסל לא זמינים בתאריך שנבחר:<br>' + msgs.join('<br>') + '<br><span style="font-size:12px">אנא בחרי תאריך אחר או צרי קשר עם שרה.</span>';
+  warn.innerHTML = '⚠️ חלק מהמוצרים בסל <strong>לא זמינים</strong> בתאריך שנבחר:<br><br>' +
+    msgs.join('<br>') +
+    '<br><br><span style="font-size:12px;color:#5a4010">אנא בחרי תאריך אחר, או צרי קשר עם שרה לתיאום.</span>';
   warn.style.display = 'block';
-  if(nextBtn) nextBtn.disabled = false; // warn but don't block completely
+  if(nextBtn) nextBtn.disabled = true; // block progression
 };
 
 // ── Payment ──────────────────────────────────────────────────────

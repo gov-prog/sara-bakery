@@ -1712,25 +1712,12 @@
         var max=maxAttr? (parseInt(maxAttr,10)||9999) : 9999;
         var curr=parseInt(inp.value||'0',10)||0;
         var next=Math.max(min, Math.min(max, curr + delta));
-        if(delta > 0 && next > curr){
+        // Just a gentle one-time toast — don't block adding
+        if(delta > 0 && next > curr && curr === 0){
           var ranges = inp.getAttribute('data-blocked-ranges');
           if(ranges){
             var itemName = inp.getAttribute('data-item') || 'פריט זה';
-            // Show popup instead of toast, block the increment
-            var popup = document.getElementById('productBlockedPopup');
-            if(popup){
-              document.getElementById('pbPopupTitle').textContent = '⚠️ ' + itemName + ' לא זמין';
-              document.getElementById('pbPopupMsg').textContent = 'המלאי נגמר בתאריכים: ' + ranges;
-              document.getElementById('pbPopupAvail').textContent = 'ניתן לבחור פריטים אחרים במארז 🧁';
-              // In builder context — main button just closes popup
-              var mainBtn = popup.querySelector('button');
-              if(mainBtn){
-                mainBtn.textContent = '✅ הבנתי, אמשיך לבחור פריטים אחרים';
-                mainBtn.onclick = function(){ popup.style.display='none'; mainBtn.textContent='✨ נמשיך לבניה של מארז אישי'; mainBtn.onclick=function(){window._pbGoToBuilder&&window._pbGoToBuilder();}; };
-              }
-              popup.style.display='flex';
-            }
-            return; // block the increment
+            toast('⚠️ ' + itemName + ' — לא זמין בתאריכים: ' + ranges);
           }
         }
         inp.value=String(next);
@@ -3271,10 +3258,11 @@ function ensureUI(){
       '.auth-btn.secondary{background:#f3eee8;color:#5a3a28}',
       '.cart-drawer{position:fixed;left:0;top:0;height:100vh;width:min(460px,94vw);background:linear-gradient(180deg,#fff,#fff8f0);border-right:1px solid #f2d9c0;z-index:1100;box-shadow:20px 0 40px rgba(0,0,0,.2);transform:translateX(-102%);transition:transform .25s ease;display:flex;flex-direction:column}',
       '.cart-drawer.open{transform:translateX(0)}',
-      '.cart-sticky-footer{padding:14px 16px;background:#fff;border-top:2px solid #f2d9c0;display:none;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 -6px 24px rgba(200,112,74,.14);flex-shrink:0}',
+      '.cart-sticky-footer{padding:14px 16px;background:#fff;border-top:2px solid #f2d9c0;display:none;flex-direction:column;gap:0;box-shadow:0 -6px 24px rgba(200,112,74,.14);flex-shrink:0}',
       '.cart-sticky-footer.visible{display:flex}',
-      '.cart-sticky-total{font-family:\'Playfair Display\',serif;font-size:16px;font-weight:900;color:#5a3224}',
-      '.cart-sticky-btn{background:linear-gradient(135deg,#c8704a,#a8522e);color:#fff;border-radius:50px;padding:12px 24px;font-size:14px;font-weight:900;text-decoration:none;font-family:\'Gisha\',\'Assistant\',sans-serif;box-shadow:0 6px 16px rgba(200,112,74,.3);white-space:nowrap;flex-shrink:0}',
+      '.cart-sticky-total{font-family:\'Playfair Display\',serif;font-size:17px;font-weight:900;color:#5a3224}',
+      '.cart-sticky-btn{background:linear-gradient(135deg,#c8704a,#a8522e);color:#fff;border-radius:16px;padding:15px;font-size:16px;font-weight:900;text-decoration:none;font-family:\'Gisha\',\'Assistant\',sans-serif;box-shadow:0 8px 22px rgba(200,112,74,.38);text-align:center;letter-spacing:.3px;transition:transform .15s,box-shadow .15s}',
+      '.cart-sticky-btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(200,112,74,.5)}',
       '.profile-drawer{position:fixed;right:0;top:0;height:100vh;width:min(420px,94vw);background:#fff;z-index:1200;box-shadow:-20px 0 40px rgba(0,0,0,.22);transform:translateX(102%);transition:transform .25s ease;display:flex;flex-direction:column}',
       '.profile-drawer.open{transform:translateX(0)}',
       '.profile-head{padding:14px 16px;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;gap:10px}',
@@ -3607,8 +3595,11 @@ function ensureUI(){
 
         '</div>' +
         '<div class="cart-sticky-footer" id="cartStickyFooter">' +
-          '<div class="cart-sticky-total" id="cartStickyTotal">הסל ריק</div>' +
-          '<a href="checkout.html" class="cart-sticky-btn">📋 לתשלום</a>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:10px">' +
+            '<div class="cart-sticky-total" id="cartStickyTotal">הסל ריק</div>' +
+            '<div style="font-size:11px;color:#8a6858;font-weight:700" id="cartStickyCount"></div>' +
+          '</div>' +
+          '<a href="checkout.html" class="cart-sticky-btn" style="width:100%;text-align:center;border-radius:16px;padding:15px;font-size:16px;display:flex;align-items:center;justify-content:center;gap:8px">✅ קדמי לאישור הזמנה ←</a>' +
         '</div>' +
       '</div>' +
 
@@ -5618,6 +5609,7 @@ function ensureUI(){
     var st2=document.getElementById('cartStickyTotal');
     if(sf2) sf2.classList.add('visible');
     if(st2){ var sub2=getCartSubtotal(); st2.textContent=sub2>0?('סה\"כ: ₪'+sub2):(cartItems.length+' פריטים'); }
+    var sc2=document.getElementById('cartStickyCount'); if(sc2) sc2.textContent=cartItems.length+' פריטים';
 
     var subtotal = getCartSubtotal();
     var hasUnknown = cartItems.some(function(item){ return !item.price || Number(item.price) <= 0; });
