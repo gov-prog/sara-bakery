@@ -608,6 +608,29 @@
     /* A11Y icon */
     .a11y-fab{position:fixed;right:16px;bottom:16px;width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:#000;color:#fff;border:none;border-radius:50%;font-size:26px;cursor:pointer;z-index:2000;box-shadow:0 10px 26px rgba(0,0,0,.25)}
     .a11y-fab:focus{outline:3px solid #fff;outline-offset:3px}
+    /* A11Y panel */
+    #a11yPanel{position:fixed;right:16px;bottom:80px;width:270px;background:#1a1a1a;border-radius:18px;box-shadow:0 16px 48px rgba(0,0,0,.5);z-index:1999;padding:16px;display:none;direction:rtl}
+    #a11yPanel.on{display:block;animation:a11ySlide .22s cubic-bezier(.22,1,.36,1)}
+    @keyframes a11ySlide{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
+    .a11y-title{color:#fff;font-size:14px;font-weight:900;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #333;text-align:center}
+    .a11y-row{display:flex;align-items:center;justify-content:space-between;padding:8px 4px;border-bottom:1px solid #2a2a2a}
+    .a11y-row:last-child{border-bottom:none}
+    .a11y-lbl{color:#ddd;font-size:13px;font-weight:600}
+    .a11y-btn{background:#333;border:none;color:#fff;border-radius:8px;padding:5px 11px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+    .a11y-btn:hover{background:#555}
+    .a11y-btn.on{background:#c8704a}
+    .a11y-reset{width:100%;margin-top:10px;background:#333;border:none;color:#aaa;border-radius:10px;padding:8px;font-size:12px;cursor:pointer;font-family:inherit;transition:background .15s}
+    .a11y-reset:hover{background:#444;color:#fff}
+    /* A11Y states applied to body */
+    body.a11y-big-text{font-size:120%}
+    body.a11y-bigger-text{font-size:140%}
+    body.a11y-high-contrast *{background:#000!important;color:#fff!important;border-color:#fff!important}
+    body.a11y-high-contrast a{color:#ff0!important}
+    body.a11y-grayscale{filter:grayscale(100%)}
+    body.a11y-links a{text-decoration:underline!important;font-weight:900!important}
+    body.a11y-no-anim *{animation:none!important;transition:none!important}
+    body.a11y-focus *:focus{outline:3px solid #c8704a!important;outline-offset:2px!important}
+    body.a11y-big-cursor,body.a11y-big-cursor *{cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M6 2l20 12-9 2-4 8z' fill='%23000' stroke='%23fff' stroke-width='2'/%3E%3C/svg%3E") 6 2,auto!important}
 </style>
 
 
@@ -10565,6 +10588,98 @@ function ensureUI(){
     <span class="wm w8"></span>
 </div>
 <button id="a11yIcon" class="a11y-fab" aria-label="נגישות" title="נגישות" type="button">♿</button>
+<div id="a11yPanel" role="dialog" aria-label="הגדרות נגישות">
+  <div class="a11y-title">הגדרות נגישות</div>
+  <div class="a11y-row">
+    <span class="a11y-lbl">גודל טקסט</span>
+    <div style="display:flex;gap:5px">
+      <button class="a11y-btn" id="aBtnSm" onclick="setTextSize('normal')">רגיל</button>
+      <button class="a11y-btn" id="aBtnMd" onclick="setTextSize('big')">גדול</button>
+      <button class="a11y-btn" id="aBtnLg" onclick="setTextSize('bigger')">ענק</button>
+    </div>
+  </div>
+  <div class="a11y-row">
+    <span class="a11y-lbl">ניגודיות גבוהה</span>
+    <button class="a11y-btn" id="aBtnContrast" onclick="toggleA11y('high-contrast','aBtnContrast')">הפעל</button>
+  </div>
+  <div class="a11y-row">
+    <span class="a11y-lbl">שחור-לבן</span>
+    <button class="a11y-btn" id="aBtnGray" onclick="toggleA11y('grayscale','aBtnGray')">הפעל</button>
+  </div>
+  <div class="a11y-row">
+    <span class="a11y-lbl">הדגש קישורים</span>
+    <button class="a11y-btn" id="aBtnLinks" onclick="toggleA11y('links','aBtnLinks')">הפעל</button>
+  </div>
+  <div class="a11y-row">
+    <span class="a11y-lbl">הפחת אנימציות</span>
+    <button class="a11y-btn" id="aBtnAnim" onclick="toggleA11y('no-anim','aBtnAnim')">הפעל</button>
+  </div>
+  <div class="a11y-row">
+    <span class="a11y-lbl">הבלט מיקוד</span>
+    <button class="a11y-btn" id="aBtnFocus" onclick="toggleA11y('focus','aBtnFocus')">הפעל</button>
+  </div>
+  <div class="a11y-row">
+    <span class="a11y-lbl">סמן גדול</span>
+    <button class="a11y-btn" id="aBtnCursor" onclick="toggleA11y('big-cursor','aBtnCursor')">הפעל</button>
+  </div>
+  <button class="a11y-reset" onclick="resetA11y()">איפוס הכל</button>
+</div>
+<script>
+(function(){
+  var body=document.body;
+  var panel=document.getElementById('a11yPanel');
+  var btn=document.getElementById('a11yIcon');
+  if(!panel||!btn)return;
+
+  // Load saved prefs
+  var prefs={};
+  try{prefs=JSON.parse(localStorage.getItem('sara_a11y')||'{}');}catch(e){}
+
+  function applyPrefs(){
+    // text size
+    body.classList.remove('a11y-big-text','a11y-bigger-text');
+    if(prefs.textSize==='big'){body.classList.add('a11y-big-text');document.getElementById('aBtnMd').classList.add('on');document.getElementById('aBtnSm').classList.remove('on');document.getElementById('aBtnLg').classList.remove('on');}
+    else if(prefs.textSize==='bigger'){body.classList.add('a11y-bigger-text');document.getElementById('aBtnLg').classList.add('on');document.getElementById('aBtnSm').classList.remove('on');document.getElementById('aBtnMd').classList.remove('on');}
+    else{document.getElementById('aBtnSm').classList.add('on');document.getElementById('aBtnMd').classList.remove('on');document.getElementById('aBtnLg').classList.remove('on');}
+    // toggles
+    ['high-contrast','grayscale','links','no-anim','focus','big-cursor'].forEach(function(k){
+      var cls='a11y-'+k;
+      var btnId='aBtn'+k.split('-').map(function(w){return w[0].toUpperCase()+w.slice(1);}).join('');
+      var b=document.getElementById(btnId);
+      if(prefs[k]){body.classList.add(cls);if(b){b.classList.add('on');b.textContent='כבה';}}
+      else{body.classList.remove(cls);if(b){b.classList.remove('on');b.textContent='הפעל';}}
+    });
+  }
+
+  function savePrefs(){try{localStorage.setItem('sara_a11y',JSON.stringify(prefs));}catch(e){}}
+
+  window.setTextSize=function(size){
+    prefs.textSize=size;
+    savePrefs();applyPrefs();
+  };
+  window.toggleA11y=function(key,btnId){
+    prefs[key]=!prefs[key];
+    savePrefs();applyPrefs();
+  };
+  window.resetA11y=function(){
+    prefs={};savePrefs();applyPrefs();
+  };
+
+  applyPrefs();
+
+  btn.addEventListener('click',function(e){
+    e.stopPropagation();
+    panel.classList.toggle('on');
+    btn.setAttribute('aria-expanded',panel.classList.contains('on')?'true':'false');
+  });
+  document.addEventListener('click',function(e){
+    if(!panel.contains(e.target)&&e.target!==btn){panel.classList.remove('on');}
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){panel.classList.remove('on');}
+  });
+})();
+</script>
 <script>
 (function(){
   if(window.__saraFallbackClicksBound) return;
