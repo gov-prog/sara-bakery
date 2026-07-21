@@ -437,13 +437,32 @@
     .btn-wa-big:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(37,211,102,0.45)}
 
     /* FOOTER */
-    footer{background:#1a0e06;padding:40px 5% 24px;color:rgba(255,255,255,.5);text-align:center}
-    .footer-brand{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:12px}
-    .footer-brand span{color:var(--copper-light)}
-    .footer-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:22px}
-    .footer-links a{color:rgba(255,255,255,.55);text-decoration:none;font-size:13px;font-weight:600;transition:color .2s}
-    .footer-links a:hover{color:var(--copper-light)}
-    .footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:18px;font-size:12px;font-weight:600}
+    footer{background:linear-gradient(180deg,#1a0e06 0%,#0f0804 100%);padding:52px 6% 0;color:rgba(255,255,255,.55);text-align:center;position:relative;overflow:hidden}
+    footer::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#c8704a,#e8b84a,#c8704a,transparent)}
+    .footer-inner{max-width:900px;margin:0 auto}
+    .footer-brand{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:#fff;margin-bottom:6px;letter-spacing:.5px}
+    .footer-brand span{color:#e8b84a}
+    .footer-tagline{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:36px;letter-spacing:1px;font-style:italic}
+    .footer-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;margin-bottom:40px;text-align:right}
+    @media(max-width:600px){.footer-grid{grid-template-columns:1fr 1fr;gap:24px}}
+    .footer-col-title{font-size:12px;font-weight:900;color:#e8b84a;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(232,184,74,.2)}
+    .footer-col a,.footer-col span{display:block;color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:9px;transition:all .2s;cursor:pointer;line-height:1.4}
+    .footer-col a:hover,.footer-col span:hover{color:#e8b84a;transform:translateX(-3px)}
+    .footer-col a::before,.footer-col span::before{content:'›';margin-left:6px;color:#c8704a;font-weight:900}
+    .footer-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:0 0 20px}
+    .footer-bottom{padding:18px 0 22px;font-size:12px;font-weight:600;color:rgba(255,255,255,.3);display:flex;justify-content:center;align-items:center;gap:16px;flex-wrap:wrap}
+    .footer-bottom-dot{color:rgba(255,255,255,.2);font-size:10px}
+    /* Legal Modal */
+    .legal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:10000;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+    .legal-overlay.on{display:flex}
+    .legal-sheet{background:#fff;border-radius:28px 28px 0 0;padding:28px 24px 36px;max-width:560px;width:100%;max-height:82vh;overflow-y:auto;position:relative;animation:slideUp .35s cubic-bezier(.22,1,.36,1)}
+    @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+    .legal-sheet-handle{width:40px;height:4px;background:#e0d0c0;border-radius:99px;margin:0 auto 20px}
+    .legal-sheet-close{position:absolute;top:20px;left:20px;background:#f5ece5;border:none;border-radius:50%;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#9a7060}
+    .legal-sheet-title{font-size:20px;font-weight:900;color:#2d1005;margin-bottom:16px;text-align:right}
+    .legal-sheet-body{font-size:14px;line-height:1.8;color:#5a4030;text-align:right}
+    .legal-sheet-body h3{font-size:15px;font-weight:800;color:#c8704a;margin:18px 0 6px}
+    .legal-sheet-body p{margin-bottom:12px}
 
     /* MODAL */
     .modal-overlay{display:none;position:fixed;inset:0;background:rgba(20,10,5,0.65);z-index:500;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px);pointer-events:none}
@@ -1366,14 +1385,50 @@
 </section>
 
 <footer>
+  <div class="footer-inner">
     <div class="footer-brand" id="footerBrand" onclick="logoAdminClick(event)" style="cursor:pointer;user-select:none">🍰 שרה <span>חברוני</span></div>
-    <div class="footer-links">
-        <a href="tel:+972523394838">📞 052-3394838</a>
-        <a href="mailto:saraiat1113@gmail.com">✉️ saraiat1113@gmail.com</a>
-        <a href="https://waze.com/ul?q=אתרוג+3+חריש" target="_blank">📍 אתרוג 3 דירה 16, חריש</a>
+    <div class="footer-tagline">Home Made Bakery · עם אהבה מהלב</div>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="footer-col-title">צרי קשר</div>
+        <a href="tel:+972523394838">052-3394838</a>
+        <a href="mailto:saraiat1113@gmail.com">saraiat1113@gmail.com</a>
+        <a href="https://waze.com/ul?q=אתרוג+3+חריש" target="_blank">אתרוג 3, חריש</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">מידע</div>
+        <span onclick="openLegal('about')">אודות</span>
+        <span onclick="openLegal('terms')">תקנון האתר</span>
+        <span onclick="openLegal('privacy')">מדיניות פרטיות</span>
+        <span onclick="openLegal('accessibility')">הצהרת נגישות</span>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">הזמנות</div>
+        <span onclick="document.getElementById('orderBtn')?.click()">הזמיני עכשיו</span>
+        <span onclick="document.getElementById('cartIcon')?.click()">הסל שלי</span>
+        <a href="checkout.html">לסיום הזמנה</a>
+      </div>
     </div>
-    <div class="footer-bottom">© 2025 שרה חברוני · Home Made Bakery</div>
+    <hr class="footer-divider">
+    <div class="footer-bottom">
+      <span>© 2025 שרה חברוני</span>
+      <span class="footer-bottom-dot">•</span>
+      <span>Home Made Bakery</span>
+      <span class="footer-bottom-dot">•</span>
+      <span>כל הזכויות שמורות</span>
+    </div>
+  </div>
 </footer>
+
+<!-- Legal Modal -->
+<div class="legal-overlay" id="legalOverlay" onclick="if(event.target===this)closeLegal()">
+  <div class="legal-sheet">
+    <div class="legal-sheet-handle"></div>
+    <button class="legal-sheet-close" onclick="closeLegal()">✕</button>
+    <div class="legal-sheet-title" id="legalTitle"></div>
+    <div class="legal-sheet-body" id="legalBody"></div>
+  </div>
+</div>
 
 <!-- MODAL -->
 
@@ -11301,6 +11356,63 @@ window._showWelcomePopup = function(user, prof){
   if(ptsBox) ptsBox.style.display = '';
   var ov = el('welcomePopupOverlay');
   if(ov){ ov.style.display='flex'; }
+};
+
+// ── Legal modals ─────────────────────────────────────────────────────────────
+var LEGAL_CONTENT = {
+  about: {
+    title: 'אודות — שרה חברוני',
+    body: `<p>שלום! אני שרה חברוני, אופה ביתית מחריש עם אהבה אמיתית לאוכל ולאנשים.</p>
+<h3>הסיפור שלי</h3>
+<p>מה שהתחיל כתחביב — אפיית עוגות ומאפים לבני המשפחה — הפך עם השנים לעסק קטן ואוהב. כל פריט שאני מכינה מקבל תשומת לב מלאה, מהחומרים הטובים ביותר ועד לאריזה הסופית.</p>
+<h3>מה אנחנו מציעים</h3>
+<p>עוגות מעוצבות לאירועים, קינוחים ביתיים, מאפים מתוקים ומלוחים — הכל בהזמנה אישית ובאהבה.</p>
+<p>אשמח לשמוע ממך ולהכין משהו מיוחד לאירוע שלך!</p>`
+  },
+  terms: {
+    title: 'תקנון האתר',
+    body: `<h3>כללי</h3>
+<p>השימוש באתר זה מהווה הסכמה לתנאי השימוש המפורטים להלן. האתר מופעל על ידי שרה חברוני.</p>
+<h3>הזמנות</h3>
+<p>כל הזמנה מאושרת ישירות על ידי שרה. הזמנה נחשבת רשמית רק לאחר אישור מפורש. במקרה של ביטול הזמנה יש ליצור קשר לפחות 48 שעות מראש.</p>
+<h3>מחירים ותשלום</h3>
+<p>המחירים המופיעים באתר הם בשקלים ישראלים וכוללים מע"מ. התשלום מתבצע בהסכמה אישית עם שרה.</p>
+<h3>משלוחים ואיסוף</h3>
+<p>איסוף עצמי מחריש ללא תשלום. משלוחים לאזורים נבחרים — התשלום יוסכם בנפרד.</p>`
+  },
+  privacy: {
+    title: 'מדיניות פרטיות',
+    body: `<h3>מידע שנאסף</h3>
+<p>בעת ביצוע הזמנה, אנו אוספים שם, מספר טלפון, כתובת מייל וכתובת למשלוח (אם רלוונטי). מידע זה משמש אך ורק לצורך ביצוע ועיבוד ההזמנה.</p>
+<h3>שימוש במידע</h3>
+<p>המידע האישי שלך לא יועבר לצד שלישי כלשהו. לא נשמרים פרטי תשלום באתר.</p>
+<h3>עוגיות (Cookies)</h3>
+<p>האתר עשוי להשתמש בעוגיות לטובת חוויית גלישה טובה יותר (לדוגמה: שמירת סל הקניות).</p>
+<h3>יצירת קשר</h3>
+<p>לכל שאלה הקשורה לפרטיות, ניתן לפנות אל: saraiat1113@gmail.com</p>`
+  },
+  accessibility: {
+    title: 'הצהרת נגישות',
+    body: `<h3>מחויבות לנגישות</h3>
+<p>אנו מחויבים לנגישות האתר לכלל המשתמשים, כולל אנשים עם מוגבלויות, בהתאם לתקן WCAG 2.1.</p>
+<h3>תכונות נגישות באתר</h3>
+<p>האתר כולל כפתור נגישות (♿) בפינה השמאלית התחתונה, המאפשר: הגדלת גופן, ניגודיות גבוהה, הדגשת קישורים ועוד.</p>
+<h3>דיווח על בעיות נגישות</h3>
+<p>נתקלת בבעיית נגישות? נשמח לשמוע ולתקן: saraiat1113@gmail.com</p>
+<h3>עדכון אחרון</h3>
+<p>הצהרה זו עודכנה בינואר 2025.</p>`
+  }
+};
+window.openLegal = function(key){
+  var c = LEGAL_CONTENT[key]; if(!c) return;
+  document.getElementById('legalTitle').textContent = c.title;
+  document.getElementById('legalBody').innerHTML = c.body;
+  document.getElementById('legalOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+};
+window.closeLegal = function(){
+  document.getElementById('legalOverlay').classList.remove('on');
+  document.body.style.overflow = '';
 };
 
 // ── Secret admin trigger: click "שרה חברוני" in footer 5x within 2s ─────────
