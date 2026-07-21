@@ -361,31 +361,19 @@
     /* ── REVIEWS ── */
     .reviews{background:linear-gradient(165deg,#0c0704 0%,#160d06 55%,#0c0704 100%);padding:90px 0 80px;position:relative;overflow:hidden}
     .reviews-inner{max-width:1100px;margin:0 auto;padding:0 5%}
-    /* scattered photo cluster — centered, subtle individual hover only */
-    .rv-cluster{width:100%;height:300px;display:flex;align-items:center;justify-content:center;margin:0 auto 60px;direction:ltr}
-    .rv-cluster-inner{position:relative;width:580px;height:280px;flex-shrink:0}
-    .rv-photo{position:absolute;object-fit:cover;border-radius:14px;border:3px solid rgba(255,255,255,.1);box-shadow:0 14px 44px rgba(0,0,0,.65),0 4px 10px rgba(0,0,0,.35);transition:transform .3s ease,box-shadow .3s,z-index 0s}
-    .rv-photo:nth-child(1){width:182px;height:182px;top:48px;left:8px;transform:rotate(-13deg);z-index:1}
-    .rv-photo:nth-child(2){width:212px;height:212px;top:14px;left:118px;transform:rotate(-3deg);z-index:4}
-    .rv-photo:nth-child(3){width:192px;height:192px;top:35px;left:278px;transform:rotate(8deg);z-index:3}
-    .rv-photo:nth-child(4){width:172px;height:172px;top:86px;left:52px;transform:rotate(6deg);z-index:2}
-    .rv-photo:nth-child(5){width:180px;height:180px;top:76px;left:228px;transform:rotate(-10deg);z-index:5}
-    .rv-photo:nth-child(6){width:166px;height:166px;top:82px;left:402px;transform:rotate(13deg);z-index:2}
-    /* individual hover — just a gentle lift, no spreading */
-    .rv-photo:nth-child(1):hover{transform:rotate(-13deg) translateY(-8px) scale(1.04);z-index:10;box-shadow:0 22px 55px rgba(0,0,0,.8)}
-    .rv-photo:nth-child(2):hover{transform:rotate(-3deg) translateY(-10px) scale(1.05);z-index:10;box-shadow:0 26px 60px rgba(0,0,0,.8)}
-    .rv-photo:nth-child(3):hover{transform:rotate(8deg) translateY(-8px) scale(1.04);z-index:10;box-shadow:0 22px 55px rgba(0,0,0,.8)}
-    .rv-photo:nth-child(4):hover{transform:rotate(6deg) translateY(-7px) scale(1.04);z-index:10;box-shadow:0 20px 50px rgba(0,0,0,.75)}
-    .rv-photo:nth-child(5):hover{transform:rotate(-10deg) translateY(-8px) scale(1.04);z-index:10;box-shadow:0 20px 50px rgba(0,0,0,.75)}
-    .rv-photo:nth-child(6):hover{transform:rotate(13deg) translateY(-7px) scale(1.04);z-index:10;box-shadow:0 20px 50px rgba(0,0,0,.75)}
-    /* pop-in on load */
-    @keyframes rvPop1{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1}}
-    .rv-photo:nth-child(1){animation:rvPop1 .5s .05s ease both}
-    .rv-photo:nth-child(2){animation:rvPop1 .5s .15s ease both}
-    .rv-photo:nth-child(3){animation:rvPop1 .5s .1s ease both}
-    .rv-photo:nth-child(4){animation:rvPop1 .5s .22s ease both}
-    .rv-photo:nth-child(5){animation:rvPop1 .5s .12s ease both}
-    .rv-photo:nth-child(6){animation:rvPop1 .5s .18s ease both}
+    /* reviews header */
+    .rv-head{text-align:center;padding:0 5% 56px;max-width:900px;margin:0 auto;position:relative}
+    .rv-head-deco{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:20px}
+    .rv-head-line{flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,transparent,rgba(241,193,101,.4),transparent)}
+    .rv-head-star{color:#f1c165;font-size:18px;letter-spacing:4px}
+    .rv-head-quote{font-family:'Playfair Display',serif;font-size:92px;line-height:.7;background:linear-gradient(135deg,#f1c165 0%,#c8704a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;margin-bottom:4px;opacity:.55}
+    .rv-head h2{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);font-weight:900;background:linear-gradient(135deg,#fff 0%,#f1c165 55%,#c8704a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:16px}
+    .rv-head-sub{color:rgba(255,255,255,.42);font-size:14px;font-weight:500;line-height:1.7;margin-bottom:28px}
+    .rv-score-row{display:inline-flex;align-items:center;gap:20px;background:rgba(255,255,255,.04);border:1px solid rgba(241,193,101,.18);border-radius:20px;padding:14px 28px}
+    .rv-score-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:#f1c165;line-height:1}
+    .rv-score-right{text-align:right}
+    .rv-score-stars{color:#f1c165;font-size:17px;letter-spacing:2px;margin-bottom:2px}
+    .rv-score-label{color:rgba(255,255,255,.35);font-size:11px;font-weight:700}
     /* marquee */
     .rv-marquee-wrap{overflow:hidden;position:relative;padding:8px 0}
     .rv-marquee-wrap::before,.rv-marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
@@ -400,17 +388,10 @@
     .rv-card:hover{background:rgba(255,255,255,.07);border-color:rgba(200,112,74,.4)}
     .rv-stars{color:#f1c165;font-size:13px;letter-spacing:3px;margin-bottom:10px}
     .rv-text{color:rgba(255,255,255,.82);font-size:13.5px;line-height:1.78;font-weight:500}
-    /* mobile */
     @media(max-width:600px){
-      .rv-cluster{height:230px}
-      .rv-cluster-inner{width:340px;height:215px}
-      .rv-photo:nth-child(1){width:122px;height:122px;top:32px;left:5px}
-      .rv-photo:nth-child(2){width:142px;height:142px;top:10px;left:70px}
-      .rv-photo:nth-child(3){width:120px;height:120px;top:38px;left:168px}
-      .rv-photo:nth-child(4){width:106px;height:106px;top:78px;left:20px}
-      .rv-photo:nth-child(5){width:112px;height:112px;top:68px;left:140px}
-      .rv-photo:nth-child(6){display:none}
       .rv-card{width:240px}
+      .rv-score-row{flex-direction:column;gap:8px;padding:14px 20px}
+      .rv-score-right{text-align:center}
     }
 
     /* INFO */
@@ -1327,21 +1308,21 @@
 </section>
 <section class="reviews page-section" id="reviews">
   <div class="reviews-inner">
-    <div class="section-header section-anim delay-1" style="margin-bottom:52px">
-      <span class="sec-tag" style="color:#f1c165;border-color:rgba(241,193,101,.3);background:rgba(241,193,101,.08)">❤️ לקוחות מרוצים</span>
-      <h2 style="color:#fff">מה הלקוחות אומרים עלינו</h2>
-      <p style="color:rgba(255,255,255,.5);max-width:480px;margin:0 auto">ביקורות אמיתיות שקיבלנו ישירות בוואטסאפ — כי אין כמו מילה טובה מלב</p>
-    </div>
-
-    <!-- stacked photo cluster -->
-    <div class="rv-cluster section-anim delay-2">
-      <div class="rv-cluster-inner">
-        <img class="rv-photo" src="box1.jpg" alt="מארז מתוק">
-        <img class="rv-photo" src="box2.jpg" alt="מארז מתוק">
-        <img class="rv-photo" src="sweet_tray1.jpg" alt="מגש מתוקים">
-        <img class="rv-photo" src="box4.jpg" alt="מארז מתוק">
-        <img class="rv-photo" src="sweet_tray3.jpg" alt="מגש מתוקים">
-        <img class="rv-photo" src="box5.jpg" alt="מארז מתוק">
+    <div class="rv-head section-anim delay-1">
+      <div class="rv-head-deco">
+        <div class="rv-head-line"></div>
+        <div class="rv-head-star">★ ★ ★</div>
+        <div class="rv-head-line"></div>
+      </div>
+      <span class="rv-head-quote">"</span>
+      <h2>מה הלקוחות<br>אומרים עלינו</h2>
+      <p class="rv-head-sub">ביקורות אמיתיות שקיבלנו ישירות בוואטסאפ<br>כי אין כמו מילה טובה שיוצאת מהלב</p>
+      <div class="rv-score-row">
+        <div class="rv-score-num">4.9</div>
+        <div class="rv-score-right">
+          <div class="rv-score-stars">★★★★★</div>
+          <div class="rv-score-label">מבוסס על עשרות לקוחות מרוצים</div>
+        </div>
       </div>
     </div>
   </div>
