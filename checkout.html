@@ -169,7 +169,7 @@
         <div id="coCouponTagWrap" style="margin-top:6px;min-height:24px"></div>
       </div>
     </div>
-    <button class="co-submit" id="toStep2Btn" onclick="goToStep(2)">✅ קדמי לפרטים ←</button>
+    <button class="co-submit" id="toStep2Btn" onclick="goToStep(2)">המשך לפרטים →</button>
   </div>
 
   <!-- STEP 2: Delivery details -->
@@ -242,8 +242,8 @@
       </div>
     </div>
 
-    <button class="co-submit" id="step2NextBtn" onclick="goToStep(3)">✅ קדמי לתשלום ←</button>
-    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(1)">→ חזרה לסל</button>
+    <button class="co-submit" id="step2NextBtn" onclick="goToStep(3)">המשך לתשלום →</button>
+    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(1)">← חזרה לסל</button>
   </div>
 
   <!-- STEP 3: Payment -->
@@ -290,8 +290,8 @@
       <div class="co-total-row final" style="margin-top:10px"><span>סה"כ</span><span class="co-total-val" id="orderSummaryTotal">₪0</span></div>
     </div>
 
-    <button class="co-submit" id="submitBtn" disabled onclick="submitOrder()">✅ שלחי הזמנה לשרה ←</button>
-    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(2)">→ חזרה לפרטים</button>
+    <button class="co-submit" id="submitBtn" disabled onclick="submitOrder()">שליחת הזמנה</button>
+    <button style="width:100%;background:none;border:none;color:var(--brown-mid);font-size:13px;font-weight:800;padding:12px;cursor:pointer;margin-top:6px" onclick="goToStep(2)">← חזרה לפרטים</button>
   </div>
 
 </div><!-- /co-wrap -->
@@ -302,7 +302,13 @@
   <div class="success-title">ההזמנה נשלחה!</div>
   <div class="success-sub">שרה קיבלה את ההזמנה שלך ותחזור אליך בהקדם לאישור.</div>
   <div class="success-order" id="successOrderNum"></div>
-  <a href="#" class="success-wa" id="successWa">💬 שלחו הודעה לשרה</a>
+  <div id="successTrackBox" style="display:none;background:linear-gradient(135deg,#1a0a04,#2e1408);border-radius:16px;padding:16px;margin:18px 0;text-align:right">
+    <div style="font-size:12px;color:rgba(240,200,150,.65);font-weight:700;margin-bottom:6px">🔗 קישור אישי למעקב הזמנה</div>
+    <div id="successTrackUrl" style="font-size:12px;color:rgba(240,190,130,.85);word-break:break-all;line-height:1.5;font-weight:700;margin-bottom:10px"></div>
+    <button onclick="copySuccessLink()" id="copySuccessBtn" style="width:100%;background:rgba(200,112,74,.25);border:1px solid rgba(200,112,74,.4);color:rgba(240,190,130,.9);border-radius:10px;padding:9px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s">📋 העתק קישור</button>
+  </div>
+  <a href="#" class="success-wa" id="successWa" style="margin-bottom:12px">💬 שלחו הודעה לשרה</a>
+  <a href="#" id="successTrackLink" style="display:none;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border:2px solid var(--warm2);color:var(--copper);border-radius:50px;padding:12px 24px;font-size:14px;font-weight:900;margin-bottom:14px">📍 מעקב אחר ההזמנה</a>
   <a href="index.html" class="success-back">← חזרה לחנות</a>
 </div>
 
@@ -708,7 +714,18 @@ window.submitOrder = async function(){
   const ss = document.getElementById('successScreen');
   ss.style.display = 'block';
   document.getElementById('successOrderNum').textContent = 'הזמנה מס\' ' + orderNum;
-  const waMsg = encodeURIComponent('היי שרה! סיימתי להזמין באתר. מספר הזמנה: ' + orderNum + '. שם: ' + name);
+
+  // Tracking link
+  const trackUrl = location.origin + location.pathname.replace('checkout.html','') + 'order.html?id=' + orderNum;
+  const trackBox = document.getElementById('successTrackBox');
+  const trackUrlEl = document.getElementById('successTrackUrl');
+  const trackLink = document.getElementById('successTrackLink');
+  if(trackBox){ trackBox.style.display = 'block'; }
+  if(trackUrlEl){ trackUrlEl.textContent = trackUrl; }
+  if(trackLink){ trackLink.href = trackUrl; trackLink.style.display = 'flex'; }
+  window._lastTrackUrl = trackUrl;
+
+  const waMsg = encodeURIComponent('היי שרה! סיימתי להזמין באתר.\nמספר הזמנה: ' + orderNum + '\nשם: ' + name + '\nמעקב: ' + trackUrl);
   document.getElementById('successWa').href = 'https://wa.me/' + _waNum + '?text=' + waMsg;
 };
 
@@ -812,6 +829,15 @@ function showSaleTag(sale){
     if(!cartItems.length){ loadCart(); renderCartItems(); }
   }, 1500);
 })();
+
+window.copySuccessLink = function(){
+  const url = window._lastTrackUrl || '';
+  if(!url) return;
+  navigator.clipboard.writeText(url).then(function(){
+    const btn = document.getElementById('copySuccessBtn');
+    if(btn){ btn.textContent = '✅ הועתק!'; setTimeout(function(){ btn.textContent = '📋 העתק קישור'; }, 2500); }
+  }).catch(function(){ toast('לא ניתן להעתיק', 'err'); });
+};
 </script>
 </body>
 </html>
