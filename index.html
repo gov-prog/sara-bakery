@@ -838,6 +838,26 @@
 </head>
 <body class="warm-theme">
 
+<!-- Announcement ticker bar -->
+<div id="announcementBar" style="display:none;overflow:hidden;position:sticky;top:0;z-index:1000;background-size:300% auto;animation:saleGradMove 6s ease infinite">
+  <div class="sale-ticker-wrap">
+    <div class="sale-ticker-track" id="announcementTrack">
+      <span class="sale-ticker-item" id="announcementItemsA"></span>
+      <span class="sale-ticker-item" id="announcementItemsB"></span>
+    </div>
+  </div>
+</div>
+
+<!-- Sale Banner Bar -->
+<div id="saleBannerBar" style="display:none;overflow:hidden;position:sticky;top:0;z-index:999;background:linear-gradient(90deg,#b85530,#c8704a,#e8905a,#c8704a,#b85530);background-size:300% auto;color:#fff;animation:saleGradMove 5s ease infinite">
+  <div class="sale-ticker-wrap">
+    <div class="sale-ticker-track" id="saleTickerTrack">
+      <span class="sale-ticker-item" id="saleTickerA"></span>
+      <span class="sale-ticker-item" id="saleTickerB"></span>
+    </div>
+  </div>
+</div>
+
 <!-- Sale Popup -->
 <div id="salePopupOverlay" onclick="if(event.target===this)closeSalePopup()">
   <div id="salePopupBox">
@@ -2471,8 +2491,42 @@ window.toggleMoreReviews = function(){
     }
     // Product blocks
     window._productBlocks = s.productBlocks || [];
+    // Announcement ticker
+    var ticker = s.ticker || {};
+    if(ticker.active && ticker.messages && ticker.messages.length){
+      applyTickerSetting(ticker);
+    }
   } catch(e){}
 })();
+
+function applyTickerSetting(ticker){
+  var bar = document.getElementById('announcementBar');
+  if(!bar) return;
+  if(!ticker || !ticker.active || !ticker.messages || !ticker.messages.length){
+    bar.style.display = 'none'; return;
+  }
+  var palettes = {
+    gold:   {bg:'linear-gradient(90deg,#7a5c00,#c9a227,#e8c84a,#c9a227,#7a5c00)',color:'#1a0e00'},
+    copper: {bg:'linear-gradient(90deg,#b85530,#c8704a,#e8905a,#c8704a,#b85530)',color:'#fff'},
+    dark:   {bg:'linear-gradient(90deg,#140b04,#2d1810,#140b04)',color:'#f1c165'},
+    red:    {bg:'linear-gradient(90deg,#7a1515,#c8304a,#e83050,#c8304a,#7a1515)',color:'#fff'},
+    green:  {bg:'linear-gradient(90deg,#0f4020,#1f9048,#27c060,#1f9048,#0f4020)',color:'#fff'}
+  };
+  var pal = palettes[ticker.color || 'gold'] || palettes.gold;
+  bar.style.background = pal.bg;
+  bar.style.backgroundSize = '300% auto';
+  bar.style.color = pal.color;
+  var sep = '   ✦   ';
+  var fullText = ticker.messages.join(sep) + sep;
+  var ta = document.getElementById('announcementItemsA');
+  var tb = document.getElementById('announcementItemsB');
+  if(ta) ta.textContent = fullText;
+  if(tb) tb.textContent = fullText;
+  var track = document.getElementById('announcementTrack');
+  if(track){ var dur=Math.max(14,fullText.length*0.38); track.style.animation='saleTicker '+dur+'s linear infinite'; }
+  bar.style.display = '';
+}
+window.applyTickerSetting = applyTickerSetting;
 
 // ── SOUNDS ───────────────────────────────────────────────────────────────────
 (function(){
@@ -7630,16 +7684,36 @@ function ensureUI(){
                 '<input id="settingsHours" class="admin-input" type="text" placeholder="ראשון-חמישי 09:00–21:00">' +
               '</div>' +
               '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">💬 הודעת ברוכים הבאים (בנר)</label>' +
-                '<input id="settingsBanner" class="admin-input" type="text" placeholder="מבצע חגי: 10% הנחה על כל הזמנה!">' +
-              '</div>' +
-              '<div class="admin-settings-row">' +
                 '<label class="admin-settings-label">🔔 הזמנות פעילות — סגירת קבלת הזמנות</label>' +
                 '<div style="display:flex;align-items:center;gap:10px;margin-top:6px">' +
                   '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px"><input type="checkbox" id="settingsOrdersClosed" onchange="adminSaveSettings()"> 🔴 לסגור הזמנות כרגע</label>' +
                 '</div>' +
               '</div>' +
               '<button class="admin-settings-save" type="button" onclick="adminSaveSettings()">💾 שמור הגדרות</button>' +
+            '</div>' +
+            '<div class="admin-card" style="margin-top:12px">' +
+              '<div style="font-weight:900;font-size:15px;color:#2d1a0e;margin-bottom:14px">📣 רצועת הודעות (טיקר)</div>' +
+              '<div class="admin-settings-row">' +
+                '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px">' +
+                  '<input type="checkbox" id="tickerActive"> 🟢 הצג רצועה גולשת בראש האתר' +
+                '</label>' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">📝 הודעות (שורה = הודעה אחת)</label>' +
+                '<textarea id="tickerMessages" class="admin-input" rows="4" placeholder="🎉 פתיחת האתר – 10% הנחה&#10;🍰 מוצרים טריים מדי יום&#10;✨ משלוח עד הבית בחריש" style="resize:vertical;line-height:1.7"></textarea>' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">🎨 צבע רצועה</label>' +
+                '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px" id="tickerColorBtns">' +
+                  '<button type="button" data-tcolor="gold"   style="background:linear-gradient(90deg,#c9a227,#e8c84a);color:#1a0e00;border:2px solid transparent;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer">✨ זהב</button>' +
+                  '<button type="button" data-tcolor="copper" style="background:linear-gradient(90deg,#c8704a,#e8905a);color:#fff;border:2px solid transparent;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer">🟠 נחושת</button>' +
+                  '<button type="button" data-tcolor="dark"   style="background:linear-gradient(90deg,#2d1810,#140b04);color:#f1c165;border:2px solid transparent;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer">🌑 כהה</button>' +
+                  '<button type="button" data-tcolor="red"    style="background:linear-gradient(90deg,#c8304a,#e83050);color:#fff;border:2px solid transparent;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer">🔴 אדום</button>' +
+                  '<button type="button" data-tcolor="green"  style="background:linear-gradient(90deg,#1f9048,#27c060);color:#fff;border:2px solid transparent;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:800;cursor:pointer">🟢 ירוק</button>' +
+                '</div>' +
+                '<input type="hidden" id="tickerColor" value="gold">' +
+              '</div>' +
+              '<button class="admin-settings-save" type="button" onclick="adminSaveTicker()" style="margin-top:6px">💾 שמור ופרסם</button>' +
             '</div>' +
             '<div class="admin-card" style="margin-top:12px">' +
               '<div style="font-weight:900;font-size:13px;color:#2d1a0e;margin-bottom:10px">🔑 פרטי גישה</div>' +
@@ -8483,10 +8557,51 @@ function ensureUI(){
     set('settingsAddress', s.address);
     set('settingsPhone', s.phone);
     set('settingsHours', s.hours);
-    set('settingsBanner', s.banner);
     var cb = document.getElementById('settingsOrdersClosed');
     if(cb) cb.checked = !!s.ordersClosed;
+    // Ticker UI
+    var siteSett = window._siteSettings || {};
+    var ticker = siteSett.ticker || {};
+    var tActive = document.getElementById('tickerActive');
+    var tMsgs = document.getElementById('tickerMessages');
+    var tColor = document.getElementById('tickerColor');
+    if(tActive) tActive.checked = !!ticker.active;
+    if(tMsgs) tMsgs.value = (ticker.messages || []).join('\n');
+    if(tColor) tColor.value = ticker.color || 'gold';
+    adminInitTickerColorBtns(ticker.color || 'gold');
   }
+
+  function adminInitTickerColorBtns(selected){
+    var wrap = document.getElementById('tickerColorBtns');
+    if(!wrap) return;
+    wrap.querySelectorAll('[data-tcolor]').forEach(function(btn){
+      btn.style.border = btn.dataset.tcolor === selected ? '2px solid #2d1a0e' : '2px solid transparent';
+      btn.onclick = function(){
+        var c = btn.dataset.tcolor;
+        var inp = document.getElementById('tickerColor');
+        if(inp) inp.value = c;
+        wrap.querySelectorAll('[data-tcolor]').forEach(function(b){ b.style.border = '2px solid transparent'; });
+        btn.style.border = '2px solid #2d1a0e';
+      };
+    });
+  }
+
+  window.adminSaveTicker = async function(){
+    var active = !!(document.getElementById('tickerActive') || {}).checked;
+    var raw = ((document.getElementById('tickerMessages') || {}).value || '');
+    var msgs = raw.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
+    var color = ((document.getElementById('tickerColor') || {}).value) || 'gold';
+    var ticker = { active: active, messages: msgs, color: color };
+    try {
+      await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), { ticker: ticker }, { merge: true });
+      if(!window._siteSettings) window._siteSettings = {};
+      window._siteSettings.ticker = ticker;
+      if(typeof window.applyTickerSetting === 'function') window.applyTickerSetting(ticker);
+      notify('רצועת ההודעות עודכנה ✓');
+    } catch(e){
+      notify('שגיאה: ' + (e.message || e));
+    }
+  };
 
   window.adminSaveSettings = function(){
     var get = function(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; };
