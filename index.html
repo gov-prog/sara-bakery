@@ -836,49 +836,92 @@
 .prod-card.card-in{animation:cardIn .52s cubic-bezier(.22,1,.36,1) var(--ci,0ms) both;}
 
 /* ── Product Detail Overlay ── */
-.proddet-ov{position:fixed;inset:0;z-index:3000;background:#fdf5ed;direction:rtl;
-  transform:translateX(-100%);transition:transform .38s cubic-bezier(.25,.8,.25,1);
-  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column}
-.proddet-ov.pd-open{transform:translateX(0)}
-@media(min-width:700px){.proddet-ov{max-width:500px;left:auto;right:0;transform:translateX(100%);
-  box-shadow:-24px 0 80px rgba(0,0,0,.22);border-left:1px solid rgba(200,112,74,.18)}}
-@media(min-width:700px){.proddet-ov.pd-open{transform:translateX(0)}}
-.pdback{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;
-  background:rgba(253,245,237,.92);backdrop-filter:blur(10px);border:none;
-  border-bottom:1px solid rgba(200,112,74,.14);width:100%;padding:14px 18px;
-  font-size:14px;font-weight:800;color:#5a3424;cursor:pointer;font-family:'Rubik',sans-serif;text-align:right}
-.pdback:hover{color:#c8704a}
-.pdhero{width:100%;height:260px;overflow:hidden;background:#f0e0cc;position:relative;flex-shrink:0}
-.pdhero img{width:100%;height:100%;object-fit:cover;display:block}
-.pdhero-ribbon{position:absolute;top:14px;right:14px;background:linear-gradient(135deg,#c8704a,#a85535);
-  color:#fff;border-radius:20px;padding:5px 14px;font-size:11px;font-weight:900;display:none}
-.pdbody{padding:22px 20px 0;flex:1}
-.pdname{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#2d1a0e;
-  margin:0 0 6px;line-height:1.25}
-.pdprice{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#c8704a;margin-bottom:14px}
-.pddesc{font-size:14px;font-weight:600;color:#6b4433;line-height:1.85;margin-bottom:18px}
-.pdsect{font-size:14px;font-weight:900;color:#2d1a0e;margin:0 0 10px}
-.pdingr{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
-.pdingr-tag{background:rgba(200,112,74,.1);border:1.5px solid rgba(200,112,74,.2);
-  color:#5a3424;border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700}
-.pdorder{width:100%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border:none;
-  border-radius:16px;padding:16px;font-size:16px;font-weight:900;cursor:pointer;
-  font-family:'Rubik',sans-serif;box-shadow:0 6px 20px rgba(200,112,74,.38);
-  transition:transform .2s,box-shadow .2s;margin-bottom:28px}
-.pdorder:active{transform:scale(.97)}
-.pdrel{border-top:1px solid rgba(200,112,74,.14);padding-bottom:32px}
-.pdrel-title{font-size:14px;font-weight:900;color:#2d1a0e;padding:18px 20px 10px}
-.pdrel-scroll{display:flex;gap:12px;overflow-x:auto;padding:0 20px 8px;scrollbar-width:none}
-.pdrel-scroll::-webkit-scrollbar{display:none}
-.pdrel-card{flex-shrink:0;width:120px;cursor:pointer;background:#fff;border-radius:14px;
-  overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.1);border:1px solid rgba(200,112,74,.12);
-  transition:transform .2s}
-.pdrel-card:hover{transform:translateY(-3px)}
-.pdrel-img{width:100%;height:90px;object-fit:cover;display:block}
-.pdrel-info{padding:8px 9px 10px}
-.pdrel-name{font-size:11px;font-weight:800;color:#3d1f10;margin-bottom:3px;line-height:1.3;
+/* ── Product Detail Page ── */
+.proddet-ov{position:fixed;inset:0;z-index:3000;background:#faf7f3;direction:rtl;
+  transform:translateY(100%);transition:transform .42s cubic-bezier(.25,.8,.25,1);
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.proddet-ov.pd-open{transform:translateY(0)}
+/* top bar */
+.pd-topbar{position:sticky;top:0;z-index:10;background:rgba(250,247,243,.95);
+  backdrop-filter:blur(12px);border-bottom:1px solid #e8ddd4;display:flex;
+  align-items:center;gap:10px;padding:12px 20px}
+.pd-topbar-back{background:none;border:none;cursor:pointer;font-size:18px;color:#5a3424;
+  line-height:1;padding:4px 8px;border-radius:8px;transition:background .15s}
+.pd-topbar-back:hover{background:#f0e5db}
+.pd-topbar-crumb{font-size:13px;color:#a08070;font-weight:600;flex:1;text-align:right}
+.pd-topbar-crumb strong{color:#3d1f10}
+/* Two column layout */
+.pd-layout{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 50px);align-items:start}
+/* LEFT: info panel */
+.pd-left{padding:40px 48px 60px;border-left:1px solid #e8ddd4}
+.pd-cat-tag{display:inline-block;font-size:12px;font-weight:800;color:#a08070;
+  letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
+.pd-name{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;
+  color:#2d1a0e;line-height:1.22;margin:0 0 10px}
+.pd-short{font-size:14px;color:#7a5a4a;line-height:1.8;margin:0 0 22px;font-weight:500}
+.pd-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:24px}
+.pd-price{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#c8704a}
+.pd-price-note{font-size:12px;color:#a08070;font-weight:600}
+.pd-order-btn{display:block;width:100%;background:#2d1a0e;color:#fff;border:none;
+  border-radius:12px;padding:17px 24px;font-size:16px;font-weight:900;cursor:pointer;
+  font-family:'Rubik',sans-serif;transition:background .18s,transform .15s;margin-bottom:28px;letter-spacing:.2px}
+.pd-order-btn:hover{background:#4a2d1a}
+.pd-order-btn:active{transform:scale(.98)}
+/* accordion */
+.pd-acc-item{border-top:1px solid #e5dbd3}
+.pd-acc-item:last-child{border-bottom:1px solid #e5dbd3}
+.pd-acc-btn{display:flex;justify-content:space-between;align-items:center;width:100%;
+  background:none;border:none;cursor:pointer;padding:16px 0;text-align:right;
+  font-size:15px;font-weight:800;color:#2d1a0e;font-family:'Rubik',sans-serif}
+.pd-acc-btn .pd-acc-icon{font-size:20px;color:#c8704a;transition:transform .25s;line-height:1}
+.pd-acc-item.pd-open .pd-acc-icon{transform:rotate(45deg)}
+.pd-acc-body{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1),padding .25s}
+.pd-acc-item.pd-open .pd-acc-body{max-height:600px}
+.pd-acc-inner{padding:0 0 18px}
+/* contents list */
+.pd-contents-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.pd-contents-list li{font-size:14px;color:#5a3424;font-weight:600;padding-right:4px;line-height:1.5}
+/* allergens */
+.pd-allerg-row{display:flex;flex-wrap:wrap;gap:8px}
+.pd-allerg-chip{background:#fff3ed;border:1.5px solid #f0c0a0;color:#7a3010;
+  border-radius:20px;padding:5px 13px;font-size:12px;font-weight:800}
+/* occasions */
+.pd-occ-row{display:flex;flex-wrap:wrap;gap:7px}
+.pd-occ-chip{background:#f5f0ea;border:1px solid #ddd0c4;color:#6b4433;
+  border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700}
+.pd-note{font-size:13px;color:#7a9060;font-style:italic;font-weight:600;margin-top:10px}
+/* RIGHT: image panel */
+.pd-right{position:sticky;top:50px;background:#f0ebe4}
+.pd-right-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.pd-ribbon-badge{position:absolute;top:18px;right:18px;background:linear-gradient(135deg,#c8704a,#a85535);
+  color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:900}
+.pd-img-wrap{position:relative}
+/* related */
+.pd-related-section{padding:40px 0 0;border-top:1px solid #e8ddd4}
+.pd-related-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;
+  color:#2d1a0e;margin-bottom:20px;padding:0 20px}
+.pd-related-scroll{display:flex;gap:14px;overflow-x:auto;padding:0 20px 24px;scrollbar-width:none}
+.pd-related-scroll::-webkit-scrollbar{display:none}
+.pd-rel-card{flex-shrink:0;width:140px;cursor:pointer;background:#fff;border-radius:16px;
+  overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.09);border:1px solid rgba(200,112,74,.1);
+  transition:transform .2s,box-shadow .2s}
+.pd-rel-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(200,112,74,.18)}
+.pd-rel-img{width:100%;height:100px;object-fit:cover;display:block}
+.pd-rel-info{padding:9px 11px 12px}
+.pd-rel-name{font-size:12px;font-weight:800;color:#3d1f10;margin-bottom:4px;line-height:1.3;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.pdrel-price{font-size:12px;font-weight:900;color:#c8704a}
+.pd-rel-price{font-size:13px;font-weight:900;color:#c8704a}
+/* mobile */
+@media(max-width:700px){
+  .pd-layout{grid-template-columns:1fr}
+  .pd-right{position:static;aspect-ratio:4/3}
+  .pd-right-img{aspect-ratio:4/3;height:260px}
+  .pd-left{padding:24px 20px 60px;border-left:none}
+  .pd-name{font-size:24px}
+}
+/* legacy refs (unused but kept for safety) */
+.pdrel{display:none}.pdrel-scroll{display:none}.pdorder{display:none}
+.pdhero{display:none}.pdbody{display:none}
 
 /* ── Featured Custom Builder ── */
 .feat-builder{background:linear-gradient(135deg,#120805 0%,#1e0f07 40%,#2d1810 70%,#120805 100%);
@@ -1105,22 +1148,71 @@
 
 <!-- Product Detail Overlay -->
 <div class="proddet-ov" id="prodDetailOv" role="dialog" aria-modal="true">
-  <button class="pdback" onclick="closeProdDetail()">← חזרה לקטלוג</button>
-  <div class="pdhero">
-    <img id="pdImg" src="" alt="" loading="lazy">
-    <div class="pdhero-ribbon" id="pdRibbon"></div>
+  <!-- Top bar -->
+  <div class="pd-topbar">
+    <button class="pd-topbar-back" onclick="closeProdDetail()" aria-label="חזרה">←</button>
+    <div class="pd-topbar-crumb" id="pdCrumb">קטלוג › <strong id="pdCrumbName"></strong></div>
   </div>
-  <div class="pdbody">
-    <div class="pdname" id="pdName"></div>
-    <div class="pdprice" id="pdPrice"></div>
-    <p class="pddesc" id="pdDesc"></p>
-    <div class="pdsect">🍫 מה בפנים</div>
-    <div class="pdingr" id="pdIngr"></div>
-    <button class="pdorder" id="pdOrderBtn">🛒 להזמנה</button>
+  <!-- Two column layout -->
+  <div class="pd-layout">
+    <!-- LEFT: info -->
+    <div class="pd-left">
+      <div class="pd-cat-tag" id="pdCatTag"></div>
+      <h1 class="pd-name" id="pdName"></h1>
+      <p class="pd-short" id="pdShort"></p>
+      <div class="pd-price-row">
+        <div class="pd-price" id="pdPrice"></div>
+        <div class="pd-price-note" id="pdPriceNote"></div>
+      </div>
+      <button class="pd-order-btn" id="pdOrderBtn">🛒 הוסף לסל</button>
+      <!-- Accordion -->
+      <div id="pdAccordion">
+        <div class="pd-acc-item" id="pdAccContents">
+          <button class="pd-acc-btn" onclick="pdToggleAcc('pdAccContents')">
+            <span>🍫 מה בפנים</span><span class="pd-acc-icon">+</span>
+          </button>
+          <div class="pd-acc-body">
+            <div class="pd-acc-inner">
+              <ul class="pd-contents-list" id="pdContentsList"></ul>
+            </div>
+          </div>
+        </div>
+        <div class="pd-acc-item" id="pdAccAllerg">
+          <button class="pd-acc-btn" onclick="pdToggleAcc('pdAccAllerg')">
+            <span>⚠️ אלרגנים</span><span class="pd-acc-icon">+</span>
+          </button>
+          <div class="pd-acc-body">
+            <div class="pd-acc-inner">
+              <div class="pd-allerg-row" id="pdAllergRow"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pd-acc-item" id="pdAccAbout">
+          <button class="pd-acc-btn" onclick="pdToggleAcc('pdAccAbout')">
+            <span>✨ על המוצר</span><span class="pd-acc-icon">+</span>
+          </button>
+          <div class="pd-acc-body">
+            <div class="pd-acc-inner">
+              <p style="font-size:14px;color:#5a3424;line-height:1.8;margin:0 0 10px" id="pdStory"></p>
+              <div class="pd-occ-row" id="pdOccRow"></div>
+              <div class="pd-note" id="pdNote"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- RIGHT: image -->
+    <div class="pd-right">
+      <div class="pd-img-wrap">
+        <img class="pd-right-img" id="pdImg" src="" alt="" loading="lazy">
+        <div class="pd-ribbon-badge" id="pdRibbon" style="display:none"></div>
+      </div>
+    </div>
   </div>
-  <div class="pdrel">
-    <div class="pdrel-title">אולי יעניין אותך גם ✨</div>
-    <div class="pdrel-scroll" id="pdRelScroll"></div>
+  <!-- Related -->
+  <div class="pd-related-section">
+    <div class="pd-related-title">אולי יעניין אותך גם ✨</div>
+    <div class="pd-related-scroll" id="pdRelScroll"></div>
   </div>
 </div>
 
@@ -12530,81 +12622,240 @@ window.openCustomBuilder = function(){
 (function(){
   var _card = null;
 
-  var INGR = {
-    'מארז לב מוס + פחזניות':['לב מוס שוקולד בלגי','קרם וניל פטיסייר','פחזניות קרמבל','קישוטי שוקולד','כיתוב אישי'],
-    'מגש מתוקים גדול':['פחזניות קרמבל','עוגיות מגולגלות','עוגיות שוקולד','אלפחורס מלא'],
-    'מגש מתוקים ענק – ללא פחזניות':['עוגיות מגולגלות כ-40 יח','אלפחורס מלא','עוגיות שוקולד'],
-    'מגש אמסטרדם':['פחזניות קרמבל','עוגיות שוקולד','עוגיות אמסטרדם קוקוס'],
-    'מגש פחזניות וכדורים':['פחזניות קרמבל','עוגיות מגולגלות','כדורי שוקולד'],
-    'מארז קינוחים אישיים':['קרם ברולה קלאסי','מיני מגנום שוקולד','טארט לימון','טארט שוקולד בלגי'],
-    'מארז מותאם אישית':['תבחרו מוסים','קינוחים','עוגיות','פחזניות — הכל לפי הטעם שלכם']
+  /* Full product data per product */
+  var PD = {
+    'מארז לב מוס + פחזניות':{
+      cat:'מארזים',
+      story:'לב מוס שוקולד רך ומפנק, עם כיתוב אישי לפי בחירתך, מוקף בפחזניות קרמבל פריכות ומזהבות. מושלם לכל אירוע מיוחד.',
+      contents:['❤️ לב מוס שוקולד גדול','🥐 פחזניות קרמבל פריכות','✍️ כיתוב אישי לפי בחירתכם','🎀 אריזה מהודרת'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['יום הולדת','יום נישואין','מתנה אישית'],
+      note:'ניתן לבקש כיתוב אישי'
+    },
+    'מארז מוס גדול מפנק':{
+      cat:'מארזים',
+      story:'מוס שוקולד עגול גדול ועשיר עם כיתוב אישי, מגולגלות קינדר ואלפחורס קלאסיות. המארז שגורם לחיוך גדול.',
+      contents:['⭕ מוס שוקולד עגול גדול','🍬 מגולגלות קינדר','🍪 אלפחורס קלאסיות','✍️ כיתוב אישי','🎀 אריזה מהודרת'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['יום הולדת','חגים','מתנה לעסק'],
+      note:'ניתן להגדיל כמויות לפי בקשה'
+    },
+    'מארז יום הולדת':{
+      cat:'יום הולדת',
+      story:'מוס שוקולד עגול ועליז עם כיתוב יום הולדת שמח ומגולגלות קינדר צבעוניות. הסוויטה המושלמת לחגוג!',
+      contents:['⭕ מוס שוקולד עגול','🍬 מגולגלות קינדר','✍️ כיתוב "יום הולדת שמח"','🎀 אריזה חגיגית'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['יום הולדת','מסיבה','אירוע ילדים'],
+      note:'ניתן לבקש שם ומספר גיל על הכיתוב'
+    },
+    'מארז לב מוס + הפתעות':{
+      cat:'מארזים פרמיום',
+      story:'לב מוס מרשים עם כיתוב אישי ומגוון הפתעות מתוקות. המארז הכי פופולרי שלנו — מושלם למתנה יוקרתית.',
+      contents:['❤️ לב מוס שוקולד גדול','🎁 מגוון הפתעות מתוקות','✍️ כיתוב אישי','🎀 אריזה מפוארת עם סרט'],
+      allergens:['גלוטן','חלב','ביצים','עשויים להכיל אגוזים'],
+      occasions:['יום הולדת','יום נישואין','מתנה רומנטית','חג'],
+      note:'ניתן לבחור את תוכן ההפתעות'
+    },
+    'מארז מינימליסטי':{
+      cat:'מארזים',
+      story:'מוס שוקולד לבן נקי ואלגנטי עם כיתוב ומגוון הפתעות. עיצוב צנוע ומרשים שמתאים לכל אירוע.',
+      contents:['⭕ מוס שוקולד לבן','🎁 הפתעות מתוקות','✍️ כיתוב אישי','🎀 אריזה נקייה ואלגנטית'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['מתנה עסקית','אירוע רשמי','ברית / בר מצווה'],
+      note:'מומלץ לפגישות עסקיות ואירועים רשמיים'
+    },
+    'מארז הכל מהכל – תודה רבה':{
+      cat:'מתנות תודה',
+      story:'לב לבן עם כיתוב "תודה רבה" ומגוון עשיר של מתוקים. כי לפעמים המילים לא מספיקות, אבל שוקולד תמיד מדבר.',
+      contents:['❤️ לב שוקולד לבן','🍬 מגולגלות קינדר','🍪 אלפחורס','🥐 פחזניות','✍️ כיתוב "תודה רבה"','🎀 אריזה מהודרת'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['תודה לצוות','מתנה למורה','סיום פרויקט','אחרי לידה'],
+      note:'ניתן לשנות את הכיתוב לפי רצונכם'
+    },
+    'מארז מיוחד יום הולדת':{
+      cat:'יום הולדת',
+      story:'לב שוקולד עמוס בכיתוב מיוחד ומגוון מתוקים. המארז המושלם לחגוג יום הולדת של מישהו שאתם אוהבים.',
+      contents:['❤️ לב שוקולד','🍬 מגולגלות','🍪 עוגיות','🥐 פחזניות','✍️ כיתוב אישי','🎀 אריזה חגיגית'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['יום הולדת','ציון דרך'],
+      note:'ניתן לרשום שם ומספר גיל'
+    },
+    'מארז אדם יקר':{
+      cat:'מתנות אישיות',
+      story:'לב שוקולד לבן עם כיתוב "לאדם יקר", אלפחורס רכות ומגולגלות קינדר. מארז שאומר "אכפת לי ממך".',
+      contents:['❤️ לב שוקולד לבן','🍪 אלפחורס רכות','🍬 מגולגלות קינדר','✍️ כיתוב "לאדם יקר"','🎀 אריזה אישית'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['מתנה אישית','הבראה','חיזוק ותמיכה','חג'],
+      note:'ניתן לשנות את הכיתוב'
+    },
+    'מארז הערכה מיוחד':{
+      cat:'מארזים',
+      story:'לב שוקולד לבן עם כיתוב הוקרה מיוחד ומגוון הפתעות מתוקות. מתנה מכל הלב לאנשים שמגיעים להם.',
+      contents:['❤️ לב שוקולד לבן','🎁 הפתעות מתוקות','✍️ כיתוב הוקרה','🎀 אריזה מהודרת'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['תגמול עובדים','הוקרה','מתנה ארגונית'],
+      note:'מושלם להזמנות קבוצתיות'
+    },
+    'עוגת מספרים – חד ספרתי':{
+      cat:'עוגות מספרים',
+      story:'עוגת מספר מרהיבה בצורת ספרה אחת, עמוסה בממתקים, מרשמלו ושוקולדים. כל פרוסה — פסטיבל מתוק!',
+      contents:['🔢 שכבת בצק בצורת מספר','🍭 ממתקים צבעוניים','☁️ מרשמלו','🍫 שוקולדים','🎂 קרם גבינה לקישוט'],
+      allergens:['גלוטן','חלב','ביצים','עשויים להכיל אגוזים'],
+      occasions:['יום הולדת','בר / בת מצווה','1 שנה'],
+      note:'יש לציין את הספרה הרצויה בהזמנה'
+    },
+    'עוגת מספרים – דו ספרתי':{
+      cat:'עוגות מספרים',
+      story:'עוגת מספרים דו-ספרתית מרשימה — שתי שכבות בצק, ממתקים ומרשמלו. מושלמת לאבן דרך חשובה!',
+      contents:['🔢 שתי שכבות בצק מספר','🍭 ממתקים','☁️ מרשמלו','🍫 שוקולדים','🎂 קרם גבינה'],
+      allergens:['גלוטן','חלב','ביצים','עשויים להכיל אגוזים'],
+      occasions:['בר / בת מצווה','יובל','יום הולדת עגול'],
+      note:'יש לציין את שני המספרים בהזמנה'
+    },
+    'מגש מתוקים גדול':{
+      cat:'מגשי מתוקים',
+      story:'מגש שפע של מתוקים ביתיים — פחזניות פריכות, מגולגלות קינדר, עוגיות ואלפחורס עדינות. מושלם לאירוע.',
+      contents:['🥐 פחזניות קרמבל','🍬 מגולגלות קינדר','🍪 עוגיות שוקולד','🍪 אלפחורס'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['מסיבה','שבת','קינוחים לאירוע'],
+      note:'כמויות ותכולה ניתנות לשינוי לפי בקשה'
+    },
+    'מגש מתוקים ענק – ללא פחזניות':{
+      cat:'מגשי מתוקים',
+      story:'כ-100 עוגיות ביתיות על מגש ענק — מגולגלות קינדר, עוגיות שוקולד ואלפחורס. המגש שמזין אירוע שלם!',
+      contents:['🍬 מגולגלות קינדר (כ-40 יח)','🍪 עוגיות שוקולד (כ-30 יח)','🍪 אלפחורס (כ-30 יח)'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['חתונה','בר מצווה','אירוע גדול','שולחן מתוקים'],
+      note:'מינימום הזמנה 3 ימים מראש'
+    },
+    'מגש לבבות':{
+      cat:'מגשי מתוקים',
+      story:'מגש קסום בצורת לבבות — קרם בורלה עדין, מגולגלות קינדר ועוגיות אהבה. המגש הכי רומנטי אצלנו!',
+      contents:['❤️ קרם בורלה לבבות','🍬 מגולגלות קינדר','🍪 עוגיות לבבות'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['ולנטיין','יום נישואין','מתנה רומנטית'],
+      note:'אפשר לבקש צבעים מסוימים בהזמנה'
+    },
+    'מגש פחזניות וכדורים':{
+      cat:'מגשי מתוקים',
+      story:'פחזניות קרמבל פריכות, מגולגלות קינדר וכדורי שוקולד עשירים — קומבינציה מנצחת על מגש אחד.',
+      contents:['🥐 פחזניות קרמבל','🍬 מגולגלות קינדר','🟤 כדורי שוקולד עשירים'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['מסיבה','שבת','חתונה'],
+      note:'ניתן להגדיל כמויות'
+    },
+    'מגש אמסטרדם':{
+      cat:'מגשי מתוקים',
+      story:'המגש הפופולרי ביותר שלנו! פחזניות פריכות, עוגיות שוקולד קלאסיות ועוגיות אמסטרדם שמנמנות.',
+      contents:['🥐 פחזניות קרמבל','🍪 עוגיות שוקולד','🍪 עוגיות אמסטרדם קוקוס'],
+      allergens:['גלוטן','חלב','ביצים'],
+      occasions:['מסיבה','קפה עם חברות','שולחן מתוקים'],
+      note:'הנמכר ביותר שלנו!'
+    }
   };
 
-  function getIngr(name, descFull){
-    if(INGR[name]) return INGR[name];
-    if(!descFull) return [];
-    return descFull.split(/[+|,–]/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 1; });
+  function getPD(name, descFull){
+    if(PD[name]) return PD[name];
+    var contents = (descFull||'').split(/[+|,–]/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length>1; });
+    return { cat:'מוצרים', story: descFull||'', contents: contents, allergens:['גלוטן','חלב','ביצים'], occasions:[], note:'' };
   }
 
+  function el(id){ return document.getElementById(id); }
+  function setText(id, v){ var e=el(id); if(e) e.textContent=v||''; }
+
   function buildRelated(currentCard){
-    var cards = Array.from(document.querySelectorAll('#prodGrid .prod-card')).filter(function(c){ return c !== currentCard; });
-    var html = cards.slice(0,8).map(function(c){
-      var img = (c.querySelector('.prod-img img')||{}).src||'';
-      var n = (c.querySelector('.prod-name')||{}).textContent||'';
-      var p = c.getAttribute('data-price')||'';
-      return '<div class="pdrel-card" data-rel-name="'+encodeURIComponent(n)+'">'+
-        '<img class="pdrel-img" src="'+img+'" alt="'+n+'" loading="lazy">'+
-        '<div class="pdrel-info"><div class="pdrel-name">'+n+'</div><div class="pdrel-price">₪'+p+'</div></div></div>';
+    var cards = Array.from(document.querySelectorAll('#prodGrid .prod-card')).filter(function(c){ return c!==currentCard && c.getAttribute('data-cat')!=='custom'; });
+    var html = cards.slice(0,10).map(function(c){
+      var img=(c.querySelector('.prod-img img')||{}).src||'';
+      var n=(c.querySelector('.prod-name')||{}).textContent||'';
+      var p=c.getAttribute('data-price')||'';
+      return '<div class="pd-rel-card" data-rel-name="'+encodeURIComponent(n)+'">'
+        +'<img class="pd-rel-img" src="'+img+'" alt="'+n+'" loading="lazy">'
+        +'<div class="pd-rel-info"><div class="pd-rel-name">'+n+'</div>'
+        +(p?'<div class="pd-rel-price">₪'+p+'</div>':'')+'</div></div>';
     }).join('');
-    document.getElementById('pdRelScroll').innerHTML = html;
-    document.querySelectorAll('.pdrel-card').forEach(function(el){
-      var n = decodeURIComponent(el.getAttribute('data-rel-name')||'');
-      el.addEventListener('click', function(){
+    el('pdRelScroll').innerHTML = html;
+    document.querySelectorAll('.pd-rel-card').forEach(function(card){
+      card.addEventListener('click', function(){
+        var n = decodeURIComponent(card.getAttribute('data-rel-name')||'');
         var c = Array.from(document.querySelectorAll('#prodGrid .prod-card')).find(function(x){
           return (x.querySelector('.prod-name')||{}).textContent===n;
         });
-        if(c) openProductDetail(c);
+        if(c) window.openProductDetail(c);
       });
     });
   }
 
+  /* Accordion toggle */
+  window.pdToggleAcc = function(id){
+    var item = el(id);
+    if(!item) return;
+    var wasOpen = item.classList.contains('pd-open');
+    document.querySelectorAll('.pd-acc-item').forEach(function(i){ i.classList.remove('pd-open'); });
+    if(!wasOpen) item.classList.add('pd-open');
+  };
+
   window.openProductDetail = function(card){
     if(!card) return;
     _card = card;
-    var name    = (card.querySelector('.prod-name')||{}).textContent||'';
-    var desc    = card.getAttribute('data-desc-full')||'';
-    var price   = card.getAttribute('data-price')||'';
-    var imgSrc  = (card.querySelector('.prod-img img')||{}).src||'';
-    var ribbon  = (card.querySelector('.prod-ribbon')||{}).textContent||'';
+    var name   = (card.querySelector('.prod-name')||{}).textContent||'';
+    var desc   = card.getAttribute('data-desc-full')||'';
+    var price  = card.getAttribute('data-price')||'';
+    var imgSrc = (card.querySelector('.prod-img img')||{}).src||'';
+    var ribbon = (card.querySelector('.prod-ribbon')||{}).textContent||'';
 
-    document.getElementById('pdName').textContent   = name;
-    document.getElementById('pdPrice').textContent  = price ? '₪'+price : '';
-    document.getElementById('pdDesc').textContent   = desc;
-    document.getElementById('pdImg').src            = imgSrc;
-    var rib = document.getElementById('pdRibbon');
-    if(ribbon){ rib.textContent = ribbon; rib.style.display = ''; }
-    else { rib.style.display = 'none'; }
+    var pd = getPD(name, desc);
 
-    var ingr = getIngr(name, desc);
-    document.getElementById('pdIngr').innerHTML = ingr.map(function(i){
-      return '<span class="pdingr-tag">'+i+'</span>';
+    // Populate
+    setText('pdName', name);
+    setText('pdCrumbName', name);
+    setText('pdCatTag', pd.cat);
+    setText('pdShort', pd.story);
+    setText('pdPrice', price ? '₪' + price : '');
+    setText('pdPriceNote', price ? 'מחיר סופי כולל אריזה' : '');
+    el('pdImg').src = imgSrc;
+    el('pdImg').alt = name;
+    var rib = el('pdRibbon');
+    if(ribbon){ rib.textContent=ribbon; rib.style.display=''; }
+    else { rib.style.display='none'; }
+
+    // Contents
+    el('pdContentsList').innerHTML = pd.contents.map(function(c){
+      return '<li>'+c+'</li>';
     }).join('');
+
+    // Allergens
+    el('pdAllergRow').innerHTML = pd.allergens.map(function(a){
+      return '<span class="pd-allerg-chip">⚠️ '+a+'</span>';
+    }).join('');
+
+    // Story + occasions + note
+    setText('pdStory', pd.story);
+    el('pdOccRow').innerHTML = pd.occasions.map(function(o){
+      return '<span class="pd-occ-chip">'+o+'</span>';
+    }).join('');
+    setText('pdNote', pd.note ? '💡 ' + pd.note : '');
+
+    // Open first accordion by default
+    document.querySelectorAll('.pd-acc-item').forEach(function(i){ i.classList.remove('pd-open'); });
+    var first = el('pdAccContents');
+    if(first) first.classList.add('pd-open');
 
     buildRelated(card);
 
-    var ov = document.getElementById('prodDetailOv');
+    var ov = el('prodDetailOv');
     ov.classList.add('pd-open');
     ov.scrollTop = 0;
     document.body.style.overflow = 'hidden';
   };
 
   window.closeProdDetail = function(){
-    document.getElementById('prodDetailOv').classList.remove('pd-open');
+    el('prodDetailOv').classList.remove('pd-open');
     document.body.style.overflow = '';
     _card = null;
   };
 
-  // Override window.openModal to show product detail first (except custom builder)
+  // Override openModal — show detail page first (custom builder goes directly)
   var _origOpenModal = window.openModal;
   window.openModal = function(card){
     if(card && card.getAttribute('data-cat') !== 'custom'){
@@ -12614,22 +12865,21 @@ window.openCustomBuilder = function(){
     if(typeof _origOpenModal === 'function') _origOpenModal(card);
   };
 
-  document.getElementById('pdOrderBtn').addEventListener('click', function(){
+  el('pdOrderBtn').addEventListener('click', function(){
     var card = _card;
     closeProdDetail();
     if(card && typeof _origOpenModal === 'function'){
-      setTimeout(function(){ _origOpenModal(card); }, 350);
+      setTimeout(function(){ _origOpenModal(card); }, 380);
     }
   });
 
-  // Swipe right to close on mobile
-  var ov = document.getElementById('prodDetailOv');
-  var tsx=0, tsy=0;
-  ov.addEventListener('touchstart', function(e){ tsx=e.touches[0].clientX; tsy=e.touches[0].clientY; }, {passive:true});
+  // Swipe down to close on mobile
+  var ov = el('prodDetailOv');
+  var ty0 = 0;
+  ov.addEventListener('touchstart', function(e){ ty0 = e.touches[0].clientY; }, {passive:true});
   ov.addEventListener('touchend', function(e){
-    var dx = e.changedTouches[0].clientX - tsx;
-    var dy = Math.abs(e.changedTouches[0].clientY - tsy);
-    if(dx > 80 && dy < 60) closeProdDetail();
+    var dy = e.changedTouches[0].clientY - ty0;
+    if(dy > 90 && ov.scrollTop < 10) closeProdDetail();
   }, {passive:true});
 })();
 </script>
