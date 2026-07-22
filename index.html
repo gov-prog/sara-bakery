@@ -180,11 +180,11 @@
       display:flex;align-items:center;
       padding:100px 6% 70px;position:relative;overflow:hidden;
     }
-    .hero-split{display:flex;align-items:center;gap:60px;width:100%;max-width:1280px;margin:0 auto;position:relative;z-index:2}
-    .hero-img-col{flex:1;display:flex;align-items:center;justify-content:center}
-    .hero-img-wrap{position:relative;width:100%;max-width:480px;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 30px 80px rgba(200,112,74,.22),0 0 0 10px rgba(255,255,255,.85),0 0 0 24px rgba(200,112,74,.08)}
+    .hero-split{display:flex;align-items:center;gap:20px;width:100%;max-width:720px;margin:0 auto;position:relative;z-index:2;flex-direction:column}
+    .hero-img-col{flex:none;display:flex;align-items:center;justify-content:center;order:-1}
+    .hero-img-wrap{position:relative;width:200px;height:200px;max-width:200px;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 20px 60px rgba(200,112,74,.25),0 0 0 8px rgba(255,255,255,.9),0 0 0 16px rgba(200,112,74,.1)}
     .hero-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
-    .hero-img-badge{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.92);backdrop-filter:blur(8px);color:var(--copper-dark);padding:8px 22px;border-radius:999px;font-size:12px;font-weight:800;box-shadow:0 4px 16px rgba(200,112,74,.2);white-space:nowrap;letter-spacing:.3px}
+    .hero-img-badge{display:none}
     .hero::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(200,112,74,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,112,74,.04) 1px,transparent 1px);background-size:48px 48px}
     .hero-floats{position:absolute;inset:0;pointer-events:none;overflow:hidden}
     .hf{position:absolute;border-radius:50%;filter:blur(1px);animation:float 10s ease-in-out infinite}
@@ -193,22 +193,22 @@
     .hf3{width:180px;height:180px;background:radial-gradient(circle,rgba(244,160,120,.16),transparent 70%);top:35%;right:8%;animation-delay:-7s}
     .hf4{width:120px;height:120px;background:radial-gradient(circle,rgba(212,162,78,.22),transparent 70%);bottom:30%;right:20%;animation-delay:-2s}
     @keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-22px) scale(1.04)}}
-    .hero-inner{position:relative;z-index:2;flex:1;text-align:right;display:flex;flex-direction:column;align-items:flex-start}
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.65);border:1.5px solid rgba(200,112,74,.3);color:var(--copper-dark);padding:8px 22px;border-radius:30px;font-size:11px;letter-spacing:3px;font-weight:800;margin-bottom:28px;text-transform:uppercase;backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(200,112,74,.12)}
+    .hero-inner{position:relative;z-index:2;flex:none;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.65);border:1.5px solid rgba(200,112,74,.3);color:var(--copper-dark);padding:8px 22px;border-radius:30px;font-size:11px;letter-spacing:3px;font-weight:800;margin:0 auto 20px;text-transform:uppercase;backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(200,112,74,.12)}
     .hero-ornament{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;opacity:.65}
     .hero-ornament span{font-size:16px}
     .hero-ornament::before,.hero-ornament::after{content:'';flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(200,112,74,.7))}
     .hero-ornament::after{background:linear-gradient(90deg,rgba(200,112,74,.7),transparent)}
-    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(48px,8vw,88px);font-weight:900;line-height:1.05;margin-bottom:20px;color:var(--brown);letter-spacing:-1px;text-align:right;width:100%}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(48px,8vw,88px);font-weight:900;line-height:1.05;margin-bottom:20px;color:var(--brown);letter-spacing:-1px;text-align:center;width:100%}
     .hero h1 .accent{background:linear-gradient(135deg,#c8704a 0%,#e8953a 40%,#f1c165 70%,#c8704a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block;background-size:200% auto;animation:shimmerText 4s linear infinite}
     @keyframes shimmerText{0%{background-position:0% center}100%{background-position:200% center}}
-    .hero-desc{color:var(--brown-mid);font-size:16px;line-height:2;margin-bottom:14px;max-width:500px;font-weight:600;text-align:right}
-    .hero-stats{display:flex;justify-content:flex-start;align-items:center;gap:0;flex-wrap:wrap;margin:18px 0 30px}
+    .hero-desc{color:var(--brown-mid);font-size:16px;line-height:2;margin:0 auto 14px;max-width:500px;font-weight:600;text-align:center}
+    .hero-stats{display:flex;justify-content:center;align-items:center;gap:0;flex-wrap:wrap;margin:18px 0 30px}
     .hero-stat{padding:6px 22px;text-align:center}
     .hero-stat+.hero-stat{border-right:1px solid rgba(200,112,74,.25)}
     .hero-stat-val{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--copper);line-height:1}
     .hero-stat-lbl{font-size:11px;color:var(--brown-mid);font-weight:700;margin-top:3px}
-    .hero-btns{display:flex;gap:14px;justify-content:flex-start;flex-wrap:wrap}
+    .hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
     .btn-primary{background:linear-gradient(135deg,#c8704a,#a8522e);color:#fff;padding:16px 38px;border-radius:50px;font-weight:900;font-size:15px;border:none;cursor:pointer;box-shadow:0 10px 28px rgba(200,112,74,.38);transition:all .3s;font-family:'Rubik',sans-serif;letter-spacing:.3px}
     .btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(200,112,74,.48)}
     .btn-wa-hero{background:#fff;color:#2d7a2d;border:2px solid rgba(37,211,102,.45);padding:16px 38px;border-radius:50px;font-weight:900;font-size:15px;text-decoration:none;box-shadow:0 6px 20px rgba(37,211,102,.15);transition:all .3s;display:inline-block;letter-spacing:.3px}
@@ -297,8 +297,8 @@
     .catalog-rail{position:relative;max-width:1160px;margin:0 auto}
     .rail-track{overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
     .rail-track::-webkit-scrollbar{display:none}
-    .prod-grid{display:flex;gap:20px;padding:10px 8px 22px;align-items:stretch}
-    .prod-card{flex:0 0 260px;max-width:70vw;background:linear-gradient(180deg,#1a120d,#25160f);border-radius:22px;overflow:hidden;box-shadow:0 16px 34px rgba(0,0,0,0.35);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;transform:translateZ(0);border:1px solid rgba(255,255,255,0.06);cursor:default;opacity:1;pointer-events:auto;will-change:transform;backface-visibility:hidden;scroll-snap-align:center}
+    .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:10px 0 28px;max-width:1100px;margin:0 auto}
+    .prod-card{background:linear-gradient(180deg,#1a120d,#25160f);border-radius:22px;overflow:hidden;box-shadow:0 16px 34px rgba(0,0,0,0.35);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;transform:translateZ(0);border:1px solid rgba(255,255,255,0.06);cursor:default;opacity:1;pointer-events:auto;will-change:transform;backface-visibility:hidden}
     .prod-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(200,112,74,0.14);border-color:var(--blush)}
     .prod-img{height:210px;overflow:hidden;position:relative;background:linear-gradient(160deg,#20140f,#331d14)}
     .prod-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block;will-change:transform}
@@ -312,7 +312,7 @@
     .rb-custom{background:linear-gradient(135deg,var(--gold),#b8860b);color:#fff}
     .prod-body{padding:20px;background:linear-gradient(160deg,rgba(20,12,9,.85),rgba(36,22,16,.9));display:flex;flex-direction:column;min-height:190px}
     .prod-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:#f7e7d9;margin-bottom:7px;line-height:1.3;min-height:2.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .prod-desc{color:#d8c3b4;font-size:13px;line-height:1.6;margin-bottom:14px;font-weight:600;flex:1;min-height:3.6em;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .prod-desc{color:#d8c3b4;font-size:13px;line-height:1.6;margin-bottom:14px;font-weight:600;flex:1;min-height:3.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
     .prod-btn{width:100%;background:linear-gradient(135deg,var(--copper),var(--copper-dark));color:#fff;border:none;padding:12px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Rubik',sans-serif;transition:opacity .2s;pointer-events:auto;touch-action:manipulation}
     .prod-card:hover .prod-btn{opacity:.9}
 
@@ -377,7 +377,7 @@
     .rv-score-label{color:rgba(255,255,255,.35);font-size:11px;font-weight:700}
     /* reviews — scattered floating photos */
     @keyframes rv-float{0%,100%{transform:rotate(var(--rot,0deg)) translateY(0)}50%{transform:rotate(var(--rot,0deg)) translateY(-10px)}}
-    .rv-grid{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:12px;max-width:1040px;margin:0 auto;padding:20px 4% 60px;overflow:visible}
+    .rv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;max-width:1040px;margin:0 auto;padding:12px 4% 40px}
     .rv-gitem{width:clamp(130px,22vw,200px);border-radius:14px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.68),0 3px 8px rgba(0,0,0,.4);border:2px solid rgba(255,255,255,.1);opacity:0;transition:opacity .5s ease;position:relative}
     .rv-gitem.rv-visible{opacity:1;animation:rv-float var(--dur,3s) var(--rdel,0s) ease-in-out infinite}
     .rv-gitem:hover{z-index:20;animation-play-state:paused;filter:brightness(1.08);box-shadow:0 20px 55px rgba(0,0,0,.8)}
@@ -547,11 +547,9 @@
           radial-gradient(ellipse 70% 60% at 20% 80%,rgba(200,112,74,.18) 0%,transparent 55%),
           linear-gradient(160deg,#fffaf3 0%,#fde8cc 40%,#f9dfc4 70%,#f3cfa8 100%)}
         /* Show small hero image on mobile — fills visual void */
-        .hero-img-col{display:flex!important;justify-content:center;margin-bottom:0;flex-shrink:0}
-        .hero-img-wrap{max-width:110px;width:110px;height:110px;aspect-ratio:1;
-          box-shadow:0 8px 28px rgba(200,112,74,.28),0 0 0 4px rgba(255,255,255,.9),0 0 0 8px rgba(200,112,74,.1)}
-        .hero-img-badge{display:none}
-        .hero-split{flex-direction:column-reverse;align-items:center;gap:10px;width:100%}
+        .hero-img-col{display:flex!important;flex:none}
+        .hero-img-wrap{max-width:120px;width:120px;height:120px;aspect-ratio:1}
+        .hero-split{align-items:center;gap:10px;width:100%}
         .hero-inner{display:flex;flex-direction:column;align-items:center;text-align:center;width:100%}
         .hero h1{font-size:clamp(30px,8.5vw,44px);text-align:center;width:100%;display:block;margin-bottom:12px}
         .hero h1 .accent{text-align:center;display:block;width:100%}
@@ -574,7 +572,6 @@
         .info-grid{grid-template-columns:1fr 1fr}
         .reviews-layout{grid-template-columns:1fr}
         .reviews-summary{position:static}
-        .prod-card{flex-basis:230px}
         .prod-img{height:180px}
     }
     @media(max-width:600px){
@@ -597,7 +594,7 @@
         .cat-tabs{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;gap:8px;scrollbar-width:none;-ms-overflow-style:none;padding-left:5%;padding-right:5%;margin-left:-5%;margin-right:-5%;padding-bottom:10px}
         .cat-tabs::-webkit-scrollbar{display:none}
         .cat-tab{flex-shrink:0;padding:9px 16px;font-size:12px;white-space:nowrap}
-        .prod-card{flex-basis:172px;max-width:78vw}
+        .prod-grid{grid-template-columns:repeat(2,1fr);gap:10px;padding:8px 0 20px}
         .prod-img{height:130px}
         .prod-body{padding:12px}
         .prod-name{font-size:13px}
@@ -1335,9 +1332,6 @@
         <div class="cat-tab" onclick="filterCat('custom',this)">✨ מותאם אישית</div>
         <span id="catIndicator" class="cat-indicator" aria-hidden="true"></span>
     </div>
-    <div class="catalog-rail">
-    <button type="button" class="rail-btn prev" onclick="scrollCatalog(-1)">‹</button>
-    <div class="rail-track" id="catalogRail">
     <div class="prod-grid section-anim delay-3" id="prodGrid" data-stagger>
 
         <!-- MAARATZIM -->
@@ -1501,11 +1495,6 @@
             </div>
         </div>
 
-    </div>
-    </div>
-    <button type="button" class="rail-btn next" onclick="scrollCatalog(1)">›</button>
-    <div class="rail-fade left" aria-hidden="true"></div>
-    <div class="rail-fade right" aria-hidden="true"></div>
     </div>
 
 </section>
@@ -2308,8 +2297,6 @@
         if(cat === 'all'){
             shuffleVisibleProducts();
         }
-        updateCatalogCentered();
-        resetCatalogRail();
         if(typeof updateCatIndicator === 'function'){
             updateCatIndicator();
         }
@@ -3747,7 +3734,7 @@ function ensureUI(){
       '.auth-btn{flex:1;padding:10px;border:none;border-radius:10px;cursor:pointer;font-weight:700}',
       '.auth-btn.primary{background:#c8704a;color:#fff}',
       '.auth-btn.secondary{background:#f3eee8;color:#5a3a28}',
-      '.cart-drawer{position:fixed;left:0;top:0;height:100vh;width:min(460px,94vw);background:linear-gradient(180deg,#fff,#fff8f0);border-right:1px solid #f2d9c0;z-index:4000;box-shadow:20px 0 40px rgba(0,0,0,.2);transform:translateX(-102%);transition:transform .25s ease;display:flex;flex-direction:column}',
+      '.cart-drawer{position:fixed;right:0;top:0;height:100vh;width:min(460px,94vw);background:linear-gradient(180deg,#fff,#fff8f0);border-left:1px solid #f2d9c0;z-index:4000;box-shadow:-20px 0 40px rgba(0,0,0,.2);transform:translateX(102%);transition:transform .25s ease;display:flex;flex-direction:column}',
       '.cart-drawer.open{transform:translateX(0)}',
       '.cart-sticky-footer{padding:14px 16px;background:#fff;border-top:2px solid #f2d9c0;display:none;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 -6px 24px rgba(200,112,74,.14);flex-shrink:0}',
       '.cart-sticky-footer.visible{display:flex}',
@@ -6891,7 +6878,7 @@ function ensureUI(){
         el.addEventListener('touchstart', function(e){ swipeStartX = e.touches[0].clientX; }, { passive: true });
         el.addEventListener('touchend', function(e){
           var dx = e.changedTouches[0].clientX - swipeStartX;
-          if(dx < -50){ window.toggleCart(false); }
+          if(dx > 50){ window.toggleCart(false); }
         }, { passive: true });
       }
       // pulse the points bar when cart opens
@@ -7882,6 +7869,7 @@ function ensureUI(){
             '<button class="admin-tab" data-tab="reviews" type="button" onclick="adminSwitchTab(\'reviews\')">⭐ ביקורות</button>' +
             '<button class="admin-tab" data-tab="settings" type="button" onclick="adminSwitchTab(\'settings\')">⚙️ הגדרות</button>' +
             '<button class="admin-tab" data-tab="prices" type="button" onclick="adminSwitchTab(\'prices\')">🏷️ מחירים</button>' +
+            '<button class="admin-tab" data-tab="products" type="button" onclick="adminSwitchTab(\'products\')">📦 מוצרים</button>' +
           '</div>' +
           '<div id="adminKpis" class="admin-kpis"></div>' +
           '<div id="adminSectionOrders" class="admin-section active" data-section="orders">' +
@@ -8044,6 +8032,9 @@ function ensureUI(){
           '</div>' +
           '<div id="adminSectionPrices" class="admin-section" data-section="prices">' +
             '<div id="adminPricesContent"></div>' +
+          '</div>' +
+          '<div id="adminSectionProducts" class="admin-section" data-section="products" style="display:none">' +
+            '<div id="adminProductsContent"></div>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -8850,6 +8841,9 @@ function ensureUI(){
     }
     if(target === 'prices'){
       try { adminRenderPricesUI(); } catch(e){}
+    }
+    if(target === 'products'){
+      try { adminRenderProductsUI(); } catch(e){}
     }
     // set date in header
     try {
@@ -11126,6 +11120,19 @@ function ensureUI(){
     try { return JSON.parse(localStorage.getItem(PRICE_OVERRIDE_KEY) || '{}'); } catch(e){ return {}; }
   }
 
+  function initPriceDisplay(){
+    document.querySelectorAll('.prod-card[data-price]').forEach(function(card){
+      if(card.querySelector('.prod-price')) return;
+      var pe = document.createElement('div');
+      pe.className = 'prod-price';
+      pe.textContent = '₪' + card.getAttribute('data-price');
+      var body = card.querySelector('.prod-body');
+      var btn = body && body.querySelector('.prod-btn');
+      if(body && btn) body.insertBefore(pe, btn);
+    });
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',initPriceDisplay); } else { initPriceDisplay(); }
+
   window.applyPriceOverrides = function(){
     var ov = getStoredPrices();
     if(!Object.keys(ov).length) return;
@@ -11218,6 +11225,66 @@ function ensureUI(){
     try { localStorage.setItem(PRICE_OVERRIDE_KEY, JSON.stringify(ov)); } catch(e){}
     window.applyPriceOverrides();
     notify('מחירים עודכנו בהצלחה ✓');
+  };
+
+  window.adminRenderProductsUI = function(){
+    var content = document.getElementById('adminProductsContent');
+    if(!content) return;
+    var cards = Array.from(document.querySelectorAll('#prodGrid .prod-card'));
+    var existing = window._prodDetails || {};
+    var ALLERGENS = ['גלוטן','חלב','ביצים','אגוזים','שומשום','בוטנים'];
+    var html = '<div class="admin-card"><div style="font-weight:900;font-size:15px;color:#2d1a0e;margin-bottom:4px">📦 עריכת מוצרים</div>' +
+      '<div style="font-size:12px;color:#7a5040;margin-bottom:16px">ערוך רכיבים ואלרגיות לכל מוצר — ישתקף בדף המוצר</div></div>';
+    cards.forEach(function(card, i){
+      var nameEl = card.querySelector('.prod-name');
+      if(!nameEl) return;
+      var name = nameEl.textContent.trim();
+      var fd = existing[name] || {};
+      var curContents = (fd.contents || []).join('\n');
+      var curAllergens = fd.allergens || ['גלוטן','חלב','ביצים'];
+      var curNote = fd.note || '';
+      var curStory = fd.story || '';
+      var idx = 'pd' + i;
+      html += '<div class="admin-card" style="margin-top:10px">' +
+        '<div style="font-weight:900;font-size:14px;color:#2d1a0e;margin-bottom:10px">' + name + '</div>' +
+        '<label style="font-size:11px;font-weight:700;color:#7a5040;display:block;margin-bottom:3px">📝 תיאור קצר:</label>' +
+        '<input id="' + idx + '_story" class="admin-input" type="text" value="' + (curStory||'').replace(/"/g,'&quot;') + '" placeholder="תיאור המוצר..." style="margin-bottom:8px">' +
+        '<label style="font-size:11px;font-weight:700;color:#7a5040;display:block;margin-bottom:3px">🍫 רכיבים (שורה לכל פריט):</label>' +
+        '<textarea id="' + idx + '_contents" class="admin-input" rows="4" style="resize:vertical;margin-bottom:8px">' + curContents + '</textarea>' +
+        '<label style="font-size:11px;font-weight:700;color:#7a5040;display:block;margin-bottom:6px">⚠️ אלרגנים:</label>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">' +
+        ALLERGENS.map(function(a){
+          var chk = curAllergens.indexOf(a) >= 0 ? 'checked' : '';
+          return '<label style="display:flex;align-items:center;gap:4px;font-size:12px;font-weight:700;cursor:pointer"><input type="checkbox" id="' + idx + '_a_' + a + '" ' + chk + '> ' + a + '</label>';
+        }).join('') +
+        '</div>' +
+        '<label style="font-size:11px;font-weight:700;color:#7a5040;display:block;margin-bottom:3px">📌 הערה:</label>' +
+        '<input id="' + idx + '_note" class="admin-input" type="text" value="' + (curNote||'').replace(/"/g,'&quot;') + '" placeholder="הערה (אופציונלי)" style="margin-bottom:10px">' +
+        '<button class="admin-settings-save" type="button" onclick="adminSaveProductDetail(\'' + name.replace(/'/g,'\\\'') + '\',' + i + ')">💾 שמור</button>' +
+        '</div>';
+    });
+    content.innerHTML = html;
+  };
+
+  window.adminSaveProductDetail = async function(name, i){
+    try{
+      var idx = 'pd' + i;
+      var ALLERGENS = ['גלוטן','חלב','ביצים','אגוזים','שומשום','בוטנים'];
+      var story = ((document.getElementById(idx+'_story')||{}).value||'').trim();
+      var contentsRaw = ((document.getElementById(idx+'_contents')||{}).value||'');
+      var contents = contentsRaw.split('\n').map(function(s){return s.trim();}).filter(Boolean);
+      var allergens = ALLERGENS.filter(function(a){ return !!(document.getElementById(idx+'_a_'+a)||{}).checked; });
+      var note = ((document.getElementById(idx+'_note')||{}).value||'').trim();
+      var update = {story:story, contents:contents, allergens:allergens, note:note};
+      if(!window._prodDetails) window._prodDetails = {};
+      window._prodDetails[name] = update;
+      var fb = window.firebaseCtx;
+      if(fb && fb.setDoc && fb.doc && fb.db){
+        await fb.setDoc(fb.doc(fb.db,'settings','main'), {'productDetails': window._prodDetails}, {merge:true});
+      }
+      if(typeof notify === 'function') notify('✓ ' + name + ' עודכן');
+      else alert('עודכן!');
+    }catch(e){ console.error(e); alert('שגיאה: '+e.message); }
   };
 
   // Apply overrides on load
@@ -12787,10 +12854,37 @@ window.openCustomBuilder = function(){
   };
 
   function getPD(name, descFull){
+    if(window._prodDetails && window._prodDetails[name]){
+      var fd = window._prodDetails[name];
+      var base = PD[name] || {};
+      return {
+        cat: base.cat || 'מוצרים',
+        story: fd.story || base.story || descFull || '',
+        contents: (fd.contents && fd.contents.length) ? fd.contents : (base.contents || []),
+        allergens: (fd.allergens && fd.allergens.length) ? fd.allergens : (base.allergens || ['גלוטן','חלב','ביצים']),
+        occasions: fd.occasions || base.occasions || [],
+        note: fd.note || base.note || ''
+      };
+    }
     if(PD[name]) return PD[name];
     var contents = (descFull||'').split(/[+|,–]/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length>1; });
     return { cat:'מוצרים', story: descFull||'', contents: contents, allergens:['גלוטן','חלב','ביצים'], occasions:[], note:'' };
   }
+
+  // Load product details from Firebase
+  (function loadFirebaseProdDetails(){
+    function doLoad(){
+      var fb = window.firebaseCtx;
+      if(!fb || !fb.getDoc || !fb.doc || !fb.db) return;
+      fb.getDoc(fb.doc(fb.db,'settings','main')).then(function(snap){
+        if(!snap.exists()) return;
+        var d = snap.data();
+        if(d && d.productDetails) window._prodDetails = d.productDetails;
+      }).catch(function(){});
+    }
+    if(window.firebaseCtx){ setTimeout(doLoad, 300); }
+    window.addEventListener('firebase-ready', function(){ setTimeout(doLoad, 100); }, {once:true});
+  })();
 
   function el(id){ return document.getElementById(id); }
   function setText(id, v){ var e=el(id); if(e) e.textContent=v||''; }
