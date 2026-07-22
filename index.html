@@ -12699,8 +12699,7 @@ window.openCustomBuilder = function(){
   setTimeout(function(){ if(b) b.classList.add('cb-show'); }, 900);
   function hideBanner(){
     if(!b) return;
-    b.classList.remove('cb-show');
-    b.classList.add('cb-hide');
+    b.style.display = 'none';
   }
   function revealVisible(){
     var vh = window.innerHeight || 600;
