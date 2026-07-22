@@ -841,12 +841,12 @@
 
 /* ── Product Detail Overlay ── */
 /* ── Product Detail Page ── */
-.proddet-ov{position:fixed;inset:0;z-index:3000;background:#faf7f3;direction:rtl;
+.proddet-ov{position:fixed;inset:0;z-index:3000;background:#fffaf4;direction:rtl;
   transform:translateY(100%);transition:transform .42s cubic-bezier(.25,.8,.25,1);
   overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .proddet-ov.pd-open{transform:translateY(0)}
 /* top bar */
-.pd-topbar{position:sticky;top:0;z-index:10;background:rgba(250,247,243,.95);
+.pd-topbar{position:sticky;top:0;z-index:10;background:rgba(255,250,244,.95);
   backdrop-filter:blur(12px);border-bottom:1px solid #e8ddd4;display:flex;
   align-items:center;gap:10px;padding:12px 20px}
 .pd-topbar-back{background:none;border:none;cursor:pointer;font-size:18px;color:#5a3424;
@@ -901,7 +901,7 @@
   color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:900}
 .pd-img-wrap{position:relative}
 /* related */
-.pd-related-section{padding:40px 0 0;border-top:1px solid #e8ddd4}
+.pd-related-section{display:none}
 .pd-related-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:900;
   color:#2d1a0e;margin-bottom:20px;padding:0 20px}
 .pd-related-scroll{display:flex;gap:14px;overflow-x:auto;padding:0 20px 24px;scrollbar-width:none}
@@ -917,13 +917,14 @@
 .pd-rel-price{font-size:13px;font-weight:900;color:#c8704a}
 /* mobile */
 @media(max-width:700px){
-  .pd-layout{grid-template-columns:1fr 110px;align-items:start}
-  .pd-right{position:static;height:auto;max-height:none}
-  .pd-right-img{width:100%;height:140px;object-fit:cover;border-radius:0 0 0 12px;aspect-ratio:auto}
-  .pd-left{padding:20px 14px 60px;border-left:none}
+  .pd-layout{display:flex;flex-direction:column;min-height:auto}
+  .pd-right{order:-1;position:static;height:auto;max-height:none;width:100%}
+  .pd-right-img{width:100%;height:220px;object-fit:cover;border-radius:0;aspect-ratio:auto}
+  .pd-left{padding:18px 16px 80px;border-left:none;width:100%;box-sizing:border-box}
   .pd-name{font-size:22px}
+  .pd-price{font-size:24px}
   .pd-acc-btn{font-size:14px}
-  .pd-order-btn{font-size:14px;padding:14px 16px}
+  .pd-order-btn{font-size:15px;padding:15px 16px}
 }
 /* legacy refs (unused but kept for safety) */
 .pdrel{display:none}.pdrel-scroll{display:none}.pdorder{display:none}
