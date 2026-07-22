@@ -851,7 +851,7 @@
 .pd-topbar-crumb{font-size:13px;color:#a08070;font-weight:600;flex:1;text-align:right}
 .pd-topbar-crumb strong{color:#3d1f10}
 /* Two column layout */
-.pd-layout{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 50px);align-items:start}
+.pd-layout{display:grid;grid-template-columns:55% 45%;min-height:calc(100vh - 50px);align-items:start}
 /* LEFT: info panel */
 .pd-left{padding:40px 48px 60px;border-left:1px solid #e8ddd4}
 .pd-cat-tag{display:inline-block;font-size:12px;font-weight:800;color:#a08070;
@@ -891,8 +891,8 @@
   border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700}
 .pd-note{font-size:13px;color:#7a9060;font-style:italic;font-weight:600;margin-top:10px}
 /* RIGHT: image panel */
-.pd-right{position:sticky;top:50px;background:#f0ebe4}
-.pd-right-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.pd-right{position:sticky;top:50px;background:#f0ebe4;max-height:calc(100vh - 50px);overflow:hidden}
+.pd-right-img{width:100%;max-height:500px;object-fit:cover;display:block;aspect-ratio:4/3}
 .pd-ribbon-badge{position:absolute;top:18px;right:18px;background:linear-gradient(135deg,#c8704a,#a85535);
   color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:900}
 .pd-img-wrap{position:relative}
@@ -1163,6 +1163,20 @@
       <div class="pd-price-row">
         <div class="pd-price" id="pdPrice"></div>
         <div class="pd-price-note" id="pdPriceNote"></div>
+      </div>
+      <!-- Inscription / Number input (shown inline, product type dependent) -->
+      <div id="pdInscriptionWrap" style="display:none;margin-bottom:18px">
+        <label style="display:block;font-size:13px;font-weight:800;color:#5a3424;margin-bottom:8px">✍️ כיתוב על המארז</label>
+        <input id="pdInscriptionInput" type="text" placeholder='לדוגמה: "יום הולדת שמח רחל!"'
+          style="width:100%;border:1.5px solid #ddd0c4;border-radius:12px;padding:13px 16px;font-size:14px;font-family:'Rubik',sans-serif;outline:none;background:#fff;color:#2d1a0e;box-sizing:border-box;transition:border-color .18s"
+          onfocus="this.style.borderColor='#c8704a'" onblur="this.style.borderColor='#ddd0c4'">
+        <div style="font-size:12px;color:#a08070;margin-top:5px">ניתן להשאיר ריק אם אין צורך בכיתוב</div>
+      </div>
+      <div id="pdNumberWrap" style="display:none;margin-bottom:18px">
+        <label style="display:block;font-size:13px;font-weight:800;color:#5a3424;margin-bottom:8px">🔢 מה המספר על העוגה?</label>
+        <input id="pdNumberInput" type="text" placeholder='לדוגמה: 7 או 18'
+          style="width:100%;border:1.5px solid #ddd0c4;border-radius:12px;padding:13px 16px;font-size:14px;font-family:'Rubik',sans-serif;outline:none;background:#fff;color:#2d1a0e;box-sizing:border-box;transition:border-color .18s"
+          onfocus="this.style.borderColor='#c8704a'" onblur="this.style.borderColor='#ddd0c4'">
       </div>
       <button class="pd-order-btn" id="pdOrderBtn">🛒 הוסף לסל</button>
       <!-- Accordion -->
@@ -12751,6 +12765,14 @@ window.openCustomBuilder = function(){
       allergens:['גלוטן','חלב','ביצים'],
       occasions:['מסיבה','קפה עם חברות','שולחן מתוקים'],
       note:'הנמכר ביותר שלנו!'
+    },
+    'מארז מותאם אישית':{
+      cat:'מארז מותאם אישית ⭐',
+      story:'אתם בוחרים — שרה מכינה. בחרו בדיוק מה שאתם אוהבים: מוסים, קינוחים, עוגיות, פחזניות, כיתוב, צבעים ועיצוב. כל מארז הוא יצירה ייחודית!',
+      contents:['🎨 עיצוב ותוכן לפי בחירתכם','🍫 מוסים / קינוחים / עוגיות / פחזניות','✍️ כיתוב אישי','🎀 אריזה מהודרת מותאמת אישית'],
+      allergens:['גלוטן','חלב','ביצים','עשויים להכיל אגוזים'],
+      occasions:['כל אירוע','מתנה אישית','חג','יום הולדת','חתונה'],
+      note:'המחיר נקבע לפי תוכן הבחירה'
     }
   };
 
@@ -12801,23 +12823,60 @@ window.openCustomBuilder = function(){
     var name   = (card.querySelector('.prod-name')||{}).textContent||'';
     var desc   = card.getAttribute('data-desc-full')||'';
     var price  = card.getAttribute('data-price')||'';
+    var cat    = card.getAttribute('data-cat')||'';
     var imgSrc = (card.querySelector('.prod-img img')||{}).src||'';
     var ribbon = (card.querySelector('.prod-ribbon')||{}).textContent||'';
 
     var pd = getPD(name, desc);
 
-    // Populate
+    // Populate text
     setText('pdName', name);
     setText('pdCrumbName', name);
     setText('pdCatTag', pd.cat);
     setText('pdShort', pd.story);
     setText('pdPrice', price ? '₪' + price : '');
     setText('pdPriceNote', price ? 'מחיר סופי כולל אריזה' : '');
-    el('pdImg').src = imgSrc;
-    el('pdImg').alt = name;
+
+    // Image — smaller on desktop, show product image
+    var imgEl = el('pdImg');
+    if(imgEl){
+      if(cat === 'custom'){
+        imgEl.src = '';
+        imgEl.style.display = 'none';
+        var imgWrap = imgEl.parentElement;
+        if(imgWrap && !imgWrap.querySelector('.pd-custom-placeholder')){
+          var ph = document.createElement('div');
+          ph.className = 'pd-custom-placeholder';
+          ph.innerHTML = '<span style="font-size:72px">🎁</span><div style="font-size:16px;font-weight:800;color:#7a5010;margin-top:10px">מארז חלומות</div>';
+          ph.style.cssText = 'width:100%;aspect-ratio:1/1;background:linear-gradient(135deg,#fde8c8,#f5c87a);display:flex;flex-direction:column;align-items:center;justify-content:center';
+          imgWrap.appendChild(ph);
+        }
+      } else {
+        imgEl.src = imgSrc;
+        imgEl.alt = name;
+        imgEl.style.display = 'block';
+        var ph2 = (imgEl.parentElement||{}).querySelector('.pd-custom-placeholder');
+        if(ph2) ph2.style.display = 'none';
+      }
+    }
+
     var rib = el('pdRibbon');
     if(ribbon){ rib.textContent=ribbon; rib.style.display=''; }
     else { rib.style.display='none'; }
+
+    // Show/hide inscription and number fields
+    var inscWrap = el('pdInscriptionWrap');
+    var numWrap  = el('pdNumberWrap');
+    var inscInp  = el('pdInscriptionInput');
+    var numInp   = el('pdNumberInput');
+    if(inscWrap) inscWrap.style.display = (cat==='maarz') ? '' : 'none';
+    if(numWrap)  numWrap.style.display  = (cat==='mispar') ? '' : 'none';
+    if(inscInp)  inscInp.value = '';
+    if(numInp)   numInp.value  = '';
+
+    // For custom: change order button text
+    var ob = el('pdOrderBtn');
+    if(ob) ob.textContent = (cat==='custom') ? '✨ בנה את המארז שלי' : '🛒 הוסף לסל';
 
     // Contents
     el('pdContentsList').innerHTML = pd.contents.map(function(c){
@@ -12829,7 +12888,7 @@ window.openCustomBuilder = function(){
       return '<span class="pd-allerg-chip">⚠️ '+a+'</span>';
     }).join('');
 
-    // Story + occasions + note
+    // Story + occasions + note (in "על המוצר" accordion)
     setText('pdStory', pd.story);
     el('pdOccRow').innerHTML = pd.occasions.map(function(o){
       return '<span class="pd-occ-chip">'+o+'</span>';
@@ -12855,21 +12914,39 @@ window.openCustomBuilder = function(){
     _card = null;
   };
 
-  // Override openModal — show detail page first (custom builder goes directly)
+  // Override openModal — show detail page first (including custom now)
   var _origOpenModal = window.openModal;
   window.openModal = function(card){
-    if(card && card.getAttribute('data-cat') !== 'custom'){
-      window.openProductDetail(card);
-      return;
-    }
+    if(card){ window.openProductDetail(card); return; }
     if(typeof _origOpenModal === 'function') _origOpenModal(card);
   };
 
   el('pdOrderBtn').addEventListener('click', function(){
     var card = _card;
+    var cat  = card ? (card.getAttribute('data-cat')||'') : '';
+    var inscVal = (el('pdInscriptionInput')||{}).value || '';
+    var numVal  = (el('pdNumberInput')||{}).value || '';
     closeProdDetail();
-    if(card && typeof _origOpenModal === 'function'){
-      setTimeout(function(){ _origOpenModal(card); }, 380);
+    if(!card) return;
+
+    if(cat === 'custom'){
+      // Open custom builder directly
+      if(typeof _origOpenModal === 'function') setTimeout(function(){ _origOpenModal(card); }, 380);
+      return;
+    }
+
+    // Open ordering modal, then pre-fill inscription/number
+    if(typeof _origOpenModal === 'function'){
+      setTimeout(function(){
+        _origOpenModal(card);
+        // Pre-fill inscription
+        setTimeout(function(){
+          var inp = document.getElementById('inscriptionInput');
+          if(inp && inscVal){ inp.value = inscVal; }
+          var nInp = document.getElementById('numberInput');
+          if(nInp && numVal){ nInp.value = numVal; }
+        }, 80);
+      }, 380);
     }
   });
 
