@@ -879,6 +879,89 @@
 .pdrel-name{font-size:11px;font-weight:800;color:#3d1f10;margin-bottom:3px;line-height:1.3;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pdrel-price{font-size:12px;font-weight:900;color:#c8704a}
+
+/* ── Featured Custom Builder ── */
+.feat-builder{background:linear-gradient(135deg,#120805 0%,#1e0f07 40%,#2d1810 70%,#120805 100%);
+  padding:56px 5% 60px;position:relative;overflow:hidden;direction:rtl}
+.feat-builder::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(241,193,101,.07) 0%,transparent 70%)}
+.feat-builder::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(200,112,74,.35),transparent)}
+.fb-inner{max-width:800px;margin:0 auto;display:flex;align-items:center;gap:40px}
+.fb-text{flex:1;min-width:0}
+.fb-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(241,193,101,.12);
+  border:1px solid rgba(241,193,101,.3);border-radius:20px;padding:5px 14px;
+  font-size:12px;font-weight:900;color:#f1c165;letter-spacing:.5px;margin-bottom:16px}
+.fb-h{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,42px);font-weight:900;
+  color:#fff;line-height:1.2;margin:0 0 12px}
+.fb-h span{background:linear-gradient(135deg,#f1c165,#c8704a);-webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;background-clip:text}
+.fb-sub{font-size:15px;color:rgba(255,255,255,.55);line-height:1.75;margin-bottom:20px}
+.fb-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.fb-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.75);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:700}
+.fb-btn{background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border:none;
+  border-radius:16px;padding:16px 32px;font-size:16px;font-weight:900;cursor:pointer;
+  font-family:'Rubik',sans-serif;box-shadow:0 6px 24px rgba(200,112,74,.4);
+  transition:transform .2s,box-shadow .2s;display:inline-flex;align-items:center;gap:10px}
+.fb-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(200,112,74,.55)}
+.fb-btn:active{transform:scale(.97)}
+.fb-visual{flex-shrink:0;width:240px;height:220px;position:relative;display:flex;
+  align-items:center;justify-content:center}
+.fb-visual-inner{width:180px;height:180px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(241,193,101,.15),rgba(200,112,74,.12));
+  border:1.5px solid rgba(241,193,101,.2);display:flex;align-items:center;
+  justify-content:center;font-size:80px;position:relative;
+  box-shadow:0 0 60px rgba(241,193,101,.1)}
+.fb-visual-inner::before{content:'';position:absolute;inset:-12px;border-radius:50%;
+  border:1px dashed rgba(241,193,101,.15);animation:fb-spin 25s linear infinite}
+@keyframes fb-spin{to{transform:rotate(360deg)}}
+@media(max-width:640px){
+  .fb-inner{flex-direction:column;gap:20px;text-align:center}
+  .fb-visual{width:140px;height:140px}
+  .fb-visual-inner{width:110px;height:110px;font-size:52px}
+  .fb-chips{justify-content:center}
+  .fb-btn{width:100%;justify-content:center;font-size:15px;padding:14px 24px}
+}
+
+/* ── Mobile bottom tab bar ── */
+.mob-tabbar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1500;
+  background:rgba(14,8,4,.97);backdrop-filter:blur(20px);
+  border-top:1px solid rgba(200,112,74,.22);height:60px;
+  padding-bottom:env(safe-area-inset-bottom,0);
+  box-shadow:0 -6px 30px rgba(0,0,0,.4)}
+.mob-tabbar-inner{display:flex;height:100%;align-items:stretch}
+.mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2px;text-decoration:none;color:rgba(255,200,150,.4);
+  font-size:9.5px;font-weight:700;letter-spacing:.2px;border:none;
+  background:none;cursor:pointer;font-family:'Rubik',sans-serif;padding:6px 2px;
+  transition:color .15s;-webkit-tap-highlight-color:transparent}
+.mob-tab.mt-active,.mob-tab:focus{color:#f1c165;outline:none}
+.mob-tab-ic{font-size:20px;line-height:1;transition:transform .15s}
+.mob-tab.mt-active .mob-tab-ic{transform:translateY(-1px)}
+.mob-tab-main{position:relative}
+.mob-tab-main .mob-tab-ic-wrap{
+  background:linear-gradient(135deg,#c8704a,#a85535);
+  border-radius:50%;width:44px;height:44px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 18px rgba(200,112,74,.5);
+  font-size:22px;line-height:1;
+  margin-top:-14px;
+  border:2px solid rgba(241,193,101,.25);
+  transition:transform .15s;
+}
+.mob-tab-main:active .mob-tab-ic-wrap{transform:scale(.93)}
+@media(max-width:767px){
+  .mob-tabbar{display:block}
+  body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+  nav .nav-links{display:none!important}
+  nav{padding:0 14px!important}
+  .cart-fab{top:auto!important;bottom:calc(70px + env(safe-area-inset-bottom,0px))!important;right:14px!important}
+  .auth-fab{top:auto!important;bottom:calc(128px + env(safe-area-inset-bottom,0px))!important;right:14px!important}
+  body.is-logged-in .auth-fab{display:none!important}
+  #cookieBanner{bottom:64px!important}
+  .rail-btn{display:none!important}
+}
 </style>
 </head>
 <body class="warm-theme">
@@ -1100,6 +1183,27 @@
     <div class="trust-item">🚚 משלוחים לפי אזור</div>
     <div class="trust-item">💳 ביט / פייבוקס / מזומן / העברה</div>
 </div>
+
+<!-- Featured Custom Builder -->
+<section class="feat-builder page-section section-anim">
+  <div class="fb-inner">
+    <div class="fb-text">
+      <div class="fb-tag">⭐ הנמכר ביותר</div>
+      <h2 class="fb-h">בנה את <span>המארז המושלם</span> שלך</h2>
+      <p class="fb-sub">בחר בדיוק מה שאתה אוהב — מוסים, קינוחים, עוגיות ופחזניות. המחיר מחושב אוטומטית לפי הבחירה שלך.</p>
+      <div class="fb-chips">
+        <span class="fb-chip">🎨 עיצוב לבחירה</span>
+        <span class="fb-chip">✍️ כיתוב אישי</span>
+        <span class="fb-chip">💰 מחיר לפי תוכן</span>
+        <span class="fb-chip">🎁 אריזה מהודרת</span>
+      </div>
+      <button class="fb-btn" onclick="openCustomBuilder()">🎁 בנה את המארז שלי</button>
+    </div>
+    <div class="fb-visual">
+      <div class="fb-visual-inner">🎁</div>
+    </div>
+  </div>
+</section>
 
 <section class="catalog page-section" id="catalog">
     <div class="section-header section-anim delay-1">
@@ -7780,7 +7884,39 @@ function ensureUI(){
                 '</div>' +
                 '<input type="hidden" id="tickerColor" value="gold">' +
               '</div>' +
-              '<button class="admin-settings-save" type="button" onclick="adminSaveTicker()" style="margin-top:6px">💾 שמור ופרסם</button>' +
+              '<div style="display:flex;gap:8px;margin-top:6px">' +
+                '<button class="admin-settings-save" type="button" onclick="adminSaveTicker()" style="flex:1">💾 שמור ופרסם</button>' +
+                '<button class="admin-btn" type="button" onclick="adminDisableTicker()" style="background:#888;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none">✕ כבה עכשיו</button>' +
+              '</div>' +
+            '</div>' +
+            '<div class="admin-card" style="margin-top:12px;border:2px dashed #b8d9b0;background:#f6fbf5">' +
+              '<div style="font-weight:900;font-size:15px;color:#1a3d1a;margin-bottom:6px">🎁 פופאפ קוד קופון בכניסה לאתר</div>' +
+              '<div style="font-size:12px;color:#4a7a4a;margin-bottom:12px">קופון שיוצג אוטומטית ללקוחות בכניסה לאתר</div>' +
+              '<div class="admin-settings-row">' +
+                '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px">' +
+                  '<input type="checkbox" id="cpPopupActive"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
+                '</label>' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">כותרת הפופאפ</label>' +
+                '<input id="cpPopupTitle" class="admin-input" type="text" placeholder="חג שבועות!!">' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">קוד קופון (מה יוצג לגולשים)</label>' +
+                '<input id="cpPopupCode" class="admin-input" type="text" placeholder="חגשמח">' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">תיאור (לדוגמה: 10% הנחה על כל הזמנה!)</label>' +
+                '<input id="cpPopupDesc" class="admin-input" type="text" placeholder="10% הנחה על כל הזמנה">' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">בתוקף עד</label>' +
+                '<input id="cpPopupExpiry" class="admin-input" type="date">' +
+              '</div>' +
+              '<div style="display:flex;gap:8px;margin-top:6px">' +
+                '<button class="admin-settings-save" type="button" onclick="adminSaveCouponPopup()" style="flex:1;background:linear-gradient(135deg,#2d6a2d,#4a9a4a)">💾 שמור</button>' +
+                '<button class="admin-btn" type="button" onclick="adminDisableCouponPopup()" style="background:#c0392b;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none">🗑️ הסר קופון</button>' +
+              '</div>' +
             '</div>' +
             '<div class="admin-card" style="margin-top:12px">' +
               '<div style="font-weight:900;font-size:13px;color:#2d1a0e;margin-bottom:10px">🔑 פרטי גישה</div>' +
@@ -8636,6 +8772,18 @@ function ensureUI(){
     if(tMsgs) tMsgs.value = (ticker.messages || []).join('\n');
     if(tColor) tColor.value = ticker.color || 'gold';
     adminInitTickerColorBtns(ticker.color || 'gold');
+    // Coupon popup UI
+    var cp = siteSett.couponPopup || {};
+    var cpActive = document.getElementById('cpPopupActive');
+    var cpTitle  = document.getElementById('cpPopupTitle');
+    var cpCode   = document.getElementById('cpPopupCode');
+    var cpDesc   = document.getElementById('cpPopupDesc');
+    var cpExpiry = document.getElementById('cpPopupExpiry');
+    if(cpActive) cpActive.checked = !!cp.active;
+    if(cpTitle)  cpTitle.value  = cp.title  || '';
+    if(cpCode)   cpCode.value   = cp.code   || '';
+    if(cpDesc)   cpDesc.value   = cp.desc   || '';
+    if(cpExpiry) cpExpiry.value = cp.expiry || '';
   }
 
   function adminInitTickerColorBtns(selected){
@@ -8668,6 +8816,48 @@ function ensureUI(){
     } catch(e){
       notify('שגיאה: ' + (e.message || e));
     }
+  };
+
+  window.adminDisableTicker = async function(){
+    var ticker = { active: false, messages: [], color: 'gold' };
+    try {
+      await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), { ticker: ticker }, { merge: true });
+      if(!window._siteSettings) window._siteSettings = {};
+      window._siteSettings.ticker = ticker;
+      if(typeof window.applyTickerSetting === 'function') window.applyTickerSetting(ticker);
+      var cb = document.getElementById('tickerActive');
+      if(cb) cb.checked = false;
+      notify('הרצועה כובתה ✓');
+    } catch(e){ notify('שגיאה: ' + (e.message || e)); }
+  };
+
+  window.adminSaveCouponPopup = async function(){
+    var active  = !!(document.getElementById('cpPopupActive') || {}).checked;
+    var title   = ((document.getElementById('cpPopupTitle')  || {}).value || '').trim();
+    var code    = ((document.getElementById('cpPopupCode')   || {}).value || '').trim();
+    var desc    = ((document.getElementById('cpPopupDesc')   || {}).value || '').trim();
+    var expiry  = ((document.getElementById('cpPopupExpiry') || {}).value || '').trim();
+    if(active && !code){ notify('חסר קוד קופון'); return; }
+    var cp = { active: active, title: title, code: code, desc: desc, expiry: expiry };
+    try {
+      await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), { couponPopup: cp }, { merge: true });
+      if(!window._siteSettings) window._siteSettings = {};
+      window._siteSettings.couponPopup = cp;
+      notify('פופאפ הקופון עודכן ✓');
+    } catch(e){ notify('שגיאה: ' + (e.message || e)); }
+  };
+
+  window.adminDisableCouponPopup = async function(){
+    var cp = { active: false };
+    try {
+      await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), { couponPopup: cp }, { merge: true });
+      if(!window._siteSettings) window._siteSettings = {};
+      window._siteSettings.couponPopup = cp;
+      var cb = document.getElementById('cpPopupActive');
+      if(cb) cb.checked = false;
+      try{ sessionStorage.removeItem('sara_cp_popup_seen'); }catch(e){}
+      notify('פופאפ הקופון הוסר ✓');
+    } catch(e){ notify('שגיאה: ' + (e.message || e)); }
   };
 
   window.adminSaveSettings = function(){
@@ -12285,6 +12475,42 @@ window.closeLegal = function(){
     </div>
   </div>
 </div>
+<!-- Mobile Bottom Tab Bar -->
+<div class="mob-tabbar" id="mobTabBar" role="navigation" aria-label="ניווט ראשי">
+  <div class="mob-tabbar-inner">
+    <button class="mob-tab mt-active" id="mbt-home" onclick="mobTab('home')" aria-label="ראשי">
+      <span class="mob-tab-ic">🏠</span><span>ראשי</span>
+    </button>
+    <button class="mob-tab" id="mbt-catalog" onclick="mobTab('catalog')" aria-label="קטלוג">
+      <span class="mob-tab-ic">🛍️</span><span>קטלוג</span>
+    </button>
+    <button class="mob-tab mob-tab-main" onclick="openCustomBuilder()" aria-label="בנה מארז">
+      <div class="mob-tab-ic-wrap">🎁</div><span style="color:rgba(200,112,74,.7);margin-top:2px">מארז</span>
+    </button>
+    <button class="mob-tab" id="mbt-events" onclick="mobTab('events')" aria-label="אירועים">
+      <span class="mob-tab-ic">🎉</span><span>אירועים</span>
+    </button>
+    <button class="mob-tab" id="mbt-profile" onclick="mobTab('profile')" aria-label="פרופיל">
+      <span class="mob-tab-ic">👤</span><span>פרופיל</span>
+    </button>
+  </div>
+</div>
+<script>
+function mobTab(tab){
+  document.querySelectorAll('.mob-tab').forEach(function(b){ b.classList.remove('mt-active'); });
+  var el = document.getElementById('mbt-'+tab);
+  if(el) el.classList.add('mt-active');
+  if(tab==='home'){ window.scrollTo({top:0,behavior:'smooth'}); }
+  else if(tab==='catalog'){ var s=document.getElementById('catalog'); if(s) s.scrollIntoView({behavior:'smooth'}); }
+  else if(tab==='events'){ var s=document.getElementById('events'); if(s) s.scrollIntoView({behavior:'smooth'}); }
+  else if(tab==='profile'){ if(typeof toggleProfile==='function') toggleProfile(true); }
+}
+window.openCustomBuilder = function(){
+  var card = document.querySelector('.prod-card[data-cat="custom"]');
+  if(card && typeof window.openModal === 'function') window.openModal(card);
+};
+</script>
+
 <script>
 (function(){
   var b=document.getElementById('cookieBanner');
@@ -12378,25 +12604,23 @@ window.closeLegal = function(){
     _card = null;
   };
 
+  // Override window.openModal to show product detail first (except custom builder)
+  var _origOpenModal = window.openModal;
+  window.openModal = function(card){
+    if(card && card.getAttribute('data-cat') !== 'custom'){
+      window.openProductDetail(card);
+      return;
+    }
+    if(typeof _origOpenModal === 'function') _origOpenModal(card);
+  };
+
   document.getElementById('pdOrderBtn').addEventListener('click', function(){
     var card = _card;
     closeProdDetail();
-    if(card && typeof window.openModal === 'function'){
-      setTimeout(function(){ window.openModal(card); }, 350);
+    if(card && typeof _origOpenModal === 'function'){
+      setTimeout(function(){ _origOpenModal(card); }, 350);
     }
   });
-
-  // Intercept prod-btn clicks to show detail page first (skip for custom builder)
-  document.addEventListener('click', function(e){
-    var btn = e.target.closest('.prod-btn');
-    if(!btn) return;
-    var card = btn.closest('.prod-card');
-    if(!card) return;
-    if(card.getAttribute('data-cat') === 'custom') return; // custom builder opens directly
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    window.openProductDetail(card);
-  }, true);
 
   // Swipe right to close on mobile
   var ov = document.getElementById('prodDetailOv');
