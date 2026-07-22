@@ -176,20 +176,9 @@
       display:block;
       padding:0;position:relative;overflow:hidden;
     }
-    /* Hero background slideshow */
-    .hero-bg-wrap{position:absolute;inset:0;z-index:0;overflow:hidden}
-    .hero-bg-slide{position:absolute;inset:-8%;background:center/cover no-repeat;opacity:0;animation:heroBgSlide 24s ease-in-out infinite;will-change:transform,opacity}
-    .hero-bg-slide.sb1{animation-delay:0s}
-    .hero-bg-slide.sb2{animation-delay:6s}
-    .hero-bg-slide.sb3{animation-delay:12s}
-    .hero-bg-slide.sb4{animation-delay:18s}
-    @keyframes heroBgSlide{
-      0%{opacity:0;transform:scale(1) translate(0,0)}
-      6%{opacity:1}
-      26%{opacity:1;transform:scale(1.12) translate(-2%,-1%)}
-      32%{opacity:0;transform:scale(1.14) translate(-2%,-1%)}
-      100%{opacity:0;transform:scale(1) translate(0,0)}
-    }
+    /* Hero background video */
+    .hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;background:#c87a4a}
+    .hero-video-iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100vw;height:56.25vw;min-height:100vh;min-width:177.78vh;border:none;pointer-events:none}
     .hero-bg-ov{position:absolute;inset:0;z-index:1;background:linear-gradient(155deg,rgba(255,252,245,.86) 0%,rgba(255,246,230,.80) 40%,rgba(252,228,200,.82) 70%,rgba(246,212,170,.88) 100%)}
     .hero-split{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;width:100%;min-height:100vh;max-width:none;margin:0;padding:90px 6% 60px;box-sizing:border-box;text-align:center;position:relative;z-index:3}
     .hero-img-col{display:none!important}
@@ -1246,11 +1235,13 @@
 </div>
 
 <section class="hero page-section">
-    <div class="hero-bg-wrap" aria-hidden="true">
-      <div class="hero-bg-slide sb1" style="background-image:url('mousse_box.jpg')"></div>
-      <div class="hero-bg-slide sb2" style="background-image:url('box1.jpg')"></div>
-      <div class="hero-bg-slide sb3" style="background-image:url('sweet_tray1.jpg')"></div>
-      <div class="hero-bg-slide sb4" style="background-image:url('box3.jpg')"></div>
+    <div class="hero-video-wrap" aria-hidden="true">
+      <iframe class="hero-video-iframe"
+        src="https://www.youtube.com/embed/cYmTgMCJz5Q?autoplay=1&mute=1&loop=1&playlist=cYmTgMCJz5Q&controls=0&showinfo=0&rel=0&modestbranding=1&iv_load_policy=3&playsinline=1&disablekb=1&enablejsapi=1"
+        allow="autoplay; encrypted-media; fullscreen"
+        allowfullscreen
+        title="background video"
+      ></iframe>
     </div>
     <div class="hero-bg-ov" aria-hidden="true"></div>
     <div class="hero-floats">
