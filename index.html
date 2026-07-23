@@ -4665,24 +4665,24 @@ function ensureUI(){
       var unlocked = !isGuest && points >= level;
       var delay = idx * 0.06;
       if(unlocked){
-        return '<div class="pm-chip unlocked" style="animation-delay:' + delay + 's" title="פינוק ' + level + '">' +
+        return '<div class="pm-chip unlocked" style="animation-delay:' + delay + 's" title="מתנה ' + level + '">' +
           '<div class="pm-chip-icon">🎁</div>' +
           '<div class="pm-chip-pts">' + level + '</div>' +
-          '<div class="pm-chip-name">פינוק</div>' +
+          '<div class="pm-chip-name">מתנה</div>' +
           '<div class="pm-chip-badge">✓ פתוח</div>' +
         '</div>';
       }
       if(!phaseActive){
         return '<div class="pm-chip locked dim" style="animation-delay:' + delay + 's">' +
-          '<div class="pm-chip-icon">🔒</div>' +
+          '<div class="pm-chip-icon">🎁</div>' +
           '<div class="pm-chip-pts">' + level + '</div>' +
-          '<div class="pm-chip-name">שלב 2</div>' +
+          '<div class="pm-chip-name">מתנה</div>' +
         '</div>';
       }
       return '<div class="pm-chip locked" style="animation-delay:' + delay + 's">' +
-        '<div class="pm-chip-icon">❓</div>' +
+        '<div class="pm-chip-icon">🎁</div>' +
         '<div class="pm-chip-pts">' + level + '</div>' +
-        '<div class="pm-chip-name">פינוק</div>' +
+        '<div class="pm-chip-name">מתנה</div>' +
       '</div>';
     }
 
