@@ -7932,45 +7932,39 @@ function ensureUI(){
           '</div>' +
           '<div id="adminSectionCoupons" class="admin-section" data-section="coupons">' +
             '<div style="font-weight:900;font-size:16px;color:#2d1a0e;margin-bottom:14px">🎟️ ניהול קופונים</div>' +
-            '<div class="admin-card" style="margin-bottom:12px;border:2px dashed #b8d9b0;background:#f6fbf5">' +
-              '<div style="font-weight:900;font-size:14px;color:#1a3d1a;margin-bottom:6px">🎁 פופאפ קוד קופון בכניסה לאתר</div>' +
-              '<div style="font-size:12px;color:#4a7a4a;margin-bottom:12px">קופון שיוצג אוטומטית ללקוחות בכניסה לאתר</div>' +
-              '<div class="admin-settings-row">' +
-                '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px">' +
-                  '<input type="checkbox" id="cpPopupActive"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
-                '</label>' +
+            '<div style="background:#e8f5e8;border:2px solid #4a9a4a;border-radius:14px;padding:14px;margin-bottom:12px">' +
+              '<div style="font-weight:900;font-size:14px;color:#1a3d1a;margin-bottom:10px">🎁 פופאפ קוד קופון בכניסה לאתר</div>' +
+              '<label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px;padding:8px;background:#fff;border-radius:8px;border:1px solid #b8d9b0">' +
+                '<input type="checkbox" id="cpPopupActive" style="width:16px;height:16px;cursor:pointer"> הצג פופאפ קוד קופון בכניסה לאתר' +
+              '</label>' +
+              '<div style="margin-bottom:8px">' +
+                '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:3px">כותרת הפופאפ</div>' +
+                '<input id="cpPopupTitle" class="admin-input" type="text" placeholder="חג שמח!!" style="width:100%;box-sizing:border-box">' +
               '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">כותרת הפופאפ</label>' +
-                '<input id="cpPopupTitle" class="admin-input" type="text" placeholder="חג שמח!!">' +
+              '<div style="margin-bottom:8px">' +
+                '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:3px">קוד קופון (מה יוצג ללקוחות)</div>' +
+                '<input id="cpPopupCode" class="admin-input" type="text" placeholder="חגשמח" style="width:100%;box-sizing:border-box">' +
               '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">קוד קופון (מה יוצג לגולשים)</label>' +
-                '<input id="cpPopupCode" class="admin-input" type="text" placeholder="חגשמח">' +
-              '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">סוג הנחה</label>' +
-                '<div style="display:flex;gap:16px;padding:5px 0">' +
+              '<div style="margin-bottom:8px">' +
+                '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:4px">סוג הנחה</div>' +
+                '<div style="display:flex;gap:14px">' +
                   '<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="radio" id="cpPopupTypePercent" name="cpPopupType" value="percent" onchange="document.getElementById(\'cpPopupValueRow\').style.display=\'\'" checked> % הנחה</label>' +
                   '<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="radio" id="cpPopupTypeBundle" name="cpPopupType" value="bundle" onchange="document.getElementById(\'cpPopupValueRow\').style.display=\'none\'"> 3+1 מתנה</label>' +
                 '</div>' +
               '</div>' +
-              '<div class="admin-settings-row" id="cpPopupValueRow">' +
-                '<label class="admin-settings-label">אחוז הנחה (לדוגמה 10 = 10%)</label>' +
+              '<div id="cpPopupValueRow" style="margin-bottom:8px">' +
+                '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:3px">אחוז הנחה (לדוגמה 10 = 10%)</div>' +
                 '<input id="cpPopupValue" class="admin-input" type="number" min="1" max="100" placeholder="10" style="width:100px">' +
               '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">תיאור (לדוגמה: 10% הנחה על כל הזמנה!)</label>' +
-                '<input id="cpPopupDesc" class="admin-input" type="text" placeholder="10% הנחה על כל הזמנה">' +
+              '<div style="margin-bottom:8px">' +
+                '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:3px">תיאור</div>' +
+                '<input id="cpPopupDesc" class="admin-input" type="text" placeholder="10% הנחה על כל הזמנה" style="width:100%;box-sizing:border-box">' +
               '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">בתוקף עד</label>' +
+              '<div style="margin-bottom:12px">' +
+                '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:3px">בתוקף עד (אופציונלי)</div>' +
                 '<input id="cpPopupExpiry" class="admin-input" type="date">' +
               '</div>' +
-              '<div style="display:flex;gap:8px;margin-top:6px">' +
-                '<button class="admin-settings-save" type="button" onclick="adminSaveCouponPopup()" style="flex:1;background:linear-gradient(135deg,#2d6a2d,#4a9a4a)">💾 שמור</button>' +
-                '<button class="admin-btn" type="button" onclick="adminDisableCouponPopup()" style="background:#c0392b;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none">🗑️ הסר קופון</button>' +
-              '</div>' +
+              '<button type="button" onclick="adminSaveCouponPopup()" style="width:100%;padding:13px;background:linear-gradient(135deg,#2d6a2d,#4a9a4a);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:900;cursor:pointer;font-family:Rubik,sans-serif">💾 שמור הגדרות קופון פופאפ</button>' +
             '</div>' +
             '<div class="admin-card" style="margin-bottom:12px">' +
               '<div style="font-weight:900;font-size:14px;color:#2d1a0e;margin-bottom:10px">+ הוספת קופון חדש</div>' +
