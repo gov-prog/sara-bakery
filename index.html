@@ -9420,10 +9420,12 @@ function ensureUI(){
       var waLinks = '';
       var waReady = (status==='ready') ? buildOrderWhatsApp(orderNum,customer,checkout,totals,'ready') : '';
       var waOut   = (status==='out_for_delivery') ? buildOrderWhatsApp(orderNum,customer,checkout,totals,'out_for_delivery') : '';
+      var waDelay = (status==='out_for_delivery') ? buildOrderWhatsApp(orderNum,customer,checkout,totals,'delay') : '';
       var waDone  = (status==='completed') ? buildOrderWhatsApp(orderNum,customer,checkout,totals,'completed') : '';
       if(waReady && isDelivery)  waLinks += '<a class="admin-btn wa-btn" href="' + waReady + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: נמצא לאיסוף</a>';
       if(waReady && !isDelivery) waLinks += '<a class="admin-btn wa-btn" href="' + waReady + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: מוכן לאיסוף</a>';
       if(waOut)   waLinks += '<a class="admin-btn wa-btn" href="' + waOut   + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: משלוח בדרך</a>';
+      if(waDelay) waLinks += '<a class="admin-btn wa-btn" href="' + waDelay + '" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="background:#fff3e0;color:#b85530;border-color:#f0b870">💬 WhatsApp: עיכוב במשלוח</a>';
       if(waDone)  waLinks += '<a class="admin-btn wa-btn" href="' + waDone  + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">💬 WhatsApp: הושלם</a>';
 
       // Coupon
@@ -9954,7 +9956,14 @@ function ensureUI(){
     var siteBase = (typeof window !== 'undefined' && window.location) ? window.location.origin : '';
     var trackLink = (siteBase && orderNum) ? (siteBase + '/?track=' + encodeURIComponent(orderNum)) : '';
 
-    if(type === 'out_for_delivery'){
+    if(type === 'delay'){
+      lines.push('שלום ' + customerName + '! 😔');
+      lines.push('');
+      lines.push('רצינו לעדכן אותך שיש עיכוב קל במשלוח ההזמנה שלך #' + orderNum + '.');
+      lines.push('אנחנו עושים הכל כדי שתגיע אלייך בהקדם האפשרי!');
+      lines.push('');
+      lines.push('תודה על הסבלנות 🙏');
+    } else if(type === 'out_for_delivery'){
       lines.push('שלום ' + customerName + '! 🚚');
       lines.push('');
       lines.push('ההזמנה שלך #' + orderNum + ' יצאה למשלוח ובדרך אליך עכשיו!');
