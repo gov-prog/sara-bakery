@@ -8085,6 +8085,9 @@ function ensureUI(){
             '<div id="adminProductsContent"></div>' +
           '</div>' +
         '</div>' +
+        '<div id="cpSaveBar" style="display:none;padding:10px 14px 14px;border-top:2px solid #c8e8c0;background:#f0f8f0;flex-shrink:0">' +
+          '<button class="admin-settings-save" type="button" onclick="adminSaveCouponPopup()" style="width:100%;background:linear-gradient(135deg,#2d6a2d,#4a9a4a);font-size:14px;padding:12px;border-radius:10px">💾 שמור הגדרות קופון פופאפ</button>' +
+        '</div>' +
       '</div>' +
         '<div id="adminOrderModal" class="admin-order-modal" onclick="closeAdminOrderModal(event)">' +
           '<div class="admin-order-card" onclick="event.stopPropagation()">' +
@@ -8879,6 +8882,10 @@ function ensureUI(){
       try { refreshCoupons(); } catch(e){}
       try { adminLoadCouponPopupUI(); } catch(e){}
     }
+    try {
+      var cpBar = document.getElementById('cpSaveBar');
+      if(cpBar) cpBar.style.display = (target === 'coupons') ? 'block' : 'none';
+    } catch(e){}
     if(target === 'mailer'){
       try { adminRenderMailingList(); } catch(e){}
     }
