@@ -12862,8 +12862,8 @@ function mobTab(tab){
     var p=_prods[i];
     if(d>0&&p&&p.blocked){
       var b=p.blocked;
-      if(typeof toast==='function')toast('⚠️ '+p.nm+' לא זמין בין '+fmtD(b.from)+' ל-'+fmtD(b.to),'warn');
-      return;
+      if(typeof notify==='function')notify('⚠️ '+p.nm+' לא זמין בין '+fmtD(b.from)+' ל-'+fmtD(b.to)+'. אם ההזמנה לתאריך אחר — ניתן להמשיך.');
+      else if(typeof toast==='function')toast('⚠️ '+p.nm+' לא זמין בין '+fmtD(b.from)+' ל-'+fmtD(b.to));
     }
     _qtys[i]=Math.max(0,(_qtys[i]||0)+d);
     document.getElementById('cbqv_'+i).textContent=_qtys[i];
@@ -12905,15 +12905,7 @@ function mobTab(tab){
       cats[cat].forEach(function(item){
         var p=item.p,i=item.i;
         var q=_qtys[i]||0;
-        if(p.blocked){
-          h+='<div class="cb-it" data-i="'+i+'" style="opacity:.55;pointer-events:none">'+
-            '<div class="cb-it-row">'+
-            '<div class="cb-it-nm">'+eH(p.nm)+'</div>'+
-            '<div style="font-size:11px;background:#fff3cd;color:#856404;border:1px solid #f0c050;border-radius:8px;padding:3px 8px;font-weight:700;white-space:nowrap">⚠️ לא זמין עד '+fmtD(p.blocked.to)+'</div>'+
-            '</div>'+
-            '</div>';
-          return;
-        }
+        var blockedBadge=p.blocked?'<span style="font-size:11px;background:#fff3cd;color:#856404;border:1px solid #f0c050;border-radius:8px;padding:2px 7px;font-weight:700;white-space:nowrap">⚠️ לא זמין '+fmtD(p.blocked.from)+'–'+fmtD(p.blocked.to)+'</span>':'';
         var kiHtml='';
         if(p.ki){
           var yOn=_ki_on[i]===true?' on':'';
@@ -12932,6 +12924,7 @@ function mobTab(tab){
           '<div class="cb-it-row">'+
           '<div class="cb-it-nm">'+eH(p.nm)+'</div>'+
           '<div class="cb-it-pr">₪'+p.pr+'</div>'+
+          blockedBadge+
           '<div class="cb-qty"><button type="button" class="cb-qb" onclick="cbQ(this,-1)">−</button><span id="cbqv_'+i+'">'+q+'</span><button type="button" class="cb-qb" onclick="cbQ(this,1)">+</button></div>'+
           '</div>'+
           kiHtml+
