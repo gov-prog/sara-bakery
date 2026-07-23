@@ -178,8 +178,8 @@
     }
     /* Hero background video */
     .hero-video-wrap{position:absolute;inset:0;z-index:0;overflow:hidden;background:#c87a4a}
-    .hero-video-iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:100%;min-width:100%;min-height:100%;object-fit:cover;pointer-events:none}
-    .hero-bg-ov{position:absolute;inset:0;z-index:1;background:linear-gradient(155deg,rgba(255,252,245,.86) 0%,rgba(255,246,230,.80) 40%,rgba(252,228,200,.82) 70%,rgba(246,212,170,.88) 100%)}
+    .hero-video-iframe{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+    .hero-bg-ov{position:absolute;inset:0;z-index:1;background:linear-gradient(155deg,rgba(10,5,2,.52) 0%,rgba(20,10,4,.45) 40%,rgba(15,7,3,.48) 70%,rgba(8,4,1,.55) 100%)}
     .hero-split{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;width:100%;min-height:100vh;max-width:none;margin:0;padding:90px 6% 60px;box-sizing:border-box;text-align:center;position:relative;z-index:3}
     .hero-img-col{display:none!important}
     .hero-img-wrap{position:relative;width:200px;height:200px;max-width:200px;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 20px 60px rgba(200,112,74,.25),0 0 0 8px rgba(255,255,255,.9),0 0 0 16px rgba(200,112,74,.1)}
@@ -301,7 +301,7 @@
     .prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:10px 0 28px;max-width:1100px;margin:0 auto}
     .prod-card{background:linear-gradient(180deg,#1a120d,#25160f);border-radius:22px;overflow:hidden;box-shadow:0 16px 34px rgba(0,0,0,0.35);transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;transform:translateZ(0);border:1px solid rgba(255,255,255,0.06);cursor:default;opacity:1;pointer-events:auto;will-change:transform;backface-visibility:hidden}
     .prod-card:hover{transform:translateY(-8px);box-shadow:0 18px 40px rgba(200,112,74,0.14);border-color:var(--blush)}
-    .prod-img{height:210px;overflow:hidden;position:relative;background:linear-gradient(160deg,#20140f,#331d14)}
+    .prod-img{height:175px;overflow:hidden;position:relative;background:linear-gradient(160deg,#20140f,#331d14)}
     .prod-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block;will-change:transform}
     .prod-card:hover .prod-img img{transform:scale(1.07)}
     .prod-ribbon{position:absolute;top:12px;right:12px;padding:5px 13px;border-radius:14px;font-size:11px;font-weight:800;z-index:2;letter-spacing:.5px}
@@ -838,42 +838,42 @@
 
 /* ── Product Detail Overlay ── */
 /* ── Product Detail Page ── */
-.proddet-ov{position:fixed;inset:0;z-index:3000;background:#fffaf4;direction:rtl;
+.proddet-ov{position:fixed;inset:0;z-index:3000;background:#0d0804;direction:rtl;
   transform:translateY(100%);transition:transform .42s cubic-bezier(.25,.8,.25,1);
   overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 .proddet-ov.pd-open{transform:translateY(0)}
 /* top bar */
-.pd-topbar{position:sticky;top:0;z-index:10;background:rgba(255,250,244,.95);
-  backdrop-filter:blur(12px);border-bottom:1px solid #e8ddd4;display:flex;
+.pd-topbar{position:sticky;top:0;z-index:10;background:rgba(10,5,2,.97);
+  backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08);display:flex;
   align-items:center;gap:10px;padding:12px 20px}
-.pd-topbar-back{background:none;border:none;cursor:pointer;font-size:18px;color:#5a3424;
+.pd-topbar-back{background:none;border:none;cursor:pointer;font-size:18px;color:#c8a080;
   line-height:1;padding:4px 8px;border-radius:8px;transition:background .15s}
-.pd-topbar-back:hover{background:#f0e5db}
-.pd-topbar-crumb{font-size:13px;color:#a08070;font-weight:600;flex:1;text-align:right}
-.pd-topbar-crumb strong{color:#3d1f10}
+.pd-topbar-back:hover{background:rgba(255,255,255,.08)}
+.pd-topbar-crumb{font-size:13px;color:#8a7060;font-weight:600;flex:1;text-align:right}
+.pd-topbar-crumb strong{color:#e8c8a0}
 /* Two column layout */
 .pd-layout{display:grid;grid-template-columns:55% 45%;min-height:calc(100vh - 50px);align-items:start}
 /* LEFT: info panel */
-.pd-left{padding:40px 48px 60px;border-left:1px solid #e8ddd4}
-.pd-cat-tag{display:inline-block;font-size:12px;font-weight:800;color:#a08070;
+.pd-left{padding:40px 48px 60px;border-left:1px solid rgba(255,255,255,.08)}
+.pd-cat-tag{display:inline-block;font-size:12px;font-weight:800;color:#c8a070;
   letter-spacing:.8px;text-transform:uppercase;margin-bottom:12px}
 .pd-name{font-family:'Playfair Display',serif;font-size:30px;font-weight:900;
-  color:#2d1a0e;line-height:1.22;margin:0 0 10px}
-.pd-short{font-size:14px;color:#7a5a4a;line-height:1.8;margin:0 0 22px;font-weight:500}
+  color:#f5e8d0;line-height:1.22;margin:0 0 10px}
+.pd-short{font-size:14px;color:rgba(255,255,255,.62);line-height:1.8;margin:0 0 22px;font-weight:500}
 .pd-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:24px}
-.pd-price{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#c8704a}
-.pd-price-note{font-size:12px;color:#a08070;font-weight:600}
-.pd-order-btn{display:block;width:100%;background:#2d1a0e;color:#fff;border:none;
+.pd-price{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#e8a060}
+.pd-price-note{font-size:12px;color:#8a7060;font-weight:600}
+.pd-order-btn{display:block;width:100%;background:linear-gradient(135deg,#c8704a,#a85535);color:#fff;border:none;
   border-radius:12px;padding:17px 24px;font-size:16px;font-weight:900;cursor:pointer;
-  font-family:'Rubik',sans-serif;transition:background .18s,transform .15s;margin-bottom:28px;letter-spacing:.2px}
-.pd-order-btn:hover{background:#4a2d1a}
+  font-family:'Rubik',sans-serif;transition:opacity .18s,transform .15s;margin-bottom:28px;letter-spacing:.2px}
+.pd-order-btn:hover{opacity:.88}
 .pd-order-btn:active{transform:scale(.98)}
 /* accordion */
-.pd-acc-item{border-top:1px solid #e5dbd3}
-.pd-acc-item:last-child{border-bottom:1px solid #e5dbd3}
+.pd-acc-item{border-top:1px solid rgba(255,255,255,.1)}
+.pd-acc-item:last-child{border-bottom:1px solid rgba(255,255,255,.1)}
 .pd-acc-btn{display:flex;justify-content:space-between;align-items:center;width:100%;
   background:none;border:none;cursor:pointer;padding:16px 0;text-align:right;
-  font-size:15px;font-weight:800;color:#2d1a0e;font-family:'Rubik',sans-serif}
+  font-size:15px;font-weight:800;color:#f0e0c8;font-family:'Rubik',sans-serif}
 .pd-acc-btn .pd-acc-icon{font-size:20px;color:#c8704a;transition:transform .25s;line-height:1}
 .pd-acc-item.pd-open .pd-acc-icon{transform:rotate(45deg)}
 .pd-acc-body{max-height:0;overflow:hidden;transition:max-height .32s cubic-bezier(.4,0,.2,1),padding .25s}
@@ -881,18 +881,18 @@
 .pd-acc-inner{padding:0 0 18px}
 /* contents list */
 .pd-contents-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
-.pd-contents-list li{font-size:14px;color:#5a3424;font-weight:600;padding-right:4px;line-height:1.5}
+.pd-contents-list li{font-size:14px;color:rgba(255,255,255,.72);font-weight:600;padding-right:4px;line-height:1.5}
 /* allergens */
 .pd-allerg-row{display:flex;flex-wrap:wrap;gap:8px}
-.pd-allerg-chip{background:#fff3ed;border:1.5px solid #f0c0a0;color:#7a3010;
+.pd-allerg-chip{background:rgba(200,112,74,.15);border:1.5px solid rgba(200,112,74,.4);color:#e8b090;
   border-radius:20px;padding:5px 13px;font-size:12px;font-weight:800}
 /* occasions */
 .pd-occ-row{display:flex;flex-wrap:wrap;gap:7px}
-.pd-occ-chip{background:#f5f0ea;border:1px solid #ddd0c4;color:#6b4433;
+.pd-occ-chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.75);
   border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700}
-.pd-note{font-size:13px;color:#7a9060;font-style:italic;font-weight:600;margin-top:10px}
+.pd-note{font-size:13px;color:#90b070;font-style:italic;font-weight:600;margin-top:10px}
 /* RIGHT: image panel */
-.pd-right{position:sticky;top:50px;background:#f0ebe4;max-height:calc(100vh - 50px);overflow:hidden}
+.pd-right{position:sticky;top:50px;background:#1a0e06;max-height:calc(100vh - 50px);overflow:hidden}
 .pd-right-img{width:100%;max-height:500px;object-fit:cover;display:block;aspect-ratio:4/3}
 .pd-ribbon-badge{position:absolute;top:18px;right:18px;background:linear-gradient(135deg,#c8704a,#a85535);
   color:#fff;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:900}
@@ -2622,7 +2622,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, setPersistence, browserLocalPersistence, updateProfile } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import {  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, collection, collectionGroup, serverTimestamp, increment, arrayUnion, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import {  getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, collection, collectionGroup, serverTimestamp, increment, arrayUnion, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -2664,6 +2664,7 @@ window.firebaseCtx = {
   setDoc,
   updateDoc,
   addDoc,
+  deleteDoc,
   collection,
   serverTimestamp,
   increment,
@@ -10797,6 +10798,7 @@ function ensureUI(){
         '<div class="admin-coupon-actions">' +
           '<button type="button" class="admin-btn" onclick="adminToggleCoupon(\'' + safeId + '\',' + (active ? 'false' : 'true') + ')">' + (active ? 'כיבוי קופון' : 'הפעלת קופון') + '</button>' +
           '<button type="button" class="admin-btn" onclick="adminSendCouponToAll(\'' + safeCode + '\')">שליחה לכולם</button>' +
+          '<button type="button" class="admin-btn" style="background:#c0392b;color:#fff" onclick="adminDeleteCoupon(\'' + safeId + '\',\'' + safeCode + '\')">🗑️ מחיקה</button>' +
         '</div>' +
       '</div>';
     });
@@ -10866,6 +10868,18 @@ function ensureUI(){
       } catch(err){
         notify('עדכון קופון נכשל: ' + (err && (err.code || err.message) ? (err.code || err.message) : 'שגיאה'));
       }
+  };
+
+  window.adminDeleteCoupon = async function(id, code){
+    if(!isAdmin || !fb || !id) return;
+    if(!confirm('למחוק את הקופון ' + code + '?')) return;
+    try {
+      await fb.deleteDoc(fb.doc(fb.db, 'coupons', String(id)));
+      await refreshCoupons();
+      notify('קופון נמחק');
+    } catch(err){
+      notify('מחיקה נכשלה: ' + (err && (err.code || err.message) ? (err.code || err.message) : 'שגיאה'));
+    }
   };
 
   window.adminSendCouponToAll = async function(code){
