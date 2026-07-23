@@ -7960,11 +7960,10 @@ function ensureUI(){
                 '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:3px">תיאור</div>' +
                 '<input id="cpPopupDesc" class="admin-input" type="text" placeholder="10% הנחה על כל הזמנה" style="width:100%;box-sizing:border-box">' +
               '</div>' +
-              '<div style="margin-bottom:12px">' +
+              '<div>' +
                 '<div style="font-size:11px;font-weight:800;color:#6b4433;margin-bottom:3px">בתוקף עד (אופציונלי)</div>' +
                 '<input id="cpPopupExpiry" class="admin-input" type="date">' +
               '</div>' +
-              '<button type="button" onclick="adminSaveCouponPopup()" style="width:100%;padding:13px;background:linear-gradient(135deg,#2d6a2d,#4a9a4a);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:900;cursor:pointer;font-family:Rubik,sans-serif">💾 שמור הגדרות קופון פופאפ</button>' +
             '</div>' +
             '<div class="admin-card" style="margin-bottom:12px">' +
               '<div style="font-weight:900;font-size:14px;color:#2d1a0e;margin-bottom:10px">+ הוספת קופון חדש</div>' +
@@ -8936,6 +8935,7 @@ function ensureUI(){
   }
 
   function adminLoadCouponPopupUI(){
+    try { var bar = document.getElementById('cpSaveBar'); if(bar) bar.style.display = 'block'; } catch(e){}
     var siteSett = window._siteSettings || {};
     var cp = siteSett.couponPopup || {};
     var cpActive = document.getElementById('cpPopupActive');
