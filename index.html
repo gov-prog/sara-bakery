@@ -7937,7 +7937,7 @@ function ensureUI(){
               '<div style="font-size:12px;color:#4a7a4a;margin-bottom:12px">קופון שיוצג אוטומטית ללקוחות בכניסה לאתר</div>' +
               '<div class="admin-settings-row">' +
                 '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px">' +
-                  '<input type="checkbox" id="cpPopupActive" onchange="if(!this.checked){ adminDisableCouponPopup(); } else { notify(\'מלאי את פרטי הקופון ולחצי 💾 שמור\'); }"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
+                  '<input type="checkbox" id="cpPopupActive"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
                 '</label>' +
               '</div>' +
               '<div class="admin-settings-row">' +
@@ -9013,7 +9013,15 @@ function ensureUI(){
     if(active && type === 'percent' && !value){ notify('הכניסי אחוז הנחה'); return; }
     var cp = { active: active, title: title, code: code, desc: desc, expiry: expiry, type: type, value: value };
     try {
-      await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), { couponPopup: cp }, { merge: true });
+      await fb.updateDoc(fb.doc(fb.db, 'settings', 'main'), {
+        'couponPopup.active': active,
+        'couponPopup.title': title,
+        'couponPopup.code': code,
+        'couponPopup.desc': desc,
+        'couponPopup.expiry': expiry,
+        'couponPopup.type': type,
+        'couponPopup.value': value
+      });
       if(!window._siteSettings) window._siteSettings = {};
       window._siteSettings.couponPopup = cp;
       if(active && code){
