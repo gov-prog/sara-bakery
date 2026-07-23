@@ -12813,8 +12813,12 @@ function mobTab(tab){
 
   var CAT_EMOJI={'מוס':'🍫','קינוחים':'🍮','עוגיות':'🍪','פחזניות':'🥐'};
 
+  function fmtD(s){var m=String(s||'').match(/(\d{4})-(\d{2})-(\d{2})/);return m?m[3]+'/'+m[2]:s;}
+
   function getProds(){
     var seen={},all=[];
+    var todayStr=new Date().toISOString().split('T')[0];
+    var blocks=window._productBlocks||[];
     document.querySelectorAll('#customBuilderStep .builder-group').forEach(function(grp){
       var catEl=grp.querySelector('h5');
       var catFull=catEl?catEl.textContent.trim():'';
@@ -12828,7 +12832,8 @@ function mobTab(tab){
         if(!nm||!pr||seen[nm])return;
         if(nm==='תוספת הקדשה')return;
         seen[nm]=1;
-        all.push({nm:nm,pr:pr,ki:isMous,img:'',cat:catShort,emoji:emoji});
+        var blk=blocks.find(function(b){return b.productName===nm&&b.from<=todayStr&&todayStr<=b.to;})||null;
+        all.push({nm:nm,pr:pr,ki:isMous,img:'',cat:catShort,emoji:emoji,blocked:blk});
       });
     });
     return all;
@@ -12854,6 +12859,12 @@ function mobTab(tab){
   window.cbQ=function(btn,d){
     var it=btn.closest('.cb-it');
     var i=parseInt(it.dataset.i);
+    var p=_prods[i];
+    if(d>0&&p&&p.blocked){
+      var b=p.blocked;
+      if(typeof toast==='function')toast('⚠️ '+p.nm+' לא זמין בין '+fmtD(b.from)+' ל-'+fmtD(b.to),'warn');
+      return;
+    }
     _qtys[i]=Math.max(0,(_qtys[i]||0)+d);
     document.getElementById('cbqv_'+i).textContent=_qtys[i];
     it.classList.toggle('on',_qtys[i]>0);
@@ -12894,6 +12905,15 @@ function mobTab(tab){
       cats[cat].forEach(function(item){
         var p=item.p,i=item.i;
         var q=_qtys[i]||0;
+        if(p.blocked){
+          h+='<div class="cb-it" data-i="'+i+'" style="opacity:.55;pointer-events:none">'+
+            '<div class="cb-it-row">'+
+            '<div class="cb-it-nm">'+eH(p.nm)+'</div>'+
+            '<div style="font-size:11px;background:#fff3cd;color:#856404;border:1px solid #f0c050;border-radius:8px;padding:3px 8px;font-weight:700;white-space:nowrap">⚠️ לא זמין עד '+fmtD(p.blocked.to)+'</div>'+
+            '</div>'+
+            '</div>';
+          return;
+        }
         var kiHtml='';
         if(p.ki){
           var yOn=_ki_on[i]===true?' on':'';
