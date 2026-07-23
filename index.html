@@ -9029,16 +9029,16 @@ function ensureUI(){
 
   window.adminDisableCouponPopup = async function(){
     if(!fb){ notify('שגיאה: Firebase לא מחובר'); return; }
-    var cp = { active: false };
     try {
-      await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), { couponPopup: cp }, { merge: true });
+      await fb.updateDoc(fb.doc(fb.db, 'settings', 'main'), { 'couponPopup.active': false });
       if(!window._siteSettings) window._siteSettings = {};
-      window._siteSettings.couponPopup = cp;
+      if(!window._siteSettings.couponPopup) window._siteSettings.couponPopup = {};
+      window._siteSettings.couponPopup.active = false;
       window._cpFromSettings = null;
       var cb = document.getElementById('cpPopupActive');
       if(cb) cb.checked = false;
       try{ sessionStorage.removeItem('sara_cp_popup_seen'); }catch(e){}
-      notify('פופאפ הקופון הוסר ✓');
+      notify('פופאפ הקופון כובה ✓ — הגדרות נשמרו');
     } catch(e){ notify('שגיאה בשמירה: ' + (e.message || e)); }
   };
 
