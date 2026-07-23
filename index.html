@@ -5885,7 +5885,7 @@ function ensureUI(){
         });
       }
       // Merge in the coupon from settings popup (works even if Firestore fails)
-      if(window._cpFromSettings && window._cpFromSettings.code){
+      if(window._cpFromSettings && window._cpFromSettings.code && window._cpFromSettings.active !== false){
         var cpKey = window._cpFromSettings.code;
         var alreadyIn = list.some(function(c){
           return String(c.code||c.codeLower||c.id||'').trim().toUpperCase().replace(/\s+/g,'') === cpKey;
@@ -9008,7 +9008,11 @@ function ensureUI(){
       await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), { couponPopup: cp }, { merge: true });
       if(!window._siteSettings) window._siteSettings = {};
       window._siteSettings.couponPopup = cp;
-      notify('פופאפ הקופון עודכן ✓');
+      if(!active){
+        window._cpFromSettings = null;
+        try{ sessionStorage.removeItem('sara_cp_popup_seen'); }catch(e){}
+      }
+      notify(active ? 'פופאפ הקופון עודכן ✓' : 'פופאפ הקופון כובה ✓');
     } catch(e){ notify('שגיאה: ' + (e.message || e)); }
   };
 
