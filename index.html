@@ -7925,8 +7925,49 @@ function ensureUI(){
             '<div id="adminRevenueContent"></div>' +
           '</div>' +
           '<div id="adminSectionCoupons" class="admin-section" data-section="coupons">' +
+            '<div style="font-weight:900;font-size:16px;color:#2d1a0e;margin-bottom:14px">🎟️ ניהול קופונים</div>' +
+            '<div class="admin-card" style="margin-bottom:12px;border:2px dashed #b8d9b0;background:#f6fbf5">' +
+              '<div style="font-weight:900;font-size:14px;color:#1a3d1a;margin-bottom:6px">🎁 פופאפ קוד קופון בכניסה לאתר</div>' +
+              '<div style="font-size:12px;color:#4a7a4a;margin-bottom:12px">קופון שיוצג אוטומטית ללקוחות בכניסה לאתר</div>' +
+              '<div class="admin-settings-row">' +
+                '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px">' +
+                  '<input type="checkbox" id="cpPopupActive" onchange="if(!this.checked){ adminDisableCouponPopup(); }"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
+                '</label>' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">כותרת הפופאפ</label>' +
+                '<input id="cpPopupTitle" class="admin-input" type="text" placeholder="חג שמח!!">' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">קוד קופון (מה יוצג לגולשים)</label>' +
+                '<input id="cpPopupCode" class="admin-input" type="text" placeholder="חגשמח">' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">סוג הנחה</label>' +
+                '<div style="display:flex;gap:16px;padding:5px 0">' +
+                  '<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="radio" id="cpPopupTypePercent" name="cpPopupType" value="percent" onchange="document.getElementById(\'cpPopupValueRow\').style.display=\'\'" checked> % הנחה</label>' +
+                  '<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="radio" id="cpPopupTypeBundle" name="cpPopupType" value="bundle" onchange="document.getElementById(\'cpPopupValueRow\').style.display=\'none\'"> 3+1 מתנה</label>' +
+                '</div>' +
+              '</div>' +
+              '<div class="admin-settings-row" id="cpPopupValueRow">' +
+                '<label class="admin-settings-label">אחוז הנחה (לדוגמה 10 = 10%)</label>' +
+                '<input id="cpPopupValue" class="admin-input" type="number" min="1" max="100" placeholder="10" style="width:100px">' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">תיאור (לדוגמה: 10% הנחה על כל הזמנה!)</label>' +
+                '<input id="cpPopupDesc" class="admin-input" type="text" placeholder="10% הנחה על כל הזמנה">' +
+              '</div>' +
+              '<div class="admin-settings-row">' +
+                '<label class="admin-settings-label">בתוקף עד</label>' +
+                '<input id="cpPopupExpiry" class="admin-input" type="date">' +
+              '</div>' +
+              '<div style="display:flex;gap:8px;margin-top:6px">' +
+                '<button class="admin-settings-save" type="button" onclick="adminSaveCouponPopup()" style="flex:1;background:linear-gradient(135deg,#2d6a2d,#4a9a4a)">💾 שמור</button>' +
+                '<button class="admin-btn" type="button" onclick="adminDisableCouponPopup()" style="background:#c0392b;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none">🗑️ הסר קופון</button>' +
+              '</div>' +
+            '</div>' +
             '<div class="admin-card" style="margin-bottom:12px">' +
-              '<div style="font-weight:900;font-size:14px;color:#2d1a0e;margin-bottom:10px">🎟️ צור קופון חדש</div>' +
+              '<div style="font-weight:900;font-size:14px;color:#2d1a0e;margin-bottom:10px">+ הוספת קופון חדש</div>' +
               '<label class="admin-order-label">קוד קופון (אותיות לטינית גדולות)</label>' +
               '<input id="adminCouponCode" class="admin-input" type="text" placeholder="SWEET10" style="margin-bottom:8px;text-transform:uppercase">' +
               '<label class="admin-order-label">סוג הנחה</label>' +
@@ -7937,6 +7978,8 @@ function ensureUI(){
               '</div>' +
               '<input id="adminCouponValue" class="admin-input" type="number" min="1" placeholder="10 (אחוז/שקל)" style="margin-bottom:8px">' +
               '<input id="adminCouponLabel" class="admin-input" type="text" placeholder="תיאור: 10% הנחה לכל הזמנה" style="margin-bottom:8px">' +
+              '<label class="admin-order-label">בתוקף עד (אופציונלי)</label>' +
+              '<input id="adminCouponExpiry" class="admin-input" type="date" style="margin-bottom:8px">' +
               '<button type="button" class="admin-btn" style="width:100%;padding:10px;font-size:13px" onclick="adminSaveCoupon()">💾 שמור קופון</button>' +
             '</div>' +
             '<div style="font-weight:900;font-size:13px;margin-bottom:8px">קופונים קיימים</div>' +
@@ -8017,44 +8060,9 @@ function ensureUI(){
               '</div>' +
             '</div>' +
             '<div class="admin-card" style="margin-top:12px;border:2px dashed #b8d9b0;background:#f6fbf5">' +
-              '<div style="font-weight:900;font-size:15px;color:#1a3d1a;margin-bottom:6px">🎁 פופאפ קוד קופון בכניסה לאתר</div>' +
-              '<div style="font-size:12px;color:#4a7a4a;margin-bottom:12px">קופון שיוצג אוטומטית ללקוחות בכניסה לאתר</div>' +
-              '<div class="admin-settings-row">' +
-                '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px">' +
-                  '<input type="checkbox" id="cpPopupActive" onchange="if(!this.checked){ adminDisableCouponPopup(); }"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
-                '</label>' +
-              '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">כותרת הפופאפ</label>' +
-                '<input id="cpPopupTitle" class="admin-input" type="text" placeholder="חג שבועות!!">' +
-              '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">קוד קופון (מה יוצג לגולשים)</label>' +
-                '<input id="cpPopupCode" class="admin-input" type="text" placeholder="חגשמח">' +
-              '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">סוג הנחה</label>' +
-                '<div style="display:flex;gap:16px;padding:5px 0">' +
-                  '<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="radio" id="cpPopupTypePercent" name="cpPopupType" value="percent" onchange="document.getElementById(\'cpPopupValueRow\').style.display=\'\'" checked> % הנחה</label>' +
-                  '<label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer"><input type="radio" id="cpPopupTypeBundle" name="cpPopupType" value="bundle" onchange="document.getElementById(\'cpPopupValueRow\').style.display=\'none\'"> 3+1 מתנה</label>' +
-                '</div>' +
-              '</div>' +
-              '<div class="admin-settings-row" id="cpPopupValueRow">' +
-                '<label class="admin-settings-label">אחוז הנחה (לדוג׳ 10 = 10%)</label>' +
-                '<input id="cpPopupValue" class="admin-input" type="number" min="1" max="100" placeholder="10" style="width:100px">' +
-              '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">תיאור (לדוגמה: 10% הנחה על כל הזמנה!)</label>' +
-                '<input id="cpPopupDesc" class="admin-input" type="text" placeholder="10% הנחה על כל הזמנה">' +
-              '</div>' +
-              '<div class="admin-settings-row">' +
-                '<label class="admin-settings-label">בתוקף עד</label>' +
-                '<input id="cpPopupExpiry" class="admin-input" type="date">' +
-              '</div>' +
-              '<div style="display:flex;gap:8px;margin-top:6px">' +
-                '<button class="admin-settings-save" type="button" onclick="adminSaveCouponPopup()" style="flex:1;background:linear-gradient(135deg,#2d6a2d,#4a9a4a)">💾 שמור</button>' +
-                '<button class="admin-btn" type="button" onclick="adminDisableCouponPopup()" style="background:#c0392b;color:#fff;padding:8px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none">🗑️ הסר קופון</button>' +
-              '</div>' +
+              '<div style="font-weight:900;font-size:14px;color:#1a3d1a;margin-bottom:6px">🎁 פופאפ קוד קופון</div>' +
+              '<div style="font-size:12px;color:#4a7a4a;margin-bottom:10px">הגדרות הפופאפ בלשונית קופונים</div>' +
+              '<button class="admin-btn" type="button" onclick="adminSwitchTab(\'coupons\')" style="width:100%;padding:10px;font-size:13px">🎟️ עבור ללשונית קופונים</button>' +
             '</div>' +
             '<div class="admin-card" style="margin-top:12px">' +
               '<div style="font-weight:900;font-size:13px;color:#2d1a0e;margin-bottom:10px">🔑 פרטי גישה</div>' +
@@ -8863,6 +8871,7 @@ function ensureUI(){
     }
     if(target === 'coupons'){
       try { refreshCoupons(); } catch(e){}
+      try { adminLoadCouponPopupUI(); } catch(e){}
     }
     if(target === 'mailer'){
       try { adminRenderMailingList(); } catch(e){}
@@ -8916,7 +8925,11 @@ function ensureUI(){
     if(tMsgs) tMsgs.value = (ticker.messages || []).join('\n');
     if(tColor) tColor.value = ticker.color || 'gold';
     adminInitTickerColorBtns(ticker.color || 'gold');
-    // Coupon popup UI
+    adminLoadCouponPopupUI();
+  }
+
+  function adminLoadCouponPopupUI(){
+    var siteSett = window._siteSettings || {};
     var cp = siteSett.couponPopup || {};
     var cpActive = document.getElementById('cpPopupActive');
     var cpTitle  = document.getElementById('cpPopupTitle');
@@ -10838,7 +10851,7 @@ function ensureUI(){
     var wrap = document.getElementById('adminCouponsList');
     if(!wrap) return;
     if(!list || list.length === 0){
-      wrap.innerHTML = '<div class="admin-mini">אין קופונים עדיין.</div>';
+      wrap.innerHTML = '<div style="text-align:center;padding:24px 0;color:#a08060;font-size:13px">🏷️ אין קופונים עדיין — הוסיפי קופון למעלה</div>';
       return;
     }
 
@@ -10860,8 +10873,9 @@ function ensureUI(){
       var active = c.active !== false;
       var safeId = String(c.id || c.codeLower || code.toLowerCase()).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       var safeCode = String(code).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+      var expiryStr = c.expiry ? ' • עד ' + String(c.expiry).replace(/(\d{4})-(\d{2})-(\d{2})/,'$3/$2') : '';
       html += '<div class="admin-coupon">' +
-        '<div class="admin-row"><strong>' + escapeHtml(code) + '</strong><span class="admin-mini">' + (active ? 'פעיל' : 'לא פעיל') + '</span></div>' +
+        '<div class="admin-row"><strong>' + escapeHtml(code) + '</strong><span class="admin-mini">' + (active ? 'פעיל' : 'לא פעיל') + expiryStr + '</span></div>' +
         (label ? ('<div class="admin-mini">' + escapeHtml(label) + '</div>') : '') +
         '<div class="admin-coupon-actions">' +
           '<button type="button" class="admin-btn" onclick="adminToggleCoupon(\'' + safeId + '\',' + (active ? 'false' : 'true') + ')">' + (active ? 'כיבוי קופון' : 'הפעלת קופון') + '</button>' +
@@ -10884,15 +10898,17 @@ function ensureUI(){
 
   window.adminSaveCoupon = async function(){
     if(!isAdmin || !fb) return;
-    var codeEl  = document.getElementById('adminCouponCode');
-    var valueEl = document.getElementById('adminCouponValue');
-    var labelEl = document.getElementById('adminCouponLabel');
-    var radio   = document.querySelector('input[name="couponTypeR"]:checked');
-    var typeEl  = document.getElementById('adminCouponType'); // legacy fallback
+    var codeEl   = document.getElementById('adminCouponCode');
+    var valueEl  = document.getElementById('adminCouponValue');
+    var labelEl  = document.getElementById('adminCouponLabel');
+    var expiryEl = document.getElementById('adminCouponExpiry');
+    var radio    = document.querySelector('input[name="couponTypeR"]:checked');
+    var typeEl   = document.getElementById('adminCouponType');
     if(!codeEl) return;
-    var code  = normalizeCouponCode(codeEl.value || '');
-    var type  = radio ? radio.value : (typeEl ? String(typeEl.value||'percent') : 'percent');
-    var value = Number(valueEl && valueEl.value ? valueEl.value : 0);
+    var code   = normalizeCouponCode(codeEl.value || '');
+    var type   = radio ? radio.value : (typeEl ? String(typeEl.value||'percent') : 'percent');
+    var value  = Number(valueEl && valueEl.value ? valueEl.value : 0);
+    var expiry = (expiryEl && expiryEl.value) ? expiryEl.value.trim() : '';
 
     if(!code){ notify('חסר קוד קופון'); return; }
     if((type === 'percent' || type === 'fixed') && (!Number.isFinite(value) || value <= 0)){
@@ -10913,12 +10929,14 @@ function ensureUI(){
       createdAt: fb.serverTimestamp(),
       createdBy: (fb && fb.auth && fb.auth.currentUser && fb.auth.currentUser.email) ? fb.auth.currentUser.email : ''
     };
+    if(expiry) payload.expiry = expiry;
 
     try {
       await fb.setDoc(fb.doc(fb.db, 'coupons', docId), payload, { merge: true });
       notify('קופון נשמר בהצלחה');
       if(codeEl) codeEl.value = '';
       if(valueEl) valueEl.value = '';
+      if(expiryEl) expiryEl.value = '';
       await refreshCoupons();
       } catch(err){
         notify('שמירת קופון נכשלה: ' + (err && (err.code || err.message) ? (err.code || err.message) : 'שגיאה'));
