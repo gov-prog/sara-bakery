@@ -8029,7 +8029,7 @@ function ensureUI(){
               '<div style="font-size:12px;color:#4a7a4a;margin-bottom:12px">קופון שיוצג אוטומטית ללקוחות בכניסה לאתר</div>' +
               '<div class="admin-settings-row">' +
                 '<label style="font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px">' +
-                  '<input type="checkbox" id="cpPopupActive"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
+                  '<input type="checkbox" id="cpPopupActive" onchange="if(!this.checked){ adminDisableCouponPopup(); }"> ✅ הצג פופאפ קוד קופון בכניסה לאתר' +
                 '</label>' +
               '</div>' +
               '<div class="admin-settings-row">' +
