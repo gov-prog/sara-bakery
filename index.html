@@ -4623,17 +4623,7 @@ function ensureUI(){
   window.openCartOrAuth = function(){
     ensureUI();
     try { if(typeof window.dismissAuthGate === 'function') window.dismissAuthGate(); } catch(e){}
-    if(typeof window.waitForAuthThen === 'function'){
-      window.waitForAuthThen(function(){
-        if(typeof window.toggleCart === 'function') window.toggleCart(true);
-      }, function(){
-        if(typeof window.openAuthModal === 'function') window.openAuthModal();
-      });
-    } else if(typeof window.toggleCart === 'function'){
-      window.toggleCart(true);
-    } else if(typeof window.openAuthModal === 'function'){
-      window.openAuthModal();
-    }
+    if(typeof window.toggleCart === 'function') window.toggleCart(true);
   };
 
   function renderPoints(){
@@ -11584,17 +11574,7 @@ function ensureUI(){
     window.openCartOrAuth = function(){
     ensureUI();
     try { if(typeof window.dismissAuthGate === 'function') window.dismissAuthGate(); } catch(e){}
-    if(typeof window.waitForAuthThen === 'function'){
-      window.waitForAuthThen(function(){
-        if(typeof window.toggleCart === 'function') window.toggleCart(true);
-      }, function(){
-        if(typeof window.openAuthModal === 'function') window.openAuthModal();
-      });
-    } else if(typeof window.toggleCart === 'function'){
-      window.toggleCart(true);
-    } else if(typeof window.openAuthModal === 'function'){
-      window.openAuthModal();
-    }
+    if(typeof window.toggleCart === 'function') window.toggleCart(true);
   };
   }
   if(typeof window.toggleCart !== 'function'){
