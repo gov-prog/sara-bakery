@@ -7753,6 +7753,7 @@ function ensureUI(){
   var adminOrdersSourceLabel = '';
   var adminOrderFilter = null;
   var adminOrderStatusFilter = '';
+  var adminTodayFilter = false;
   var adminNewOrdersCount = 0;
   var adminActiveOrder = null;
 
@@ -7904,6 +7905,7 @@ function ensureUI(){
           '<div id="adminSectionOrders" class="admin-section active" data-section="orders">' +
             '<div class="admin-order-tabs" id="adminOrderStatusTabs">' +
               '<button class="admin-order-tab active" data-status="" type="button" onclick="adminFilterOrdersByStatus(\'\')">הכל</button>' +
+              '<button class="admin-order-tab" data-status="today" type="button" onclick="adminFilterOrdersByToday()" style="background:#e8f4fd;color:#1a5c8a;font-weight:900">📅 היום</button>' +
               '<button class="admin-order-tab" data-status="new" type="button" onclick="adminFilterOrdersByStatus(\'new\')">📬 ממתינה</button>' +
               '<button class="admin-order-tab" data-status="preparing" type="button" onclick="adminFilterOrdersByStatus(\'preparing\')">🔧 בהכנה</button>' +
               '<button class="admin-order-tab" data-status="ready" type="button" onclick="adminFilterOrdersByStatus(\'ready\')">✅ מוכן</button>' +
@@ -9305,7 +9307,11 @@ function ensureUI(){
       var tabs = document.querySelectorAll('.admin-order-tab');
       tabs.forEach(function(btn){
         var key = btn.getAttribute('data-status') || '';
-        btn.classList.toggle('active', String(adminOrderStatusFilter || '') === key);
+        if(key === 'today'){
+          btn.classList.toggle('active', !!adminTodayFilter);
+        } else {
+          btn.classList.toggle('active', !adminTodayFilter && String(adminOrderStatusFilter || '') === key);
+        }
       });
     } catch(e){}
   }
@@ -9314,8 +9320,20 @@ function ensureUI(){
     return String(status || '').trim().toLowerCase();
   }
 
+  window.adminFilterOrdersByToday = async function(){
+    if(!isAdmin) return;
+    adminTodayFilter = true;
+    adminOrderStatusFilter = '';
+    updateOrderStatusTabs();
+    if(!adminOrdersCache || adminOrdersCache.length === 0){
+      try { await refreshOrders(); } catch(e){}
+    }
+    renderOrdersList((adminOrdersCache || []).slice(), { readOnly: false, sourceLabel: adminOrdersSourceLabel });
+  };
+
   window.adminFilterOrdersByStatus = async function(status){
     if(!isAdmin) return;
+    adminTodayFilter = false;
     adminOrderStatusFilter = String(status || '').trim();
     updateOrderStatusTabs();
     if(!adminOrdersCache || adminOrdersCache.length === 0){
@@ -9365,6 +9383,7 @@ function ensureUI(){
 
   window.adminClearStatusFilter = async function(){
     adminOrderStatusFilter = '';
+    adminTodayFilter = false;
     updateOrderStatusTabs();
     if(!adminOrdersCache || adminOrdersCache.length === 0){
       try { await refreshOrders(); } catch(e){}
@@ -9386,6 +9405,16 @@ function ensureUI(){
       if(filterLabel){
         note += '<div class="admin-note"><div class="admin-row"><strong>' + filterLabel + '</strong><button type="button" class="admin-btn" onclick="adminClearOrderFilter()">נקה סינון</button></div></div>';
       }
+    }
+    if(adminTodayFilter){
+      var todayStr = new Date().toISOString().slice(0,10);
+      filteredOrders = filteredOrders.filter(function(o){
+        var d = (o && o.data) ? o.data : {};
+        var rb = (d.checkout && d.checkout.readyBy) || d.readyBy || '';
+        return String(rb).startsWith(todayStr);
+      });
+      var todayDisplay = todayStr.split('-').reverse().join('/');
+      note += '<div class="admin-note" style="background:#e8f4fd;border-color:#7ab8e0"><div class="admin-row"><strong>📅 יומן קבלה — ' + todayDisplay + '</strong><button type="button" class="admin-btn" onclick="adminClearStatusFilter()">נקה</button></div></div>';
     }
     if(adminOrderStatusFilter){
       var statusLabel = normalizeStatusFilter(adminOrderStatusFilter);
