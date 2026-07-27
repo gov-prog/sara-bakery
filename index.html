@@ -396,6 +396,16 @@
       z-index:20!important;outline:none}
     .rv-gitem:active{transform:scale(0.97)!important}
     .rv-gimg{width:100%;height:auto;display:block}
+    @media(max-width:600px){
+      .reviews{padding:50px 0 40px}
+      .rv-carousel{padding:14px 1% 24px}
+      .rv-gitem:nth-child(6n+1){width:39vw;margin:4px 3% -10px 3%;transform:rotate(-5deg)}
+      .rv-gitem:nth-child(6n+2){width:41vw;margin:14px 2% -8px 2%;transform:rotate(4deg) translateY(8px)}
+      .rv-gitem:nth-child(6n+3){width:39vw;margin:-4px 3% -10px 3%;transform:rotate(-3.5deg)}
+      .rv-gitem:nth-child(6n+4){width:41vw;margin:10px 2% -10px 2%;transform:rotate(5.5deg)}
+      .rv-gitem:nth-child(6n+5){width:39vw;margin:2px 3% -8px 3%;transform:rotate(-4.5deg)}
+      .rv-gitem:nth-child(6n+6){width:41vw;margin:16px 2% -12px 2%;transform:rotate(3deg) translateY(10px)}
+    }
 
     /* INFO */
     .info-section{background:linear-gradient(135deg,var(--brown) 0%,#3d1f10 50%,#5a2d16 100%);padding:80px 5%;position:relative;overflow:hidden}
