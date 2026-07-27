@@ -3,7 +3,7 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>שרה | Home Made Bakery</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
@@ -979,9 +979,11 @@
 /* ── Mobile bottom tab bar ── */
 .mob-tabbar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1500;
   background:rgba(14,8,4,.97);backdrop-filter:blur(20px);
-  border-top:1px solid rgba(200,112,74,.22);height:60px;
-  padding-bottom:env(safe-area-inset-bottom,0);
-  box-shadow:0 -6px 30px rgba(0,0,0,.4)}
+  border-top:1px solid rgba(200,112,74,.22);
+  height:calc(60px + env(safe-area-inset-bottom,0px));
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  box-shadow:0 -6px 30px rgba(0,0,0,.4);
+  -webkit-transform:translateZ(0);transform:translateZ(0)}
 .mob-tabbar-inner{display:flex;height:100%;align-items:stretch}
 .mob-tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:2px;text-decoration:none;color:rgba(255,200,150,.4);
@@ -1005,7 +1007,7 @@
 .mob-tab-main:active .mob-tab-ic-wrap{transform:scale(.93)}
 @media(max-width:767px){
   .mob-tabbar{display:block}
-  body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))}
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px))}
   nav .nav-links{display:none!important}
   nav{padding:0 14px!important}
   .cart-fab{top:70px!important;bottom:auto!important;right:14px!important}
